@@ -1,0 +1,133 @@
+{
+  "chest pain": [
+    "Cardiology"
+  ],
+  "heart failure": [
+    "Cardiology"
+  ],
+  "arrhythmia": [
+    "Cardiology"
+  ],
+  "hypertension": [
+    "Cardiology",
+    "Nephrology"
+  ],
+  "palpitations": [
+    "Cardiology"
+  ],
+  "diabetes": [
+    "Endocrinology"
+  ],
+  "thyroid": [
+    "Endocrinology"
+  ],
+  "obesity": [
+    "Endocrinology"
+  ],
+  "hormone imbalance": [
+    "Endocrinology"
+  ],
+  "migraine": [
+    "Neurology"
+  ],
+  "seizure": [
+    "Neurology"
+  ],
+  "neuropathy": [
+    "Neurology"
+  ],
+  "memory loss": [
+    "Neurology"
+  ],
+  "knee pain": [
+    "Orthopedics"
+  ],
+  "fracture": [
+    "Orthopedics"
+  ],
+  "shoulder pain": [
+    "Orthopedics"
+  ],
+  "sports injury": [
+    "Orthopedics"
+  ],
+  "asthma": [
+    "Pulmonology"
+  ],
+  "copd": [
+    "Pulmonology"
+  ],
+  "shortness of breath": [
+    "Pulmonology",
+    "Cardiology"
+  ],
+  "sleep apnea": [
+    "Pulmonology"
+  ],
+  "acid reflux": [
+    "Gastroenterology"
+  ],
+  "ibs": [
+    "Gastroenterology"
+  ],
+  "liver enzyme elevation": [
+    "Gastroenterology"
+  ],
+  "colitis": [
+    "Gastroenterology"
+  ],
+  "kidney disease": [
+    "Nephrology"
+  ],
+  "proteinuria": [
+    "Nephrology"
+  ],
+  "renal failure": [
+    "Nephrology"
+  ],
+  "skin rash": [
+    "Dermatology"
+  ],
+  "eczema": [
+    "Dermatology"
+  ],
+  "psoriasis": [
+    "Dermatology"
+  ],
+  "arthritis": [
+    "Rheumatology"
+  ],
+  "joint swelling": [
+    "Rheumatology"
+  ],
+  "autoimmune pain": [
+    "Rheumatology"
+  ],
+  "sinusitis": [
+    "ENT"
+  ],
+  "hearing loss": [
+    "ENT"
+  ],
+  "throat pain": [
+    "ENT"
+  ],
+  "depression": [
+    "Psychiatry"
+  ],
+  "anxiety": [
+    "Psychiatry"
+  ],
+  "panic attacks": [
+    "Psychiatry"
+  ],
+  "oncology referral": [
+    "Oncology"
+  ],
+  "abnormal mass": [
+    "Oncology"
+  ],
+  "cancer screening": [
+    "Oncology"
+  ]
+}

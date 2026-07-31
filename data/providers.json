@@ -1,0 +1,6174 @@
+[
+  {
+    "provider_id": "P1001",
+    "provider_name": "Dr. Ravi Johnson",
+    "specialty": "Cardiology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1002",
+    "provider_name": "Dr. Ahmed Miller",
+    "specialty": "Dermatology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1003",
+    "provider_name": "Dr. Alexander Sharma",
+    "specialty": "Dermatology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1004",
+    "provider_name": "Dr. Elena Jackson",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1005",
+    "provider_name": "Dr. Noah Martin",
+    "specialty": "Endocrinology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1006",
+    "provider_name": "Dr. Emma Davis",
+    "specialty": "Nephrology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1007",
+    "provider_name": "Dr. Priya Taylor",
+    "specialty": "Pulmonology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1008",
+    "provider_name": "Dr. Ravi Rao",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1009",
+    "provider_name": "Dr. Daniel Torres",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1010",
+    "provider_name": "Dr. Isabella Davis",
+    "specialty": "ENT",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1011",
+    "provider_name": "Dr. Ananya Patel",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1012",
+    "provider_name": "Dr. Ravi White",
+    "specialty": "Nephrology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1013",
+    "provider_name": "Dr. James Miller",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1014",
+    "provider_name": "Dr. Hannah Patel",
+    "specialty": "Endocrinology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1015",
+    "provider_name": "Dr. Amelia Walker",
+    "specialty": "Oncology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1016",
+    "provider_name": "Dr. Fatima Clark",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1017",
+    "provider_name": "Dr. Aarav Kim",
+    "specialty": "Psychiatry",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1018",
+    "provider_name": "Dr. Ananya Qureshi",
+    "specialty": "Dermatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1019",
+    "provider_name": "Dr. Hannah Davis",
+    "specialty": "Dermatology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1020",
+    "provider_name": "Dr. Mason Patel",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1021",
+    "provider_name": "Dr. Ananya Williams",
+    "specialty": "Dermatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1022",
+    "provider_name": "Dr. Evelyn Khan",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1023",
+    "provider_name": "Dr. Priya Qureshi",
+    "specialty": "Gastroenterology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1024",
+    "provider_name": "Dr. Abigail Clark",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1025",
+    "provider_name": "Dr. Aisha Taylor",
+    "specialty": "Endocrinology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1026",
+    "provider_name": "Dr. Benjamin Brown",
+    "specialty": "Dermatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1027",
+    "provider_name": "Dr. Emma Torres",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1028",
+    "provider_name": "Dr. Amelia Kim",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1029",
+    "provider_name": "Dr. Liam Jackson",
+    "specialty": "Neurology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1030",
+    "provider_name": "Dr. Ravi Clark",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1031",
+    "provider_name": "Dr. Sophia Khan",
+    "specialty": "Nephrology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1032",
+    "provider_name": "Dr. Daniel Singh",
+    "specialty": "Oncology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1033",
+    "provider_name": "Dr. Abigail Kim",
+    "specialty": "Dermatology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1034",
+    "provider_name": "Dr. Daniel Khan",
+    "specialty": "Dermatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1035",
+    "provider_name": "Dr. Noah Walker",
+    "specialty": "Endocrinology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1036",
+    "provider_name": "Dr. Abigail Walker",
+    "specialty": "Cardiology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1037",
+    "provider_name": "Dr. Abigail Lopez",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1038",
+    "provider_name": "Dr. Liam Torres",
+    "specialty": "ENT",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1039",
+    "provider_name": "Dr. Abigail Johnson",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1040",
+    "provider_name": "Dr. Fatima Taylor",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1041",
+    "provider_name": "Dr. Alexander Singh",
+    "specialty": "ENT",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1042",
+    "provider_name": "Dr. Fatima Lee",
+    "specialty": "Pulmonology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1043",
+    "provider_name": "Dr. Alexander Brown",
+    "specialty": "Psychiatry",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1044",
+    "provider_name": "Dr. Fatima Davis",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1045",
+    "provider_name": "Dr. Isabella Garcia",
+    "specialty": "Psychiatry",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1046",
+    "provider_name": "Dr. Abigail Clark",
+    "specialty": "Neurology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1047",
+    "provider_name": "Dr. Fatima Moore",
+    "specialty": "Orthopedics",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1048",
+    "provider_name": "Dr. Alexander Kim",
+    "specialty": "Neurology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1049",
+    "provider_name": "Dr. Ahmed Davis",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1050",
+    "provider_name": "Dr. Amelia Khan",
+    "specialty": "Cardiology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1051",
+    "provider_name": "Dr. Ethan Rao",
+    "specialty": "Orthopedics",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1052",
+    "provider_name": "Dr. Isabella Khan",
+    "specialty": "Endocrinology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1053",
+    "provider_name": "Dr. Emma Miller",
+    "specialty": "Pulmonology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1054",
+    "provider_name": "Dr. Ahmed Singh",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-14",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1055",
+    "provider_name": "Dr. Isabella Patel",
+    "specialty": "Psychiatry",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1056",
+    "provider_name": "Dr. Noah Torres",
+    "specialty": "Gastroenterology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1057",
+    "provider_name": "Dr. Priya Jackson",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1058",
+    "provider_name": "Dr. Ahmed Miller",
+    "specialty": "Neurology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1059",
+    "provider_name": "Dr. Sophia Jackson",
+    "specialty": "Rheumatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1060",
+    "provider_name": "Dr. Benjamin Singh",
+    "specialty": "Psychiatry",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1061",
+    "provider_name": "Dr. Ravi Walker",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1062",
+    "provider_name": "Dr. Aarav Patel",
+    "specialty": "Orthopedics",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1063",
+    "provider_name": "Dr. Abigail Brown",
+    "specialty": "Psychiatry",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1064",
+    "provider_name": "Dr. Hannah Jackson",
+    "specialty": "Orthopedics",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1065",
+    "provider_name": "Dr. Marcus Thompson",
+    "specialty": "ENT",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1066",
+    "provider_name": "Dr. Ananya Davis",
+    "specialty": "Dermatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1067",
+    "provider_name": "Dr. Ananya Qureshi",
+    "specialty": "Pulmonology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1068",
+    "provider_name": "Dr. Isabella Hernandez",
+    "specialty": "Gastroenterology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1069",
+    "provider_name": "Dr. Amelia Menon",
+    "specialty": "Neurology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1070",
+    "provider_name": "Dr. Henry Thompson",
+    "specialty": "Nephrology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1071",
+    "provider_name": "Dr. Aarav Khan",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1072",
+    "provider_name": "Dr. Ahmed Kim",
+    "specialty": "Dermatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1073",
+    "provider_name": "Dr. Benjamin Sharma",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1074",
+    "provider_name": "Dr. Abigail Lewis",
+    "specialty": "ENT",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1075",
+    "provider_name": "Dr. Olivia Patel",
+    "specialty": "Pulmonology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1076",
+    "provider_name": "Dr. Isabella Basu",
+    "specialty": "Nephrology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1077",
+    "provider_name": "Dr. Aisha Moore",
+    "specialty": "Orthopedics",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1078",
+    "provider_name": "Dr. Mason Brown",
+    "specialty": "Cardiology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1079",
+    "provider_name": "Dr. Emma Lewis",
+    "specialty": "Orthopedics",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1080",
+    "provider_name": "Dr. Hannah Rao",
+    "specialty": "Neurology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1081",
+    "provider_name": "Dr. Priya Davis",
+    "specialty": "Nephrology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1082",
+    "provider_name": "Dr. Mason Johnson",
+    "specialty": "Psychiatry",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1083",
+    "provider_name": "Dr. James Torres",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1084",
+    "provider_name": "Dr. James Moore",
+    "specialty": "ENT",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1085",
+    "provider_name": "Dr. Ravi Anderson",
+    "specialty": "Rheumatology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1086",
+    "provider_name": "Dr. Arjun Taylor",
+    "specialty": "Endocrinology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1087",
+    "provider_name": "Dr. Aarav White",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1088",
+    "provider_name": "Dr. Elena Miller",
+    "specialty": "Pulmonology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1089",
+    "provider_name": "Dr. Ahmed Jackson",
+    "specialty": "Oncology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1090",
+    "provider_name": "Dr. Harper Singh",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1091",
+    "provider_name": "Dr. Priya Lewis",
+    "specialty": "Gastroenterology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1092",
+    "provider_name": "Dr. Elena Thompson",
+    "specialty": "Pulmonology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1093",
+    "provider_name": "Dr. Emma Kim",
+    "specialty": "Dermatology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1094",
+    "provider_name": "Dr. Isabella Kim",
+    "specialty": "Rheumatology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1095",
+    "provider_name": "Dr. Lucas Garcia",
+    "specialty": "Pulmonology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1096",
+    "provider_name": "Dr. Ethan Menon",
+    "specialty": "Neurology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1097",
+    "provider_name": "Dr. Benjamin Thompson",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1098",
+    "provider_name": "Dr. Emma Rao",
+    "specialty": "Endocrinology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1099",
+    "provider_name": "Dr. Marcus Lewis",
+    "specialty": "Pulmonology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1100",
+    "provider_name": "Dr. Alexander Singh",
+    "specialty": "Rheumatology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1101",
+    "provider_name": "Dr. Abigail Walker",
+    "specialty": "Cardiology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1102",
+    "provider_name": "Dr. Isabella Torres",
+    "specialty": "Endocrinology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1103",
+    "provider_name": "Dr. Aarav Jackson",
+    "specialty": "Oncology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1104",
+    "provider_name": "Dr. Arjun Thompson",
+    "specialty": "Endocrinology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1105",
+    "provider_name": "Dr. Priya Singh",
+    "specialty": "Orthopedics",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1106",
+    "provider_name": "Dr. Daniel Anderson",
+    "specialty": "Neurology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1107",
+    "provider_name": "Dr. Alexander Kim",
+    "specialty": "Rheumatology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1108",
+    "provider_name": "Dr. Evelyn Clark",
+    "specialty": "Oncology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1109",
+    "provider_name": "Dr. Alexander Anderson",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1110",
+    "provider_name": "Dr. Abigail Patel",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1111",
+    "provider_name": "Dr. Benjamin Moore",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1112",
+    "provider_name": "Dr. Elena White",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1113",
+    "provider_name": "Dr. Emma Basu",
+    "specialty": "Nephrology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1114",
+    "provider_name": "Dr. Sophia Lopez",
+    "specialty": "Gastroenterology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1115",
+    "provider_name": "Dr. Liam Davis",
+    "specialty": "Pulmonology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1116",
+    "provider_name": "Dr. Ethan Clark",
+    "specialty": "Cardiology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1117",
+    "provider_name": "Dr. Ananya Lee",
+    "specialty": "Oncology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1118",
+    "provider_name": "Dr. Harper Clark",
+    "specialty": "Neurology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1119",
+    "provider_name": "Dr. Hannah Singh",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1120",
+    "provider_name": "Dr. Abigail Torres",
+    "specialty": "Oncology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1121",
+    "provider_name": "Dr. Daniel Hernandez",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1122",
+    "provider_name": "Dr. Mia Kim",
+    "specialty": "Oncology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1123",
+    "provider_name": "Dr. Liam Lopez",
+    "specialty": "Rheumatology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1124",
+    "provider_name": "Dr. Daniel Thompson",
+    "specialty": "Cardiology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1125",
+    "provider_name": "Dr. Noah White",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1126",
+    "provider_name": "Dr. Ravi Menon",
+    "specialty": "Oncology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1127",
+    "provider_name": "Dr. Priya Davis",
+    "specialty": "Pulmonology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1128",
+    "provider_name": "Dr. Elena Khan",
+    "specialty": "Endocrinology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1129",
+    "provider_name": "Dr. Marcus Patel",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1130",
+    "provider_name": "Dr. Abigail Torres",
+    "specialty": "Neurology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1131",
+    "provider_name": "Dr. Priya Taylor",
+    "specialty": "Oncology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1132",
+    "provider_name": "Dr. Harper Anderson",
+    "specialty": "ENT",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1133",
+    "provider_name": "Dr. Lucas Lewis",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1134",
+    "provider_name": "Dr. Emma Taylor",
+    "specialty": "Nephrology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1135",
+    "provider_name": "Dr. Amelia Anderson",
+    "specialty": "Cardiology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1136",
+    "provider_name": "Dr. Hannah Singh",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1137",
+    "provider_name": "Dr. Priya Basu",
+    "specialty": "Psychiatry",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1138",
+    "provider_name": "Dr. Ethan Singh",
+    "specialty": "Oncology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1139",
+    "provider_name": "Dr. Olivia Brown",
+    "specialty": "Neurology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1140",
+    "provider_name": "Dr. Marcus Thomas",
+    "specialty": "Psychiatry",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1141",
+    "provider_name": "Dr. Hannah Taylor",
+    "specialty": "ENT",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1142",
+    "provider_name": "Dr. Emma Thompson",
+    "specialty": "Gastroenterology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1143",
+    "provider_name": "Dr. Priya Taylor",
+    "specialty": "Oncology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1144",
+    "provider_name": "Dr. Ethan Qureshi",
+    "specialty": "Nephrology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1145",
+    "provider_name": "Dr. Emma Johnson",
+    "specialty": "Orthopedics",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1146",
+    "provider_name": "Dr. Ahmed Menon",
+    "specialty": "Dermatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1147",
+    "provider_name": "Dr. Alexander Jackson",
+    "specialty": "Pulmonology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1148",
+    "provider_name": "Dr. Emma Torres",
+    "specialty": "Gastroenterology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1149",
+    "provider_name": "Dr. Arjun Rao",
+    "specialty": "Oncology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1150",
+    "provider_name": "Dr. Liam Singh",
+    "specialty": "Rheumatology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1151",
+    "provider_name": "Dr. Ananya Khan",
+    "specialty": "Orthopedics",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1152",
+    "provider_name": "Dr. Henry Anderson",
+    "specialty": "Neurology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1153",
+    "provider_name": "Dr. Marcus Singh",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1154",
+    "provider_name": "Dr. Ahmed Jackson",
+    "specialty": "Dermatology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1155",
+    "provider_name": "Dr. Evelyn Lewis",
+    "specialty": "Endocrinology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1156",
+    "provider_name": "Dr. Ethan Thompson",
+    "specialty": "ENT",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1157",
+    "provider_name": "Dr. James Torres",
+    "specialty": "Endocrinology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1158",
+    "provider_name": "Dr. Liam Anderson",
+    "specialty": "Rheumatology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1159",
+    "provider_name": "Dr. Evelyn Walker",
+    "specialty": "Nephrology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1160",
+    "provider_name": "Dr. Fatima Taylor",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1161",
+    "provider_name": "Dr. Mia Torres",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1162",
+    "provider_name": "Dr. Noah Jackson",
+    "specialty": "Endocrinology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1163",
+    "provider_name": "Dr. Henry Hernandez",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1164",
+    "provider_name": "Dr. Alexander Thomas",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1165",
+    "provider_name": "Dr. Arjun Johnson",
+    "specialty": "Gastroenterology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1166",
+    "provider_name": "Dr. Marcus Jackson",
+    "specialty": "Dermatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1167",
+    "provider_name": "Dr. Isabella Menon",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1168",
+    "provider_name": "Dr. Amelia Williams",
+    "specialty": "Neurology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1169",
+    "provider_name": "Dr. Sophia Martin",
+    "specialty": "Nephrology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1170",
+    "provider_name": "Dr. Alexander Williams",
+    "specialty": "Cardiology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1171",
+    "provider_name": "Dr. Harper Torres",
+    "specialty": "Nephrology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1172",
+    "provider_name": "Dr. James Johnson",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-02",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1173",
+    "provider_name": "Dr. Sophia Thomas",
+    "specialty": "Orthopedics",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1174",
+    "provider_name": "Dr. Ahmed Jackson",
+    "specialty": "Neurology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1175",
+    "provider_name": "Dr. Arjun Kim",
+    "specialty": "Cardiology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1176",
+    "provider_name": "Dr. Abigail Jackson",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1177",
+    "provider_name": "Dr. Marcus Walker",
+    "specialty": "Oncology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1178",
+    "provider_name": "Dr. Abigail Martin",
+    "specialty": "Dermatology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1179",
+    "provider_name": "Dr. Noah Lopez",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1180",
+    "provider_name": "Dr. Ananya Lee",
+    "specialty": "Orthopedics",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1181",
+    "provider_name": "Dr. Liam Basu",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1182",
+    "provider_name": "Dr. Harper Torres",
+    "specialty": "Rheumatology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1183",
+    "provider_name": "Dr. Harper Qureshi",
+    "specialty": "Pulmonology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1184",
+    "provider_name": "Dr. Ethan Thompson",
+    "specialty": "Oncology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1185",
+    "provider_name": "Dr. Noah Qureshi",
+    "specialty": "Endocrinology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1186",
+    "provider_name": "Dr. Ravi Brown",
+    "specialty": "Gastroenterology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1187",
+    "provider_name": "Dr. Evelyn Qureshi",
+    "specialty": "Neurology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1188",
+    "provider_name": "Dr. Alexander Garcia",
+    "specialty": "Gastroenterology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1189",
+    "provider_name": "Dr. Marcus Qureshi",
+    "specialty": "ENT",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1190",
+    "provider_name": "Dr. Priya Martin",
+    "specialty": "Pulmonology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1191",
+    "provider_name": "Dr. Liam Davis",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1192",
+    "provider_name": "Dr. Amelia Qureshi",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1193",
+    "provider_name": "Dr. Aarav Moore",
+    "specialty": "Pulmonology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-14",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1194",
+    "provider_name": "Dr. Mason Lee",
+    "specialty": "Neurology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1195",
+    "provider_name": "Dr. Priya Hernandez",
+    "specialty": "Rheumatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1196",
+    "provider_name": "Dr. Aisha Jackson",
+    "specialty": "Gastroenterology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1197",
+    "provider_name": "Dr. Mason Clark",
+    "specialty": "Orthopedics",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1198",
+    "provider_name": "Dr. Hannah Thomas",
+    "specialty": "Nephrology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1199",
+    "provider_name": "Dr. Aisha Qureshi",
+    "specialty": "Oncology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1200",
+    "provider_name": "Dr. Hannah Garcia",
+    "specialty": "Pulmonology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1201",
+    "provider_name": "Dr. Fatima Moore",
+    "specialty": "Cardiology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1202",
+    "provider_name": "Dr. Mason Martin",
+    "specialty": "Endocrinology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1203",
+    "provider_name": "Dr. Mia Singh",
+    "specialty": "Neurology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1204",
+    "provider_name": "Dr. Elena Rao",
+    "specialty": "Neurology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1205",
+    "provider_name": "Dr. Sophia Rao",
+    "specialty": "Neurology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1206",
+    "provider_name": "Dr. Aisha Taylor",
+    "specialty": "Nephrology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1207",
+    "provider_name": "Dr. Evelyn Lewis",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1208",
+    "provider_name": "Dr. Lucas Taylor",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1209",
+    "provider_name": "Dr. Evelyn Clark",
+    "specialty": "Dermatology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1210",
+    "provider_name": "Dr. Aisha Qureshi",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1211",
+    "provider_name": "Dr. Ahmed Torres",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1212",
+    "provider_name": "Dr. Ananya Qureshi",
+    "specialty": "Neurology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1213",
+    "provider_name": "Dr. Aisha Thomas",
+    "specialty": "Orthopedics",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1214",
+    "provider_name": "Dr. Amelia Rao",
+    "specialty": "Dermatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1215",
+    "provider_name": "Dr. Lucas Khan",
+    "specialty": "Cardiology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1216",
+    "provider_name": "Dr. Ahmed Thompson",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1217",
+    "provider_name": "Dr. Daniel Singh",
+    "specialty": "Dermatology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1218",
+    "provider_name": "Dr. Alexander Rao",
+    "specialty": "Neurology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1219",
+    "provider_name": "Dr. Ethan Thomas",
+    "specialty": "Oncology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1220",
+    "provider_name": "Dr. Ahmed Khan",
+    "specialty": "Gastroenterology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1221",
+    "provider_name": "Dr. Evelyn Singh",
+    "specialty": "Psychiatry",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1222",
+    "provider_name": "Dr. Marcus Thompson",
+    "specialty": "Cardiology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1223",
+    "provider_name": "Dr. Lucas Moore",
+    "specialty": "Nephrology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1224",
+    "provider_name": "Dr. Lucas Moore",
+    "specialty": "Oncology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1225",
+    "provider_name": "Dr. Isabella Taylor",
+    "specialty": "Endocrinology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1226",
+    "provider_name": "Dr. Emma Anderson",
+    "specialty": "Pulmonology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1227",
+    "provider_name": "Dr. Liam Khan",
+    "specialty": "Endocrinology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1228",
+    "provider_name": "Dr. Priya Moore",
+    "specialty": "Psychiatry",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1229",
+    "provider_name": "Dr. Evelyn Taylor",
+    "specialty": "Endocrinology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1230",
+    "provider_name": "Dr. Lucas Clark",
+    "specialty": "Rheumatology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1231",
+    "provider_name": "Dr. Elena Kim",
+    "specialty": "Oncology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1232",
+    "provider_name": "Dr. Ravi Williams",
+    "specialty": "Oncology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1233",
+    "provider_name": "Dr. Hannah Lee",
+    "specialty": "Nephrology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1234",
+    "provider_name": "Dr. Ethan Garcia",
+    "specialty": "Neurology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1235",
+    "provider_name": "Dr. Isabella Brown",
+    "specialty": "ENT",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1236",
+    "provider_name": "Dr. Noah Lopez",
+    "specialty": "ENT",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1237",
+    "provider_name": "Dr. Mia Rao",
+    "specialty": "Rheumatology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1238",
+    "provider_name": "Dr. Hannah Lewis",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1239",
+    "provider_name": "Dr. Benjamin Miller",
+    "specialty": "ENT",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1240",
+    "provider_name": "Dr. Harper Williams",
+    "specialty": "Psychiatry",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1241",
+    "provider_name": "Dr. Sophia Hernandez",
+    "specialty": "Rheumatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1242",
+    "provider_name": "Dr. Hannah Moore",
+    "specialty": "Dermatology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1243",
+    "provider_name": "Dr. Emma Anderson",
+    "specialty": "Oncology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1244",
+    "provider_name": "Dr. Arjun Walker",
+    "specialty": "Nephrology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1245",
+    "provider_name": "Dr. Sophia Basu",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1246",
+    "provider_name": "Dr. Evelyn Thompson",
+    "specialty": "Orthopedics",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1247",
+    "provider_name": "Dr. Fatima Rao",
+    "specialty": "ENT",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1248",
+    "provider_name": "Dr. Fatima Anderson",
+    "specialty": "Psychiatry",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1249",
+    "provider_name": "Dr. Henry Thomas",
+    "specialty": "Endocrinology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1250",
+    "provider_name": "Dr. Emma Martin",
+    "specialty": "Gastroenterology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1251",
+    "provider_name": "Dr. Evelyn Patel",
+    "specialty": "Cardiology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1252",
+    "provider_name": "Dr. Harper Lee",
+    "specialty": "Rheumatology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1253",
+    "provider_name": "Dr. Amelia Walker",
+    "specialty": "Psychiatry",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1254",
+    "provider_name": "Dr. Ananya Sharma",
+    "specialty": "Gastroenterology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1255",
+    "provider_name": "Dr. Marcus Miller",
+    "specialty": "Psychiatry",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1256",
+    "provider_name": "Dr. Marcus Basu",
+    "specialty": "Rheumatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1257",
+    "provider_name": "Dr. Evelyn Qureshi",
+    "specialty": "Psychiatry",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1258",
+    "provider_name": "Dr. Elena Johnson",
+    "specialty": "Orthopedics",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1259",
+    "provider_name": "Dr. Evelyn Basu",
+    "specialty": "Rheumatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1260",
+    "provider_name": "Dr. Henry Hernandez",
+    "specialty": "ENT",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1261",
+    "provider_name": "Dr. Lucas Torres",
+    "specialty": "Psychiatry",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1262",
+    "provider_name": "Dr. Ethan Taylor",
+    "specialty": "Pulmonology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1263",
+    "provider_name": "Dr. Henry Davis",
+    "specialty": "Psychiatry",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1264",
+    "provider_name": "Dr. Fatima Martin",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1265",
+    "provider_name": "Dr. Daniel Thompson",
+    "specialty": "ENT",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1266",
+    "provider_name": "Dr. Emma Walker",
+    "specialty": "Psychiatry",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1267",
+    "provider_name": "Dr. Mason Qureshi",
+    "specialty": "Orthopedics",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1268",
+    "provider_name": "Dr. Emma Torres",
+    "specialty": "Neurology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1269",
+    "provider_name": "Dr. Ravi Brown",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1270",
+    "provider_name": "Dr. Henry Kim",
+    "specialty": "Psychiatry",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1271",
+    "provider_name": "Dr. Ananya Martin",
+    "specialty": "Oncology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1272",
+    "provider_name": "Dr. Emma Davis",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-14",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1273",
+    "provider_name": "Dr. Marcus Johnson",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1274",
+    "provider_name": "Dr. Abigail Torres",
+    "specialty": "Orthopedics",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1275",
+    "provider_name": "Dr. Emma Garcia",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1276",
+    "provider_name": "Dr. Harper Basu",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1277",
+    "provider_name": "Dr. Mason Patel",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1278",
+    "provider_name": "Dr. Emma Qureshi",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1279",
+    "provider_name": "Dr. Harper Kim",
+    "specialty": "Rheumatology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1280",
+    "provider_name": "Dr. Hannah Walker",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1281",
+    "provider_name": "Dr. Fatima Lopez",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1282",
+    "provider_name": "Dr. Emma Torres",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1283",
+    "provider_name": "Dr. Evelyn Jackson",
+    "specialty": "Oncology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1284",
+    "provider_name": "Dr. Ahmed Sharma",
+    "specialty": "Nephrology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1285",
+    "provider_name": "Dr. Aisha Jackson",
+    "specialty": "Gastroenterology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-01",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1286",
+    "provider_name": "Dr. Aisha Thomas",
+    "specialty": "Nephrology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1287",
+    "provider_name": "Dr. Arjun Davis",
+    "specialty": "Nephrology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1288",
+    "provider_name": "Dr. Emma Garcia",
+    "specialty": "Dermatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1289",
+    "provider_name": "Dr. Ethan Thompson",
+    "specialty": "ENT",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1290",
+    "provider_name": "Dr. Liam Anderson",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1291",
+    "provider_name": "Dr. James Walker",
+    "specialty": "Cardiology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1292",
+    "provider_name": "Dr. Harper Walker",
+    "specialty": "ENT",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1293",
+    "provider_name": "Dr. Amelia Thompson",
+    "specialty": "Orthopedics",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1294",
+    "provider_name": "Dr. Mason Rao",
+    "specialty": "Psychiatry",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1295",
+    "provider_name": "Dr. Evelyn Taylor",
+    "specialty": "Nephrology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-11",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1296",
+    "provider_name": "Dr. Priya Jackson",
+    "specialty": "Dermatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1297",
+    "provider_name": "Dr. Amelia Singh",
+    "specialty": "Dermatology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1298",
+    "provider_name": "Dr. Benjamin Taylor",
+    "specialty": "Orthopedics",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1299",
+    "provider_name": "Dr. James Clark",
+    "specialty": "Dermatology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1300",
+    "provider_name": "Dr. Arjun Moore",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-14",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1301",
+    "provider_name": "Dr. Alexander Walker",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1302",
+    "provider_name": "Dr. Ethan Davis",
+    "specialty": "Cardiology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1303",
+    "provider_name": "Dr. Elena Walker",
+    "specialty": "Psychiatry",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1304",
+    "provider_name": "Dr. Henry Qureshi",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1305",
+    "provider_name": "Dr. Marcus Kim",
+    "specialty": "Oncology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1306",
+    "provider_name": "Dr. Abigail Khan",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1307",
+    "provider_name": "Dr. Abigail Kim",
+    "specialty": "Nephrology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1308",
+    "provider_name": "Dr. Abigail Rao",
+    "specialty": "Orthopedics",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1309",
+    "provider_name": "Dr. Olivia Kim",
+    "specialty": "Gastroenterology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1310",
+    "provider_name": "Dr. Aisha Lopez",
+    "specialty": "Cardiology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1311",
+    "provider_name": "Dr. Ananya Qureshi",
+    "specialty": "Orthopedics",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1312",
+    "provider_name": "Dr. Lucas Patel",
+    "specialty": "Rheumatology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-02",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1313",
+    "provider_name": "Dr. Aarav Lopez",
+    "specialty": "Psychiatry",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1314",
+    "provider_name": "Dr. Emma Davis",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1315",
+    "provider_name": "Dr. Isabella Rao",
+    "specialty": "Gastroenterology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1316",
+    "provider_name": "Dr. Mason Thomas",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1317",
+    "provider_name": "Dr. Amelia Clark",
+    "specialty": "Oncology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1318",
+    "provider_name": "Dr. Arjun Jackson",
+    "specialty": "ENT",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1319",
+    "provider_name": "Dr. Fatima Khan",
+    "specialty": "Psychiatry",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1320",
+    "provider_name": "Dr. Daniel Khan",
+    "specialty": "Gastroenterology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1321",
+    "provider_name": "Dr. Daniel Williams",
+    "specialty": "Pulmonology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1322",
+    "provider_name": "Dr. Amelia Basu",
+    "specialty": "Psychiatry",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1323",
+    "provider_name": "Dr. James Taylor",
+    "specialty": "Endocrinology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1324",
+    "provider_name": "Dr. Mason Moore",
+    "specialty": "Dermatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1325",
+    "provider_name": "Dr. Ethan Singh",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-11",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1326",
+    "provider_name": "Dr. Amelia Menon",
+    "specialty": "ENT",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1327",
+    "provider_name": "Dr. Harper Moore",
+    "specialty": "Pulmonology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1328",
+    "provider_name": "Dr. Henry Clark",
+    "specialty": "Dermatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1329",
+    "provider_name": "Dr. Henry Williams",
+    "specialty": "Rheumatology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1330",
+    "provider_name": "Dr. Hannah Williams",
+    "specialty": "Psychiatry",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1331",
+    "provider_name": "Dr. Liam Anderson",
+    "specialty": "Pulmonology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1332",
+    "provider_name": "Dr. Ethan White",
+    "specialty": "Endocrinology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-09",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1333",
+    "provider_name": "Dr. Alexander Brown",
+    "specialty": "Oncology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1334",
+    "provider_name": "Dr. Ananya Walker",
+    "specialty": "Nephrology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-21",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1335",
+    "provider_name": "Dr. Mia Walker",
+    "specialty": "Psychiatry",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-15",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1336",
+    "provider_name": "Dr. Ravi White",
+    "specialty": "Rheumatology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1337",
+    "provider_name": "Dr. Daniel Lewis",
+    "specialty": "Orthopedics",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1338",
+    "provider_name": "Dr. Harper Singh",
+    "specialty": "Pulmonology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1339",
+    "provider_name": "Dr. Liam Qureshi",
+    "specialty": "Pulmonology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1340",
+    "provider_name": "Dr. Harper Walker",
+    "specialty": "Oncology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1341",
+    "provider_name": "Dr. Hannah Taylor",
+    "specialty": "ENT",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1342",
+    "provider_name": "Dr. Ravi Torres",
+    "specialty": "ENT",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1343",
+    "provider_name": "Dr. Mason Lopez",
+    "specialty": "Psychiatry",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1344",
+    "provider_name": "Dr. Hannah Torres",
+    "specialty": "Rheumatology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1345",
+    "provider_name": "Dr. Ethan Jackson",
+    "specialty": "Endocrinology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1346",
+    "provider_name": "Dr. Marcus Brown",
+    "specialty": "Dermatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1347",
+    "provider_name": "Dr. Noah Thomas",
+    "specialty": "Cardiology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1348",
+    "provider_name": "Dr. Ravi Johnson",
+    "specialty": "ENT",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-23",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1349",
+    "provider_name": "Dr. Henry Jackson",
+    "specialty": "Oncology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1350",
+    "provider_name": "Dr. Ahmed Walker",
+    "specialty": "Orthopedics",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1351",
+    "provider_name": "Dr. Hannah Menon",
+    "specialty": "Endocrinology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1352",
+    "provider_name": "Dr. Sophia Thompson",
+    "specialty": "Endocrinology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1353",
+    "provider_name": "Dr. Emma Moore",
+    "specialty": "Gastroenterology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1354",
+    "provider_name": "Dr. Priya Lee",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1355",
+    "provider_name": "Dr. Elena Lee",
+    "specialty": "Dermatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1356",
+    "provider_name": "Dr. Ravi Clark",
+    "specialty": "Psychiatry",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1357",
+    "provider_name": "Dr. Olivia Hernandez",
+    "specialty": "Oncology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1358",
+    "provider_name": "Dr. Liam Brown",
+    "specialty": "Nephrology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1359",
+    "provider_name": "Dr. Olivia Williams",
+    "specialty": "Rheumatology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1360",
+    "provider_name": "Dr. Henry Thomas",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-05",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1361",
+    "provider_name": "Dr. Ananya Basu",
+    "specialty": "Cardiology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-04",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1362",
+    "provider_name": "Dr. Harper Anderson",
+    "specialty": "Gastroenterology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1363",
+    "provider_name": "Dr. Ravi Jackson",
+    "specialty": "Neurology",
+    "location": "Arlington, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1364",
+    "provider_name": "Dr. Abigail Moore",
+    "specialty": "Dermatology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1365",
+    "provider_name": "Dr. Abigail Anderson",
+    "specialty": "Dermatology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1366",
+    "provider_name": "Dr. Daniel Patel",
+    "specialty": "Pulmonology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1367",
+    "provider_name": "Dr. Ananya Taylor",
+    "specialty": "ENT",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1368",
+    "provider_name": "Dr. Harper Williams",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1369",
+    "provider_name": "Dr. Abigail Sharma",
+    "specialty": "Psychiatry",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1370",
+    "provider_name": "Dr. James Rao",
+    "specialty": "Orthopedics",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-06",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1371",
+    "provider_name": "Dr. Abigail Lee",
+    "specialty": "Rheumatology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1372",
+    "provider_name": "Dr. Emma Davis",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1373",
+    "provider_name": "Dr. Arjun Davis",
+    "specialty": "Pulmonology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1374",
+    "provider_name": "Dr. Amelia Qureshi",
+    "specialty": "Pulmonology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-08",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1375",
+    "provider_name": "Dr. Aarav Brown",
+    "specialty": "Oncology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-30",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1376",
+    "provider_name": "Dr. Aarav Sharma",
+    "specialty": "Psychiatry",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1377",
+    "provider_name": "Dr. Benjamin Williams",
+    "specialty": "Orthopedics",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1378",
+    "provider_name": "Dr. Lucas Miller",
+    "specialty": "Pulmonology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-09-04",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1379",
+    "provider_name": "Dr. Abigail Sharma",
+    "specialty": "Rheumatology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Kaiser",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1380",
+    "provider_name": "Dr. Ravi Kim",
+    "specialty": "Neurology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-08",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1381",
+    "provider_name": "Dr. Ahmed Martin",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-17",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1382",
+    "provider_name": "Dr. Henry Walker",
+    "specialty": "Rheumatology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-15",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1383",
+    "provider_name": "Dr. Evelyn Walker",
+    "specialty": "Dermatology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Skin lesion evaluation, eczema, and chronic dermatologic conditions."
+  },
+  {
+    "provider_id": "P1384",
+    "provider_name": "Dr. Emma Taylor",
+    "specialty": "Oncology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-22",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1385",
+    "provider_name": "Dr. Liam Martin",
+    "specialty": "Rheumatology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1386",
+    "provider_name": "Dr. Abigail Williams",
+    "specialty": "Cardiology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1387",
+    "provider_name": "Dr. Ethan Qureshi",
+    "specialty": "Psychiatry",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1388",
+    "provider_name": "Dr. Noah Thomas",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-27",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1389",
+    "provider_name": "Dr. Abigail Qureshi",
+    "specialty": "ENT",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Humana",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-29",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1390",
+    "provider_name": "Dr. Ahmed Khan",
+    "specialty": "Orthopedics",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1391",
+    "provider_name": "Dr. Alexander Walker",
+    "specialty": "Cardiology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1392",
+    "provider_name": "Dr. Elena Sharma",
+    "specialty": "Neurology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1393",
+    "provider_name": "Dr. Ahmed Miller",
+    "specialty": "Endocrinology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1394",
+    "provider_name": "Dr. Elena Lewis",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "Humana",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-09-07",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1395",
+    "provider_name": "Dr. Olivia Moore",
+    "specialty": "Neurology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-03",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1396",
+    "provider_name": "Dr. Aarav Patel",
+    "specialty": "Cardiology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-26",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1397",
+    "provider_name": "Dr. Daniel Lee",
+    "specialty": "Neurology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1398",
+    "provider_name": "Dr. Ananya Williams",
+    "specialty": "Rheumatology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross"
+    ],
+    "next_available_date": "2026-08-16",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1399",
+    "provider_name": "Dr. Marcus Lopez",
+    "specialty": "Cardiology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-20",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1400",
+    "provider_name": "Dr. Hannah Khan",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1401",
+    "provider_name": "Dr. Sophia Thomas",
+    "specialty": "Rheumatology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-02",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1402",
+    "provider_name": "Dr. Hannah Basu",
+    "specialty": "Orthopedics",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1403",
+    "provider_name": "Dr. Mason Clark",
+    "specialty": "Gastroenterology",
+    "location": "El Paso, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser"
+    ],
+    "next_available_date": "2026-09-13",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1404",
+    "provider_name": "Dr. Amelia Khan",
+    "specialty": "Psychiatry",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Mood, anxiety, and behavioral health medication management."
+  },
+  {
+    "provider_id": "P1405",
+    "provider_name": "Dr. Benjamin Patel",
+    "specialty": "Neurology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-08-28",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1406",
+    "provider_name": "Dr. Elena Miller",
+    "specialty": "Gastroenterology",
+    "location": "Irving, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1407",
+    "provider_name": "Dr. Ravi Rao",
+    "specialty": "Nephrology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Kaiser",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1408",
+    "provider_name": "Dr. Mason Thomas",
+    "specialty": "Pulmonology",
+    "location": "Plano, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "Kaiser",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-06",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  },
+  {
+    "provider_id": "P1409",
+    "provider_name": "Dr. Sophia Lee",
+    "specialty": "Rheumatology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-31",
+    "bio": "Autoimmune and inflammatory joint disorder care."
+  },
+  {
+    "provider_id": "P1410",
+    "provider_name": "Dr. Mia Jackson",
+    "specialty": "Endocrinology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-18",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1411",
+    "provider_name": "Dr. Arjun Johnson",
+    "specialty": "Endocrinology",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna",
+      "Molina"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1412",
+    "provider_name": "Dr. Elena Taylor",
+    "specialty": "Gastroenterology",
+    "location": "Frisco, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Cigna",
+      "Humana"
+    ],
+    "next_available_date": "2026-08-13",
+    "bio": "Digestive disorders, liver function, and endoscopy follow-up."
+  },
+  {
+    "provider_id": "P1413",
+    "provider_name": "Dr. Aarav Martin",
+    "specialty": "Oncology",
+    "location": "Round Rock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-10",
+    "bio": "Cancer screening workflows, treatment planning, and survivorship support."
+  },
+  {
+    "provider_id": "P1414",
+    "provider_name": "Dr. Emma Sharma",
+    "specialty": "Cardiology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-25",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1415",
+    "provider_name": "Dr. Priya Qureshi",
+    "specialty": "ENT",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Molina",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-12",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1416",
+    "provider_name": "Dr. Harper Singh",
+    "specialty": "Neurology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Molina",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1417",
+    "provider_name": "Dr. Daniel Lewis",
+    "specialty": "Nephrology",
+    "location": "Lubbock, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Kaiser",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1418",
+    "provider_name": "Dr. Sophia Davis",
+    "specialty": "Neurology",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Humana",
+      "Oscar"
+    ],
+    "next_available_date": "2026-09-10",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1419",
+    "provider_name": "Dr. Alexander Taylor",
+    "specialty": "ENT",
+    "location": "Fort Worth, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Humana",
+      "Molina",
+      "Oscar",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-19",
+    "bio": "Sinus, hearing, and throat disorder diagnosis and treatment."
+  },
+  {
+    "provider_id": "P1420",
+    "provider_name": "Dr. Amelia Lee",
+    "specialty": "Nephrology",
+    "location": "San Antonio, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "Kaiser",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-24",
+    "bio": "Kidney disease management, electrolyte balance, and hypertension."
+  },
+  {
+    "provider_id": "P1001A",
+    "provider_name": "Dr. Elena Torres",
+    "specialty": "Cardiology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-05",
+    "bio": "Heart rhythm management, preventive cardiology, and chest pain diagnostics."
+  },
+  {
+    "provider_id": "P1002A",
+    "provider_name": "Dr. Ravi Menon",
+    "specialty": "Endocrinology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-09",
+    "bio": "Diabetes, thyroid disorders, and hormonal care pathways."
+  },
+  {
+    "provider_id": "P1003A",
+    "provider_name": "Dr. Priya Sharma",
+    "specialty": "Neurology",
+    "location": "Dallas, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna",
+      "UnitedHealthcare"
+    ],
+    "next_available_date": "2026-08-03",
+    "bio": "Migraine, seizure, neuropathy, and neurodegenerative evaluations."
+  },
+  {
+    "provider_id": "P1004A",
+    "provider_name": "Dr. Marcus Lee",
+    "specialty": "Orthopedics",
+    "location": "Houston, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "Aetna",
+      "BlueCross"
+    ],
+    "next_available_date": "2026-08-12",
+    "bio": "Musculoskeletal injury care, fracture management, and sports medicine."
+  },
+  {
+    "provider_id": "P1005A",
+    "provider_name": "Dr. Hannah Kim",
+    "specialty": "Pulmonology",
+    "location": "Austin, TX",
+    "state": "TX",
+    "insurance_networks": [
+      "BlueCross",
+      "Cigna"
+    ],
+    "next_available_date": "2026-08-07",
+    "bio": "Asthma, COPD, and respiratory disorder management."
+  }
+]

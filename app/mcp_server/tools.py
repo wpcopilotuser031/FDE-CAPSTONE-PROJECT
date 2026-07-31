@@ -1,0 +1,198 @@
+from __future__ import annotations
+
+from datetime import UTC, datetime
+from typing import Any
+
+from app.agents.llm_gateway import LLMGatewayError, call_llm_json
+from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
+from app.config import DATA_DIR
+from app.data_loader import load_json
+from app.rag.provider_index import ProviderIndex
+
+_provider_index = ProviderIndex()
+
+
+def map_diagnosis_to_specialties(diagnosis: str) -> list[str]:
+    mapping = load_json(DATA_DIR / "diagnosis_specialties.json")
+    diagnosis_lower = diagnosis.strip().lower()
+
+    specialties = set(mapping.get(diagnosis_lower, []))
+    if not specialties:
+        for key, mapped_specialties in mapping.items():
+            if key in diagnosis_lower:
+                specialties.update(mapped_specialties)
+
+    return sorted(specialties)
+
+
+def infer_specialties_llm_assisted(diagnosis: str) -> tuple[list[str], str]:
+    """Use LLM to infer specialty candidates, then validate against known specialties."""
+
+    mapping = load_json(DATA_DIR / "diagnosis_specialties.json")
+    allowed_specialties = sorted({specialty for values in mapping.values() for specialty in values})
+
+    system_prompt = (
+        "You are a clinical triage assistant. "
+        "Return strict JSON with key specialties as an array of strings. "
+        "Only choose from this allowed set: "
+        + ", ".join(allowed_specialties)
+        + "."
+    )
+    user_prompt = (
+        "Infer specialty options for this diagnosis text. "
+        f"Diagnosis: {diagnosis}"
+    )
+
+    response_json = call_llm_json(system_prompt=system_prompt, user_prompt=user_prompt)
+    raw_specialties = response_json.get("specialties", [])
+    if not isinstance(raw_specialties, list):
+        raise LLMGatewayError("LLM specialties payload is invalid.")
+
+    normalized = []
+    allowed_lookup = {specialty.lower(): specialty for specialty in allowed_specialties}
+    for item in raw_specialties:
+        value = str(item).strip()
+        canonical = allowed_lookup.get(value.lower())
+        if canonical and canonical not in normalized:
+            normalized.append(canonical)
+
+    if not normalized:
+        raise LLMGatewayError(
+            "LLM did not return supported specialties. "
+            f"Diagnosis='{diagnosis}'. Allowed specialties: {', '.join(allowed_specialties)}"
+        )
+
+    return normalized, "llm"
+
+
+def retrieve_candidate_providers(
+    diagnosis: str,
+    location: str,
+    max_candidates: int = 10,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+) -> list[dict[str, Any]]:
+    if mcp_client:
+        return mcp_client.provider_candidates(diagnosis, location, max_candidates=max_candidates)
+
+    query = f"{diagnosis} specialists in {location}"
+    return _provider_index.query(query, top_k=max_candidates)
+
+
+def check_provider_in_network(
+    provider_id: str,
+    insurance_plan: str,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+) -> bool:
+    if mcp_client:
+        return mcp_client.insurance_eligibility(provider_id, insurance_plan)
+
+    networks = load_json(DATA_DIR / "insurance_networks.json")
+    eligible_providers = set(networks.get(insurance_plan, []))
+    return provider_id in eligible_providers
+
+
+def days_until(date_str: str) -> int:
+    target = datetime.strptime(date_str, "%Y-%m-%d").date()
+    today = datetime.now(UTC).date()
+    return max((target - today).days, 0)
+
+
+def score_provider(
+    provider: dict[str, Any],
+    specialties: list[str],
+    requested_location: str,
+    insurance_plan: str,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+) -> float:
+    score = 0.0
+
+    if provider["specialty"] in specialties:
+        score += 0.45
+    if requested_location.lower().split(",")[0].strip() in provider["location"].lower():
+        score += 0.25
+    if check_provider_in_network(provider["provider_id"], insurance_plan, mcp_client=mcp_client):
+        score += 0.2
+
+    wait_days = days_until(provider["next_available_date"])
+    score += max(0.0, 0.1 - (wait_days * 0.01))
+    return round(score, 4)
+
+
+def score_provider_with_breakdown(
+    provider: dict[str, Any],
+    specialties: list[str],
+    requested_location: str,
+    insurance_plan: str,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+    accepts_insurance: bool | None = None,
+) -> tuple[float, dict[str, float]]:
+    specialty_component = 0.45 if provider["specialty"] in specialties else 0.0
+    location_component = 0.25 if requested_location.lower().split(",")[0].strip() in provider["location"].lower() else 0.0
+    in_network = accepts_insurance
+    if in_network is None:
+        in_network = check_provider_in_network(
+            provider["provider_id"],
+            insurance_plan,
+            mcp_client=mcp_client,
+        )
+    insurance_component = 0.2 if in_network else 0.0
+    wait_days = days_until(provider["next_available_date"])
+    wait_time_component = max(0.0, 0.1 - (wait_days * 0.01))
+
+    total = round(specialty_component + location_component + insurance_component + wait_time_component, 4)
+    return total, {
+        "specialty_component": round(specialty_component, 4),
+        "location_component": round(location_component, 4),
+        "insurance_component": round(insurance_component, 4),
+        "wait_time_component": round(wait_time_component, 4),
+    }
+
+
+def build_recommendation_rationale(
+    provider: dict[str, Any],
+    specialties: list[str],
+    insurance_plan: str,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+) -> str:
+    reasons: list[str] = []
+
+    if provider["specialty"] in specialties:
+        reasons.append("specialty match")
+    if check_provider_in_network(provider["provider_id"], insurance_plan, mcp_client=mcp_client):
+        reasons.append("in-network")
+    reasons.append(f"next availability {provider['next_available_date']}")
+    return ", ".join(reasons)
+
+
+def build_recommendation_rationale_llm_assisted(
+    provider: dict[str, Any],
+    specialties: list[str],
+    insurance_plan: str,
+    mcp_client: SpecialistRecommendationMCPClient | None = None,
+    accepts_insurance: bool | None = None,
+) -> tuple[str, str]:
+    system_prompt = (
+        "You are a referral recommendation assistant. "
+        "Return strict JSON with key rationale. "
+        "Keep rationale short, factual, and under 22 words."
+    )
+    in_network = accepts_insurance
+    if in_network is None:
+        in_network = check_provider_in_network(provider["provider_id"], insurance_plan, mcp_client=mcp_client)
+
+    user_prompt = (
+        "Draft recommendation rationale for this provider:\n"
+        f"provider_name={provider['provider_name']}\n"
+        f"specialty={provider['specialty']}\n"
+        f"location={provider['location']}\n"
+        f"next_available_date={provider['next_available_date']}\n"
+        f"requested_specialties={specialties}\n"
+        f"insurance_plan={insurance_plan}\n"
+        f"is_in_network={in_network}"
+    )
+
+    response_json = call_llm_json(system_prompt=system_prompt, user_prompt=user_prompt, max_tokens=120)
+    rationale = str(response_json.get("rationale", "")).strip()
+    if not rationale:
+        raise LLMGatewayError("LLM rationale payload is empty.")
+    return rationale, "llm"

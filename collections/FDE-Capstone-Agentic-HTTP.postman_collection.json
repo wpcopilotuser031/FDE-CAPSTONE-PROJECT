@@ -1,0 +1,329 @@
+{
+  "info": {
+    "name": "FDE Capstone - Agentic HTTP E2E",
+    "_postman_id": "0f8cf123-4d03-4f8a-9f99-fde-capstone-agentic-http",
+    "description": "End-to-end API collection for split-port architecture: backend (8090), agent runtime (8091), MCP gateway (8092). Includes JSON-RPC entrypoint, agent-card scenarios, direct agent invocation, MCP calls, and RBAC allow/deny checks.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health Checks",
+      "item": [
+        {
+          "name": "Backend Health",
+          "request": {
+            "method": "GET",
+            "url": "{{backend_base_url}}/health"
+          }
+        },
+        {
+          "name": "Agent Runtime Health",
+          "request": {
+            "method": "GET",
+            "url": "{{agent_base_url}}/health"
+          }
+        },
+        {
+          "name": "MCP Gateway Health",
+          "request": {
+            "method": "GET",
+            "url": "{{mcp_base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. JSON-RPC Entry Point",
+      "item": [
+        {
+          "name": "RPC - agents.cards",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": \"rpc-cards-1\",\n  \"method\": \"agents.cards\",\n  \"params\": {}\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/capability-router"
+          }
+        },
+        {
+          "name": "RPC - capability.route (query driven)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": \"rpc-route-query-1\",\n  \"method\": \"capability.route\",\n  \"params\": {\n    \"query\": \"Recommend specialist for diagnosis: chest pain, location: Austin, TX, insurance: Aetna\",\n    \"payload\": {\n      \"max_results\": 3\n    }\n  }\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/capability-router"
+          }
+        },
+        {
+          "name": "RPC - capability.route (explicit capability)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": \"rpc-route-explicit-1\",\n  \"method\": \"capability.route\",\n  \"params\": {\n    \"capability\": \"provider_discovery\",\n    \"payload\": {\n      \"diagnosis\": \"chest pain\",\n      \"location\": \"Austin, TX\",\n      \"max_results\": 2\n    }\n  }\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/capability-router"
+          }
+        },
+        {
+          "name": "RPC - Invalid Version (expect error)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"1.0\",\n  \"id\": \"rpc-invalid-version\",\n  \"method\": \"agents.cards\",\n  \"params\": {}\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/capability-router"
+          }
+        },
+        {
+          "name": "RPC - Unknown Method (expect error)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": \"rpc-unknown-method\",\n  \"method\": \"agents.unknown\",\n  \"params\": {}\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/capability-router"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Direct Backend API",
+      "item": [
+        {
+          "name": "recommend-specialists",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": \"PT-001\",\n  \"diagnosis\": \"chest pain\",\n  \"location\": \"Austin, TX\",\n  \"insurance_plan\": \"Aetna\",\n  \"max_results\": 3\n}"
+            },
+            "url": "{{backend_base_url}}/api/v1/recommend-specialists"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Agent Runtime Direct",
+      "item": [
+        {
+          "name": "specialist_recommendation invoke",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosis\": \"chest pain\",\n  \"location\": \"Austin, TX\",\n  \"insurance_plan\": \"Aetna\",\n  \"max_results\": 3\n}"
+            },
+            "url": "{{agent_base_url}}/api/v1/agents/specialist_recommendation/invoke"
+          }
+        },
+        {
+          "name": "referral_triage invoke",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosis\": \"persistent chest pain\"\n}"
+            },
+            "url": "{{agent_base_url}}/api/v1/agents/referral_triage/invoke"
+          }
+        },
+        {
+          "name": "provider_discovery invoke",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosis\": \"chest pain\",\n  \"location\": \"Austin, TX\",\n  \"max_results\": 3\n}"
+            },
+            "url": "{{agent_base_url}}/api/v1/agents/provider_discovery/invoke"
+          }
+        },
+        {
+          "name": "insurance_validation invoke",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider_id\": \"P-100\",\n  \"insurance_plan\": \"Aetna\"\n}"
+            },
+            "url": "{{agent_base_url}}/api/v1/agents/insurance_validation/invoke"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. MCP Gateway + RBAC",
+      "item": [
+        {
+          "name": "RBAC Allow - diagnosis_to_specialty",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tool_name\": \"diagnosis_to_specialty\",\n  \"arguments\": {\n    \"diagnosis\": \"chest pain\",\n    \"caller_role\": \"specialist_recommendation\",\n    \"internal_key\": \"{{mcp_internal_key}}\"\n  }\n}"
+            },
+            "url": "{{mcp_base_url}}/api/v1/mcp/call"
+          }
+        },
+        {
+          "name": "RBAC Allow - provider_candidates",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tool_name\": \"provider_candidates\",\n  \"arguments\": {\n    \"diagnosis\": \"chest pain\",\n    \"location\": \"Austin, TX\",\n    \"max_candidates\": 3,\n    \"caller_role\": \"provider_discovery\",\n    \"internal_key\": \"{{mcp_internal_key}}\"\n  }\n}"
+            },
+            "url": "{{mcp_base_url}}/api/v1/mcp/call"
+          }
+        },
+        {
+          "name": "RBAC Allow - insurance_eligibility",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tool_name\": \"insurance_eligibility\",\n  \"arguments\": {\n    \"provider_id\": \"P-100\",\n    \"insurance_plan\": \"Aetna\",\n    \"caller_role\": \"insurance_validation\",\n    \"internal_key\": \"{{mcp_internal_key}}\"\n  }\n}"
+            },
+            "url": "{{mcp_base_url}}/api/v1/mcp/call"
+          }
+        },
+        {
+          "name": "RBAC Deny - wrong key (expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tool_name\": \"diagnosis_to_specialty\",\n  \"arguments\": {\n    \"diagnosis\": \"chest pain\",\n    \"caller_role\": \"specialist_recommendation\",\n    \"internal_key\": \"WRONG-KEY\"\n  }\n}"
+            },
+            "url": "{{mcp_base_url}}/api/v1/mcp/call"
+          }
+        },
+        {
+          "name": "RBAC Deny - disallowed role for tool (expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tool_name\": \"diagnosis_to_specialty\",\n  \"arguments\": {\n    \"diagnosis\": \"chest pain\",\n    \"caller_role\": \"insurance_validation\",\n    \"internal_key\": \"{{mcp_internal_key}}\"\n  }\n}"
+            },
+            "url": "{{mcp_base_url}}/api/v1/mcp/call"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "backend_base_url",
+      "value": "http://127.0.0.1:8090"
+    },
+    {
+      "key": "agent_base_url",
+      "value": "http://127.0.0.1:8091"
+    },
+    {
+      "key": "mcp_base_url",
+      "value": "http://127.0.0.1:8092"
+    },
+    {
+      "key": "mcp_internal_key",
+      "value": "capstone-internal-key"
+    }
+  ]
+}
