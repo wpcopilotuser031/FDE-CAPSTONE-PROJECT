@@ -1,0 +1,16 @@
+__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+.env
+.git
+.gitignore
+.dockerignore
+run/
+*.log
+*.sqlite3
+__pycache__/
+*.swp
