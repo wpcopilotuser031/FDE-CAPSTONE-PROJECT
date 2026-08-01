@@ -1,0 +1,36 @@
+services:
+  backend:
+    build: .
+    container_name: referral-backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8090
+    ports:
+      - "8090:8090"
+    environment:
+      - USE_MCP_TOOLS=true
+    restart: unless-stopped
+
+  agent_runtime:
+    build: .
+    container_name: referral-agent-runtime
+    command: uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091
+    ports:
+      - "8091:8091"
+    restart: unless-stopped
+
+  mcp_gateway:
+    build: .
+    container_name: referral-mcp-gateway
+    command: uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092
+    ports:
+      - "8092:8092"
+    restart: unless-stopped
+
+  ui:
+    image: nginx:stable-alpine
+    container_name: referral-ui
+    volumes:
+      - ./ui:/usr/share/nginx/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8093:80"
+    restart: unless-stopped

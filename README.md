@@ -166,12 +166,31 @@ Optional overrides:
 
 ## Docker
 
-Build:
-- docker build -t referral-platform:phase1 .
+Use `docker-compose` to build and run all services (backend, agent runtime, MCP gateway, and UI):
 
-Run:
-- docker run --rm -p 8000:8000 referral-platform:phase1
-- docker run --rm -p 8090:8090 referral-platform:phase1
+```bash
+./scripts/docker_build_and_run.sh
+```
+
+This will build the image and start the following services:
+
+- Backend API: http://127.0.0.1:8090
+- Agent runtime: http://127.0.0.1:8091
+- MCP gateway: http://127.0.0.1:8092
+- UI (nginx): http://127.0.0.1:8093
+
+If you prefer to run only the backend container directly:
+
+```bash
+docker build -t referral-platform:phase1 .
+docker run --rm -p 8090:8090 referral-platform:phase1
+```
+
+Open the standalone UI at:
+
+```bash
+http://127.0.0.1:8093
+```
 
 ## Notes
 
