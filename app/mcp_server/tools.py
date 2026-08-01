@@ -125,9 +125,18 @@ def score_provider_with_breakdown(
     insurance_plan: str,
     mcp_client: SpecialistRecommendationMCPClient | None = None,
     accepts_insurance: bool | None = None,
+    urgency: str = "Routine",
 ) -> tuple[float, dict[str, float]]:
-    specialty_component = 0.45 if provider["specialty"] in specialties else 0.0
-    location_component = 0.25 if requested_location.lower().split(",")[0].strip() in provider["location"].lower() else 0.0
+    # Weight table: higher urgency shifts weight toward availability (wait time).
+    _urgency_weights = {
+        "Urgent":   {"specialty": 0.35, "location": 0.15, "insurance": 0.15, "wait_max": 0.35, "wait_decay": 0.035},
+        "Priority": {"specialty": 0.40, "location": 0.20, "insurance": 0.20, "wait_max": 0.20, "wait_decay": 0.020},
+        "Routine":  {"specialty": 0.45, "location": 0.25, "insurance": 0.20, "wait_max": 0.10, "wait_decay": 0.010},
+    }
+    weights = _urgency_weights.get(urgency, _urgency_weights["Routine"])
+
+    specialty_component = weights["specialty"] if provider["specialty"] in specialties else 0.0
+    location_component = weights["location"] if requested_location.lower().split(",")[0].strip() in provider["location"].lower() else 0.0
     in_network = accepts_insurance
     if in_network is None:
         in_network = check_provider_in_network(
@@ -135,9 +144,9 @@ def score_provider_with_breakdown(
             insurance_plan,
             mcp_client=mcp_client,
         )
-    insurance_component = 0.2 if in_network else 0.0
+    insurance_component = weights["insurance"] if in_network else 0.0
     wait_days = days_until(provider["next_available_date"])
-    wait_time_component = max(0.0, 0.1 - (wait_days * 0.01))
+    wait_time_component = max(0.0, weights["wait_max"] - (wait_days * weights["wait_decay"]))
 
     total = round(specialty_component + location_component + insurance_component + wait_time_component, 4)
     return total, {
@@ -145,6 +154,7 @@ def score_provider_with_breakdown(
         "location_component": round(location_component, 4),
         "insurance_component": round(insurance_component, 4),
         "wait_time_component": round(wait_time_component, 4),
+        "urgency": urgency,
     }
 
 

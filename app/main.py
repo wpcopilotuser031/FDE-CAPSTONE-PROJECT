@@ -57,6 +57,8 @@ def recommend_specialists(request: RecommendationRequest) -> RecommendationRespo
             location=request.location,
             insurance_plan=request.insurance_plan,
             max_results=request.max_results,
+            urgency=request.urgency,
+            preferred_window_days=request.preferred_window_days,
         )
     except LLMGatewayError as exc:
         raise HTTPException(status_code=503, detail=f"LLM dependency unavailable: {exc}") from exc

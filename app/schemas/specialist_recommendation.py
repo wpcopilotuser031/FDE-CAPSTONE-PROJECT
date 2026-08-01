@@ -7,6 +7,8 @@ class RecommendationRequest(BaseModel):
     location: str = Field(..., description="Patient preferred location, city/state")
     insurance_plan: str = Field(..., description="Insurance plan or payer network")
     max_results: int = Field(5, ge=1, le=10)
+    urgency: str = Field("Routine", description="Clinical urgency level: Routine, Priority, or Urgent")
+    preferred_window_days: int = Field(7, ge=1, le=90, description="Maximum acceptable days until first available appointment")
 
 
 class SpecialistRecommendation(BaseModel):
@@ -19,6 +21,7 @@ class SpecialistRecommendation(BaseModel):
     score: float
     score_breakdown: dict[str, float] = Field(default_factory=dict)
     rationale: str
+    exceeded_wait_window: bool = False
 
 
 class RecommendationDecisionTrace(BaseModel):

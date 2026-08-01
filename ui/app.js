@@ -108,9 +108,11 @@ function renderRecommendationWorkspace() {
 
     const recommendationCards = recs.map((rec, index) => {
       const badge = rec.accepts_insurance ? 'In-Network' : 'Out-of-Network';
+      const waitBadge = rec.exceeded_wait_window ? '<span class="badge-warn">⚠ Exceeds preferred window</span>' : '';
       return `
         <div class="workbench-card">
           <div class="card-header"><strong>#${index + 1} ${rec.provider_name || 'Unknown Provider'}</strong><span>${badge}</span></div>
+          ${waitBadge}
           <p>${rec.specialty || 'Unknown specialty'} | ${rec.location || 'Unknown location'}</p>
           <p><strong>Score:</strong> ${rec.score ?? '-'}<br>
           <strong>Next availability:</strong> ${rec.next_available_date || '-'}</p>
@@ -409,6 +411,8 @@ function wireEvents() {
       renderToast('Diagnosis and location are required.');
       return;
     }
+    const windowMap = { 'Within 7 days': 7, 'Within 14 days': 14, 'Within 30 days': 30 };
+    const preferredWindowDays = windowMap[state.preferredWindow] ?? 7;
     await runRecommendation({
       capability: 'specialist_recommendation',
       query: `Recommend specialist for diagnosis: ${state.diagnosis}, location: ${state.location}, insurance: ${state.insurancePlan}`,
@@ -417,6 +421,8 @@ function wireEvents() {
         location: state.location,
         insurance_plan: state.insurancePlan,
         max_results: state.maxResults,
+        urgency: state.urgency,
+        preferred_window_days: preferredWindowDays,
       },
     });
   });

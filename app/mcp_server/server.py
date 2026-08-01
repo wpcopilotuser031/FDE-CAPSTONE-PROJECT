@@ -30,6 +30,11 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
     "provider_discovery": {
         "provider_candidates",
     },
+    "alternative_provider_suggestion": {
+        "diagnosis_to_specialty",
+        "provider_candidates",
+        "insurance_eligibility",
+    },
     "admin_console": {
         "diagnosis_to_specialty",
         "provider_candidates",

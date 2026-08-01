@@ -10,6 +10,7 @@ from langgraph.graph import END, StateGraph
 from app.mcp_server.tools import (
     build_recommendation_rationale_llm_assisted,
     check_provider_in_network,
+    days_until,
     infer_specialties_llm_assisted,
     retrieve_candidate_providers,
     score_provider_with_breakdown,
@@ -27,6 +28,8 @@ class SpecialistRecommendationState(TypedDict):
     location: str
     insurance_plan: str
     max_results: int
+    urgency: str
+    preferred_window_days: int
     inferred_specialties: list[str]
     candidates: list[dict[str, Any]]
     recommendations: list[dict[str, Any]]
@@ -93,7 +96,11 @@ def rank_recommendations(state: SpecialistRecommendationState) -> SpecialistReco
             state["insurance_plan"],
             mcp_client=state["mcp_client"],
             accepts_insurance=accepted,
+            urgency=state["urgency"],
         )
+
+        wait_days = days_until(provider["next_available_date"])
+        exceeded_wait_window = wait_days > state["preferred_window_days"]
 
         scored.append(
             {
@@ -106,6 +113,7 @@ def rank_recommendations(state: SpecialistRecommendationState) -> SpecialistReco
                 "next_available_date": provider["next_available_date"],
                 "score": score,
                 "score_breakdown": score_breakdown,
+                "exceeded_wait_window": exceeded_wait_window,
             }
         )
 
@@ -154,6 +162,8 @@ def run_specialist_recommendation_flow(
     location: str,
     insurance_plan: str,
     max_results: int,
+    urgency: str = "Routine",
+    preferred_window_days: int = 7,
     progress_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     graph = build_specialist_recommendation_graph()
@@ -170,6 +180,8 @@ def run_specialist_recommendation_flow(
                     "location": location,
                     "insurance_plan": insurance_plan,
                     "max_results": max_results,
+                    "urgency": urgency,
+                    "preferred_window_days": preferred_window_days,
                     "inferred_specialties": [],
                     "candidates": [],
                     "recommendations": [],
@@ -187,6 +199,8 @@ def run_specialist_recommendation_flow(
                 "location": location,
                 "insurance_plan": insurance_plan,
                 "max_results": max_results,
+                "urgency": urgency,
+                "preferred_window_days": preferred_window_days,
                 "inferred_specialties": [],
                 "candidates": [],
                 "recommendations": [],
@@ -201,6 +215,15 @@ def run_specialist_recommendation_flow(
     except MCPClientError:
         raise
 
+    recs = final_state["recommendations"]
+    all_exceeded_window = bool(recs) and all(item.get("exceeded_wait_window", False) for item in recs)
+    low_score = any(item["score"] < 0.65 for item in recs)
+    human_review_required = (
+        urgency == "Urgent"
+        or low_score
+        or (urgency in {"Urgent", "Priority"} and all_exceeded_window)
+    )
+
     return {
         "request_id": str(uuid4()),
         "generated_at": datetime.now(UTC).isoformat(),
@@ -213,6 +236,6 @@ def run_specialist_recommendation_flow(
             "caller_role": SPECIALIST_RECOMMENDATION_ROLE,
             "mcp_enabled": final_state["mcp_enabled"],
             "tools_invoked": final_state["tools_invoked"],
-            "human_review_required": any(item["score"] < 0.65 for item in final_state["recommendations"]),
+            "human_review_required": human_review_required,
         },
     }

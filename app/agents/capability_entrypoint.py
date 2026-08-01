@@ -69,6 +69,23 @@ _AGENT_CARDS: list[AgentCard] = [
         rbac_role="insurance_validation",
         mcp_tools=["insurance_eligibility"],
     ),
+    AgentCard(
+        agent_id="agent.alternative_provider_suggestion.v1",
+        capability="alternative_provider_suggestion",
+        display_name="Alternative Provider Suggestion Agent",
+        description=(
+            "Suggests ranked alternative providers when the originally recommended "
+            "provider exceeds the patient's preferred appointment window. "
+            "Excludes the original provider, filters by availability window, "
+            "and applies urgency-adjusted scoring."
+        ),
+        input_contract={
+            "required": ["diagnosis", "location", "insurance_plan", "excluded_provider_id"],
+            "optional": ["preferred_window_days", "urgency", "max_results"],
+        },
+        rbac_role="alternative_provider_suggestion",
+        mcp_tools=["diagnosis_to_specialty", "provider_candidates", "insurance_eligibility"],
+    ),
 ]
 
 def _invoke_agent_http(capability: str, payload: dict[str, Any]) -> dict[str, Any]:

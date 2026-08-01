@@ -12,6 +12,17 @@
   --radius: 18px;
 }
 
+.badge-warn {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: #fff3cd;
+  color: var(--warn);
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
 * {
   box-sizing: border-box;
 }

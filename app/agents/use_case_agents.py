@@ -5,6 +5,8 @@ from datetime import UTC, datetime
 from typing import Any
 
 from app.agents.specialist_recommendation_graph import run_specialist_recommendation_flow
+from app.agents.alternative_provider_graph import run_alternative_provider_flow
+from app.agents.alternative_provider_graph import run_alternative_provider_flow
 from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
 from app.mcp_server.tools import (
     check_provider_in_network,
@@ -27,6 +29,8 @@ def specialist_recommendation_agent(payload: dict[str, Any]) -> dict[str, Any]:
         location=str(payload.get("location", "")).strip(),
         insurance_plan=str(payload.get("insurance_plan", "")).strip(),
         max_results=int(payload.get("max_results", 5)),
+        urgency=str(payload.get("urgency", "Routine")).strip(),
+        preferred_window_days=int(payload.get("preferred_window_days", 7)),
     )
 
 
@@ -156,3 +160,35 @@ def insurance_validation_agent(payload: dict[str, Any]) -> dict[str, Any]:
             "tools_invoked": tools_invoked,
         },
     }
+
+
+def alternative_provider_agent(payload: dict[str, Any]) -> dict[str, Any]:
+    diagnosis = str(payload.get("diagnosis", "")).strip()
+    location = str(payload.get("location", "")).strip()
+    insurance_plan = str(payload.get("insurance_plan", "")).strip()
+    excluded_provider_id = str(payload.get("excluded_provider_id", "")).strip()
+
+    if not diagnosis or not location or not insurance_plan or not excluded_provider_id:
+        return {
+            "alternatives": [],
+            "missing_information": [
+                "diagnosis, location, insurance_plan, and excluded_provider_id are required"
+            ],
+            "decision_trace": {
+                "capability": "alternative_provider_suggestion",
+                "caller_role": "alternative_provider_suggestion",
+                "mcp_enabled": _use_mcp_tools(),
+                "tools_invoked": [],
+                "human_review_required": False,
+            },
+        }
+
+    return run_alternative_provider_flow(
+        diagnosis=diagnosis,
+        location=location,
+        insurance_plan=insurance_plan,
+        excluded_provider_id=excluded_provider_id,
+        preferred_window_days=int(payload.get("preferred_window_days", 7)),
+        urgency=str(payload.get("urgency", "Routine")).strip(),
+        max_results=int(payload.get("max_results", 5)),
+    )
