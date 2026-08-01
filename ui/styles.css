@@ -1,0 +1,255 @@
+:root {
+  --ink: #16212e;
+  --slate: #4e5d70;
+  --surface: #f7f5f0;
+  --panel: #ffffff;
+  --line: #d8d6cb;
+  --accent: #005f73;
+  --accent-soft: #e0f0f3;
+  --success: #2f6f4e;
+  --warn: #8c4a0f;
+  --danger: #8c1b1b;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 10% 10%, #e8f4f6 0%, transparent 45%), radial-gradient(circle at 90% 20%, #f0ece2 0%, transparent 40%), var(--surface);
+}
+
+.page-shell {
+  width: min(1400px, 100% - 32px);
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(130deg, #ffffff 0%, #f3f1ea 100%);
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  letter-spacing: 0.2px;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--slate);
+  max-width: 640px;
+}
+
+.config-block {
+  display: grid;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(420px, 1.3fr) minmax(320px, 1fr);
+  gap: 18px;
+}
+
+.panel {
+  padding: 22px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.panel-left, .panel-right {
+  min-height: 480px;
+}
+
+.panel-title {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-subtitle {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.field-row {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-row.split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field-row label {
+  font-size: 0.95rem;
+  color: var(--slate);
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fff;
+  font: inherit;
+  color: var(--ink);
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[readonly] {
+  background: #f9faf9;
+}
+
+.action-button {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.secondary {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.field-note {
+  margin: 14px 0 0;
+  color: var(--slate);
+  font-size: 0.95rem;
+}
+
+.status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.status-list li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f9faf9;
+  border: 1px solid var(--line);
+}
+
+.info-box, .progress-box, .json-box {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #faf9f5;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.progress-box {
+  min-height: 80px;
+}
+
+.json-box {
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.code-sample {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f4f6f2;
+  color: var(--ink);
+}
+
+.panel-section {
+  margin-top: 20px;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.roadmap-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f5ef 100%);
+  min-height: 90px;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: var(--ink);
+  color: white;
+  padding: 14px 18px;
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(22, 33, 46, 0.16);
+  opacity: 0.98;
+}
+
+.toast.hidden {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .page-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .config-block {
+    width: 100%;
+  }
+}

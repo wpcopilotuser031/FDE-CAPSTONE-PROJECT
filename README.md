@@ -19,12 +19,14 @@ Technology stack:
 - LangGraph for multi-step agent workflow
 - ChromaDB for RAG-style provider retrieval over static JSON data
 - MCP Server (Python MCP SDK) for tool exposure and future agent integrations
-- Streamlit for guided and chat-style referral UI
+- Browser-based HTML/JavaScript frontend served from FastAPI
 
 ## Project Structure
 
 - app/main.py: FastAPI service entrypoint
-- streamlit_app.py: Streamlit UI (guided form + capability-inferred chat)
+- ui/index.html: Browser UI entrypoint
+- ui/app.js: Browser client logic for capability routing and workflow
+- ui/styles.css: Browser UI styles
 - app/agents/specialist_recommendation_graph.py: LangGraph workflow for specialist recommendation
 - app/agents/referral_graph.py: Backward-compatible import shim
 - app/agents/capability_router.py: Intent-to-capability routing for chat queries
@@ -63,9 +65,27 @@ Or use helper scripts:
 - Stop all services (graceful stop + port cleanup):
    ./scripts/stop_services.sh
 
-## Run Streamlit Interface
+## Run Web Interface
 
-- streamlit run streamlit_app.py
+The API backend should run on port `8090`. The browser UI can be hosted independently on a separate port.
+
+- Start the backend API:
+  ```bash
+  uvicorn app.main:app --reload --host 0.0.0.0 --port 8090
+  ```
+- Start the UI server from the repo root:
+  ```bash
+  ./scripts/run_ui.sh
+  ```
+- Open the browser UI at:
+  ```bash
+  http://127.0.0.1:8080
+  ```
+
+If you want to customize the backend base URL from the UI, enter:
+```bash
+http://127.0.0.1:8090
+```
 
 Environment variables used by chat capability routing:
 - LLM_MODEL

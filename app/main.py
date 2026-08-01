@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.agents.capability_entrypoint import handle_jsonrpc_request
 from app.agents.llm_gateway import LLMGatewayError
@@ -10,6 +13,7 @@ from app.rag.provider_index import ProviderIndex
 from app.schemas.jsonrpc import JsonRpcRequest
 from app.schemas.specialist_recommendation import RecommendationRequest, RecommendationResponse
 
+UI_PATH = Path(__file__).resolve().parent.parent / "ui"
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -24,10 +28,25 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8093", "http://localhost:8093"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/static", StaticFiles(directory=UI_PATH), name="static")
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/")
+def frontend() -> dict[str, str]:
+    return {"message": "Visit /static/index.html to open the Referral Command Center frontend."}
 
 
 @app.post("/api/v1/recommend-specialists", response_model=RecommendationResponse)

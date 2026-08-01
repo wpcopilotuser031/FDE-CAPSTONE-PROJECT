@@ -1,14 +1,6 @@
-INFO:     Started server process [12716]
+INFO:     Started server process [35063]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8091 (Press CTRL+C to quit)
-INFO:     127.0.0.1:37776 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41232 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55246 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:59090 - "POST /api/v1/agents/specialist_recommendation/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57064 - "POST /api/v1/agents/provider_discovery/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40304 - "POST /api/v1/agents/referral_triage/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42574 - "POST /api/v1/agents/specialist_recommendation/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53512 - "POST /api/v1/agents/specialist_recommendation/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37472 - "POST /api/v1/agents/specialist_recommendation/invoke HTTP/1.1" 200 OK
-INFO:     127.0.0.1:46912 - "POST /api/v1/agents/insurance_validation/invoke HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60114 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33646 - "POST /api/v1/agents/specialist_recommendation/invoke HTTP/1.1" 200 OK

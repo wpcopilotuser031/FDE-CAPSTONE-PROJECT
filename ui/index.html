@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Referral Command Center</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <h1>Intelligent Care Coordination Referral Command Center</h1>
+        <p>AI-assisted specialist recommendation with MCP tool governance, auditing, and human-in-the-loop controls.</p>
+      </div>
+      <div class="config-block">
+        <label for="backendBaseUrl">Backend URL</label>
+        <input id="backendBaseUrl" type="text" placeholder="http://127.0.0.1:8090" />
+      </div>
+    </header>
+
+    <section class="page-grid">
+      <aside class="panel panel-left">
+        <div class="panel-title">Referral Intake</div>
+        <div class="field-row">
+          <label for="patientId">Patient ID</label>
+          <input id="patientId" type="text" readonly />
+        </div>
+
+        <div class="field-row">
+          <label for="diagnosis">Diagnosis</label>
+          <input id="diagnosis" type="text" placeholder="e.g., chest pain" />
+        </div>
+
+        <div class="field-row">
+          <label for="location">Preferred Location</label>
+          <input id="location" type="text" placeholder="e.g., Austin, TX" />
+        </div>
+
+        <div class="field-row">
+          <label for="insurancePlan">Insurance Plan</label>
+          <select id="insurancePlan">
+            <option>Aetna</option>
+            <option>BlueCross</option>
+            <option>Cigna</option>
+            <option>UnitedHealthcare</option>
+          </select>
+        </div>
+
+        <div class="field-row split">
+          <div>
+            <label for="urgency">Clinical Urgency</label>
+            <select id="urgency">
+              <option>Routine</option>
+              <option>Priority</option>
+              <option>Urgent</option>
+            </select>
+          </div>
+          <div>
+            <label for="preferredWindow">Preferred Appointment Window</label>
+            <select id="preferredWindow">
+              <option>Within 7 days</option>
+              <option>Within 14 days</option>
+              <option>Within 30 days</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label for="maxResults">Max Recommendations</label>
+          <input id="maxResults" type="range" min="1" max="10" value="5" />
+          <span id="maxResultsLabel">5</span>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-subtitle">Intake Completeness</div>
+          <ul id="intakeChecks" class="status-list"></ul>
+        </div>
+
+        <button id="generateBtn" class="action-button primary">Generate Recommendations</button>
+        <p class="field-note" id="intakeCaption">Urgency: Routine | Preferred window: Within 7 days</p>
+      </aside>
+
+      <main class="panel panel-middle">
+        <div class="panel-title">Recommendation Workspace</div>
+        <div id="workspaceStatus" class="info-box">Submit intake details or ask in chat to trigger agentic routing and populate this workspace.</div>
+        <div id="workspaceLiveSteps" class="progress-box"></div>
+        <div id="recommendationContent"></div>
+      </main>
+
+      <aside class="panel panel-right">
+        <div class="panel-title">Conversational Assistant</div>
+        <p class="panel-copy">Ask in natural language. The assistant infers the capability and routes the request through the capability router.</p>
+        <pre class="code-sample">Recommend specialist for diagnosis: chest pain, location: Austin, TX, insurance: Aetna</pre>
+
+        <div class="field-row">
+          <label for="queryInput">Your query</label>
+          <textarea id="queryInput" rows="5" placeholder="Type your referral question..."></textarea>
+        </div>
+
+        <div class="field-row">
+          <label for="maxChatResults">Chat Result Limit</label>
+          <input id="maxChatResults" type="range" min="1" max="10" value="3" />
+          <span id="maxChatResultsLabel">3</span>
+        </div>
+
+        <button id="askBtn" class="action-button secondary">Ask Assistant</button>
+
+        <details class="panel-section" open>
+          <summary>Registered Agent Cards</summary>
+          <pre id="agentCards" class="json-box">Loading agent cards...</pre>
+        </details>
+
+        <div id="auditPanel"></div>
+        <div id="overridePanel"></div>
+      </aside>
+    </section>
+
+    <section class="panel panel-fullwidth">
+      <div class="panel-title">Capability Roadmap</div>
+      <div class="roadmap-grid">
+        <div class="roadmap-card"><strong>Now Live</strong><br>Specialist Recommendation</div>
+        <div class="roadmap-card"><strong>Next</strong><br>Document Gap Detection</div>
+        <div class="roadmap-card"><strong>Next</strong><br>Referral History Summary</div>
+        <div class="roadmap-card"><strong>Next</strong><br>Delay Prediction and Escalation</div>
+      </div>
+    </section>
+
+    <section class="panel panel-fullwidth">
+      <div class="panel-title">Raw Contract Preview</div>
+      <p>The JSON-RPC payload shape used by the capability router:</p>
+      <pre class="json-box" id="rawContract"></pre>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

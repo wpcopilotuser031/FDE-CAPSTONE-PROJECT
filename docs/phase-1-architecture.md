@@ -97,7 +97,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    UI[Streamlit Command Center]
+    UI[Browser UI / Command Center]
     API[FastAPI Service Layer]
     GRAPH[LangGraph Specialist Recommendation Graph]
     CLIENT[MCP Use-Case Client\nspecialist_recommendation]
@@ -425,7 +425,9 @@ Implementation rule:
 - app/mcp_server/tools.py: shared business/tool logic
 - app/mcp_clients/specialist_recommendation_client.py: use-case client adapter
 - app/rag/provider_index.py: Chroma retrieval
-- streamlit_app.py: command-center UI
+- ui/index.html: browser UI entrypoint
+- ui/app.js: browser UI logic
+- ui/styles.css: browser UI styles
 - tests/: unit/integration verification suite
 
 ## 23. Conclusion
