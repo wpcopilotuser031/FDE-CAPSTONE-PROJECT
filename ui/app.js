@@ -1,4 +1,7 @@
-const DEFAULT_BACKEND_URL = 'http://127.0.0.1:8090';
+// Derive the backend URL from whatever host/IP the UI itself was loaded from,
+// so this works both locally (127.0.0.1/localhost) and when the UI is served
+// from a Docker container reached via a VM IP or hostname.
+const DEFAULT_BACKEND_URL = `${window.location.protocol}//${window.location.hostname}:8090`;
 const SESSION_STORAGE_KEY = 'care_coordination_session';
 
 const state = {
