@@ -20,6 +20,19 @@ const state = {
   agentCards: null,
   dashboardData: null,
   isBusy: false,
+  altDiagnosis: '',
+  altLocation: '',
+  altInsurancePlan: 'Aetna',
+  altExcludedProviderId: '',
+  altUrgency: 'Routine',
+  altPreferredWindow: 'Within 7 days',
+  altMaxResults: 5,
+  altLiveSteps: [],
+  altBusy: false,
+  lastAlternativesResult: null,
+  chatMessages: [],
+  chatOpen: false,
+  chatBusy: false,
 };
 
 function uuid() {
@@ -42,6 +55,12 @@ function hydrateStateFromDom() {
   document.getElementById('maxChatResults').value = state.maxChatResults;
   document.getElementById('maxChatResultsLabel').textContent = state.maxChatResults;
   document.getElementById('backendBaseUrl').value = DEFAULT_BACKEND_URL;
+
+  document.getElementById('altInsurancePlan').value = state.altInsurancePlan;
+  document.getElementById('altUrgency').value = state.altUrgency;
+  document.getElementById('altPreferredWindow').value = state.altPreferredWindow;
+  document.getElementById('altMaxResults').value = state.altMaxResults;
+  document.getElementById('altMaxResultsLabel').textContent = state.altMaxResults;
 }
 
 function renderToast(message) {
@@ -205,6 +224,131 @@ function renderOverridePanel() {
   });
 }
 
+function addAlternativesStep(step) {
+  state.altLiveSteps.push(step);
+  const progress = document.getElementById('alternativesLiveSteps');
+  progress.innerHTML = state.altLiveSteps.length
+    ? `<div class="panel-subtitle">Live workflow progress</div><ul>${state.altLiveSteps.map(item => `<li>${item}</li>`).join('')}</ul>`
+    : '';
+}
+
+function renderAlternativesWorkspace() {
+  const container = document.getElementById('alternativesContent');
+  const status = document.getElementById('alternativesStatus');
+
+  if (state.altBusy) {
+    status.textContent = 'Searching for alternative providers...';
+  } else if (!state.lastAlternativesResult) {
+    status.textContent = 'Submit the form to search for alternative providers within the preferred window.';
+  } else {
+    status.textContent = '';
+  }
+
+  if (!state.lastAlternativesResult) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const result = state.lastAlternativesResult;
+  const alts = result.alternatives || [];
+
+  if (!alts.length) {
+    container.innerHTML = '<div class="info-box">No alternative providers found for this case.</div>';
+    return;
+  }
+
+  const trace = result.decision_trace || {};
+  const metrics = `
+    <div class="stats-grid" style="margin-bottom: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+      <div class="stat-card"><strong>${alts.length}</strong>Alternatives found</div>
+      <div class="stat-card"><strong>${result.in_window_count ?? 0}</strong>Within preferred window</div>
+      <div class="stat-card"><strong>${trace.human_review_required ? 'Yes' : 'No'}</strong>Human review required</div>
+    </div>
+  `;
+
+  const cards = alts.map((alt, index) => {
+    const badge = alt.within_preferred_window
+      ? '<span class="badge-warn" style="background:#e0f0f3;color:var(--accent);">✓ Within preferred window</span>'
+      : '<span class="badge-warn">⚠ Exceeds preferred window</span>';
+    return `
+      <div class="dashboard-card">
+        <div class="card-title">#${index + 1} ${alt.provider_name || 'Unknown Provider'}</div>
+        ${badge}
+        <p>${alt.specialty || 'Unknown specialty'} | ${alt.location || 'Unknown location'}</p>
+        <p><strong>Score:</strong> ${alt.score ?? '-'}<br>
+        <strong>Next availability:</strong> ${alt.next_available_date || '-'} (${alt.wait_days ?? '-'} days)<br>
+        <strong>In-network:</strong> ${alt.accepts_insurance ? 'Yes' : 'No'}</p>
+        <p>${alt.rationale || ''}</p>
+        <details><summary>Score breakdown</summary><pre class="json-box">${JSON.stringify(alt.score_breakdown || {}, null, 2)}</pre></details>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    ${metrics}
+    <div class="panel-title">Alternative Providers</div>
+    <div class="dashboard-grid">${cards}</div>
+  `;
+}
+
+function renderRoutedSummary(routed) {
+  if (!routed || !routed.capability || !routed.result) return '';
+  const { capability, result } = routed;
+
+  if (capability === 'specialist_recommendation' || capability === 'alternative_provider_suggestion') {
+    const items = capability === 'specialist_recommendation' ? (result.recommendations || []) : (result.alternatives || []);
+    if (!items.length) return '';
+    const rows = items.slice(0, 3).map((item) => `
+      <li><strong>${item.provider_name || 'Unknown'}</strong> — ${item.specialty || '-'}, ${item.wait_days ?? '-'}d wait, score ${item.score ?? '-'}</li>
+    `).join('');
+    return `<div class="chat-routed-card"><div class="chat-routed-title">Live agent result: ${capability.replace(/_/g, ' ')}</div><ul>${rows}</ul></div>`;
+  }
+
+  if (capability === 'referral_triage') {
+    return `<div class="chat-routed-card"><div class="chat-routed-title">Live agent result: referral triage</div>
+      <p>Priority: <strong>${result.priority || '-'}</strong> | Specialties: ${(result.suggested_specialties || []).join(', ') || '-'}</p></div>`;
+  }
+
+  if (capability === 'insurance_validation') {
+    return `<div class="chat-routed-card"><div class="chat-routed-title">Live agent result: insurance validation</div>
+      <p>In-network: <strong>${result.in_network ? 'Yes' : 'No'}</strong></p></div>`;
+  }
+
+  if (capability === 'provider_discovery') {
+    const items = result.providers || result.candidates || [];
+    if (!items.length) return '';
+    const rows = items.slice(0, 3).map((item) => `<li><strong>${item.provider_name || 'Unknown'}</strong> — ${item.specialty || '-'}, ${item.location || '-'}</li>`).join('');
+    return `<div class="chat-routed-card"><div class="chat-routed-title">Live agent result: provider discovery</div><ul>${rows}</ul></div>`;
+  }
+
+  return '';
+}
+
+function renderChatMessages() {
+  const container = document.getElementById('chatMessages');
+  const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  container.innerHTML = state.chatMessages.map((msg) => {
+    if (msg.role === 'typing') {
+      return '<div class="chat-msg typing">Assistant is typing...</div>';
+    }
+    const cls = msg.role === 'user' ? 'user' : msg.role === 'system' ? 'system' : 'assistant';
+    const routedHtml = msg.routed ? renderRoutedSummary(msg.routed) : '';
+    return `<div class="chat-msg ${cls}">${escape(msg.text)}${routedHtml}</div>`;
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderChatSuggestions(suggestions) {
+  const container = document.getElementById('chatSuggestions');
+  if (!suggestions || !suggestions.length) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = suggestions
+    .map(text => `<button type="button" class="chat-suggestion-chip">${text}</button>`)
+    .join('');
+}
+
 function renderAgentCards() {
   const target = document.getElementById('agentCards');
   if (state.agentCards === null) {
@@ -306,10 +450,10 @@ function setBusy(isBusy) {
   askBtn.disabled = isBusy;
   if (isBusy) {
     generateBtn.textContent = 'Running workflow...';
-    askBtn.textContent = 'Running workflow...';
+    askBtn.textContent = 'Routing...';
   } else {
     generateBtn.textContent = 'Generate Recommendations';
-    askBtn.textContent = 'Ask Assistant';
+    askBtn.textContent = 'Route Query';
   }
 }
 
@@ -322,6 +466,16 @@ function updateRequestContext() {
   state.maxResults = Number(document.getElementById('maxResults').value);
   state.query = document.getElementById('queryInput').value;
   state.maxChatResults = Number(document.getElementById('maxChatResults').value);
+}
+
+function updateAltContext() {
+  state.altDiagnosis = document.getElementById('altDiagnosis').value;
+  state.altLocation = document.getElementById('altLocation').value;
+  state.altInsurancePlan = document.getElementById('altInsurancePlan').value;
+  state.altExcludedProviderId = document.getElementById('altExcludedProviderId').value;
+  state.altUrgency = document.getElementById('altUrgency').value;
+  state.altPreferredWindow = document.getElementById('altPreferredWindow').value;
+  state.altMaxResults = Number(document.getElementById('altMaxResults').value);
 }
 
 async function sendJsonRpc(method, params) {
@@ -449,6 +603,233 @@ async function runRecommendation({ capability, query, payload }) {
   }
 }
 
+async function runAlternativesRequest() {
+  if (state.altBusy) return;
+  updateAltContext();
+
+  if (!state.altDiagnosis.trim() || !state.altLocation.trim() || !state.altExcludedProviderId.trim()) {
+    renderToast('Diagnosis, location, and excluded provider ID are required.');
+    return;
+  }
+
+  state.altBusy = true;
+  state.lastAlternativesResult = null;
+  state.altLiveSteps = [];
+  const findBtn = document.getElementById('findAlternativesBtn');
+  findBtn.disabled = true;
+  findBtn.textContent = 'Searching...';
+  renderAlternativesWorkspace();
+
+  const windowMap = { 'Within 7 days': 7, 'Within 14 days': 14, 'Within 30 days': 30 };
+  const preferredWindowDays = windowMap[state.altPreferredWindow] ?? 7;
+
+  try {
+    addAlternativesStep('Step 1/3: Creating JSON-RPC request');
+    addAlternativesStep('Step 2/3: Calling alternative_provider_suggestion capability');
+
+    const response = await sendJsonRpc('capability.route', {
+      capability: 'alternative_provider_suggestion',
+      payload: {
+        diagnosis: state.altDiagnosis,
+        location: state.altLocation,
+        insurance_plan: state.altInsurancePlan,
+        excluded_provider_id: state.altExcludedProviderId,
+        urgency: state.altUrgency,
+        preferred_window_days: preferredWindowDays,
+        max_results: state.altMaxResults,
+      },
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message || 'JSON-RPC routing error');
+    }
+
+    addAlternativesStep('Step 3/3: Ranking alternatives by score and window fit');
+    state.lastAlternativesResult = response.result?.agent_result || {};
+    renderToast('Alternative provider search completed.');
+  } catch (error) {
+    renderToast(error.message);
+    state.lastAlternativesResult = null;
+    state.altLiveSteps = [];
+  } finally {
+    state.altBusy = false;
+    findBtn.disabled = false;
+    findBtn.textContent = 'Find Alternatives';
+    renderAlternativesWorkspace();
+  }
+}
+
+function buildChatContext() {
+  const useContext = document.getElementById('chatUseContext').checked;
+  if (!useContext) return {};
+
+  const context = {};
+  if (state.lastResult) {
+    context.last_specialist_recommendation = {
+      inferred_specialties: state.lastResult.inferred_specialties,
+      recommendations: (state.lastResult.recommendations || []).slice(0, 5),
+      decision_trace: state.lastResult.decision_trace,
+    };
+  }
+  if (state.lastAlternativesResult) {
+    context.last_alternative_providers = {
+      excluded_provider_id: state.lastAlternativesResult.excluded_provider_id,
+      alternatives: (state.lastAlternativesResult.alternatives || []).slice(0, 5),
+      in_window_count: state.lastAlternativesResult.in_window_count,
+      decision_trace: state.lastAlternativesResult.decision_trace,
+    };
+  }
+  if (state.lastNonRecommendationResult) {
+    context.last_routed_capability_result = {
+      capability: state.lastSelectedCapability,
+      result: state.lastNonRecommendationResult,
+    };
+  }
+  return context;
+}
+
+function openChat() {
+  state.chatOpen = true;
+  document.getElementById('chatPanel').classList.remove('hidden');
+  if (!state.chatMessages.length) {
+    state.chatMessages.push({
+      role: 'system',
+      text: 'Hi! I can answer questions about referrals, specialists, insurance, alternative providers, or how to use this platform.',
+    });
+    renderChatMessages();
+  }
+  document.getElementById('chatInput').focus();
+}
+
+function closeChat() {
+  state.chatOpen = false;
+  document.getElementById('chatPanel').classList.add('hidden');
+}
+
+async function sendChatMessage(rawQuestion) {
+  const inputEl = document.getElementById('chatInput');
+  const question = (rawQuestion ?? inputEl.value).trim();
+  if (!question || state.chatBusy) return;
+
+  state.chatMessages.push({ role: 'user', text: question });
+  state.chatMessages.push({ role: 'typing', text: '' });
+  renderChatMessages();
+  renderChatSuggestions([]);
+  inputEl.value = '';
+  state.chatBusy = true;
+  document.getElementById('chatSendBtn').disabled = true;
+
+  const askerRole = document.getElementById('chatAskerRole').value;
+
+  try {
+    const response = await sendJsonRpc('capability.route', {
+      capability: 'conversational_assistant',
+      payload: {
+        question,
+        asker_role: askerRole,
+        context: buildChatContext(),
+      },
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message || 'Assistant error');
+    }
+
+    const agentResult = response.result?.agent_result || {};
+    const routedCapability = response.result?.routed_capability || null;
+    const routedResult = response.result?.routed_agent_result || null;
+
+    if (routedCapability && routedResult) {
+      if (routedCapability === 'specialist_recommendation') {
+        state.lastResult = routedResult;
+        state.lastNonRecommendationResult = null;
+      } else if (routedCapability === 'alternative_provider_suggestion') {
+        state.lastAlternativesResult = routedResult;
+      } else {
+        state.lastNonRecommendationResult = routedResult;
+        state.lastSelectedCapability = routedCapability;
+      }
+    }
+
+    state.chatMessages = state.chatMessages.filter(msg => msg.role !== 'typing');
+    state.chatMessages.push({
+      role: 'assistant',
+      text: agentResult.answer || 'I could not generate an answer.',
+      routed: routedCapability && routedResult ? { capability: routedCapability, result: routedResult } : null,
+    });
+    renderChatMessages();
+    renderChatSuggestions(agentResult.follow_up_suggestions || []);
+
+    if (routedCapability === 'specialist_recommendation') {
+      renderRecommendationWorkspace();
+    } else if (routedCapability === 'alternative_provider_suggestion') {
+      renderAlternativesWorkspace();
+    }
+  } catch (error) {
+    state.chatMessages = state.chatMessages.filter(msg => msg.role !== 'typing');
+    state.chatMessages.push({ role: 'assistant', text: `Sorry, something went wrong: ${error.message}` });
+    renderChatMessages();
+  } finally {
+    state.chatBusy = false;
+    document.getElementById('chatSendBtn').disabled = false;
+  }
+}
+
+function wireTabs() {
+  document.getElementById('tabNav').addEventListener('click', (event) => {
+    const btn = event.target.closest('.tab-btn');
+    if (!btn || btn.id === 'navAssistantBtn') return;
+
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach((panel) => {
+      panel.classList.toggle('active', panel.dataset.tabPanel === tab);
+    });
+  });
+}
+
+function wireChatWidget() {
+  document.getElementById('chatBubbleBtn').addEventListener('click', () => {
+    if (state.chatOpen) {
+      closeChat();
+    } else {
+      openChat();
+    }
+  });
+
+  document.getElementById('chatCloseBtn').addEventListener('click', closeChat);
+  document.getElementById('navAssistantBtn').addEventListener('click', openChat);
+
+  document.getElementById('chatForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    sendChatMessage();
+  });
+
+  document.getElementById('chatInput').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendChatMessage();
+    }
+  });
+
+  document.getElementById('chatSuggestions').addEventListener('click', (event) => {
+    const chip = event.target.closest('.chat-suggestion-chip');
+    if (chip) {
+      sendChatMessage(chip.textContent);
+    }
+  });
+}
+
+function wireAlternativesEvents() {
+  document.getElementById('altMaxResults').addEventListener('input', (event) => {
+    state.altMaxResults = Number(event.target.value);
+    document.getElementById('altMaxResultsLabel').textContent = state.altMaxResults;
+  });
+
+  document.getElementById('findAlternativesBtn').addEventListener('click', runAlternativesRequest);
+}
+
 function wireEvents() {
   document.getElementById('maxResults').addEventListener('input', (event) => {
     state.maxResults = Number(event.target.value);
@@ -515,6 +896,17 @@ function wireEvents() {
       payload: { max_results: state.maxChatResults },
     });
   });
+
+  document.getElementById('altDiagnosis').addEventListener('input', updateAltContext);
+  document.getElementById('altLocation').addEventListener('input', updateAltContext);
+  document.getElementById('altInsurancePlan').addEventListener('change', updateAltContext);
+  document.getElementById('altExcludedProviderId').addEventListener('input', updateAltContext);
+  document.getElementById('altUrgency').addEventListener('change', updateAltContext);
+  document.getElementById('altPreferredWindow').addEventListener('change', updateAltContext);
+
+  wireTabs();
+  wireAlternativesEvents();
+  wireChatWidget();
 }
 
 function init() {
@@ -527,6 +919,8 @@ function init() {
   renderAgentCards();
   renderDashboard();
   renderRawContract();
+  renderAlternativesWorkspace();
+  renderChatMessages();
   wireEvents();
   loadPlatformData();
   loadAgentCards();

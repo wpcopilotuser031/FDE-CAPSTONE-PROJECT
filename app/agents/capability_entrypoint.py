@@ -8,6 +8,7 @@ from urllib import error, request as urlrequest
 
 from app.agents.alternative_provider_agent import build_agent_card as build_alternative_provider_card
 from app.agents.capability_router import infer_capability_from_query, infer_query
+from app.agents.conversational_assistant_agent import build_agent_card as build_conversational_assistant_card
 from app.agents.insurance_validation_agent import build_agent_card as build_insurance_validation_card
 from app.agents.provider_discovery_agent import build_agent_card as build_provider_discovery_card
 from app.agents.referral_triage_agent import build_agent_card as build_referral_triage_card
@@ -32,6 +33,7 @@ def _build_agent_cards() -> list[AgentCard]:
         build_provider_discovery_card,
         build_insurance_validation_card,
         build_alternative_provider_card,
+        build_conversational_assistant_card,
     ]
     return [
         AgentCard(
@@ -48,6 +50,16 @@ def _build_agent_cards() -> list[AgentCard]:
 
 
 _AGENT_CARDS: list[AgentCard] = _build_agent_cards()
+
+_ACTIONABLE_CAPABILITIES = {
+    "specialist_recommendation",
+    "referral_triage",
+    "insurance_validation",
+    "provider_discovery",
+    "alternative_provider_suggestion",
+}
+
+_ROUTING_CONFIDENCE_THRESHOLD = 0.6
 
 def _invoke_agent_http(capability: str, payload: dict[str, Any]) -> dict[str, Any]:
     base_url = os.getenv("AGENT_RUNTIME_BASE_URL", "http://127.0.0.1:8091").rstrip("/")
@@ -120,8 +132,83 @@ def _select_capability(params: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return "unknown", payload
 
 
+def _missing_required_fields(card: AgentCard, slots: dict[str, Any]) -> list[str]:
+    return [field for field in card.input_contract.get("required", []) if not slots.get(field)]
+
+
+def _route_conversational_assistant(payload: dict[str, Any]) -> dict[str, Any]:
+    """Answers via the conversational assistant, but first tries to detect whether the
+    question actually implies an actionable capability (e.g. "recommend a specialist for
+    chest pain in Austin with Aetna") and, if enough slots are present, executes that
+    capability live so the assistant can ground its answer in real computed data instead
+    of just talking generically about the platform."""
+    question = str(payload.get("question", "")).strip()
+    asker_role = payload.get("asker_role")
+    context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
+    context = dict(context)
+
+    routed_capability: str | None = None
+    routed_card: AgentCard | None = None
+    routed_result: dict[str, Any] | None = None
+
+    if question:
+        interpretation = infer_query(question)
+        decision = interpretation.decision
+
+        if decision.capability in _ACTIONABLE_CAPABILITIES and decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD:
+            candidate_card = _card_by_capability(decision.capability)
+            slots = {key: value for key, value in interpretation.slots.items() if value}
+
+            if candidate_card:
+                missing = _missing_required_fields(candidate_card, slots)
+                if not missing:
+                    try:
+                        routed_result, _ = _invoke_agent(decision.capability, slots)
+                        routed_capability = decision.capability
+                        routed_card = candidate_card
+                    except Exception as exc:  # noqa: BLE001
+                        context["routing_attempt_failed"] = {
+                            "capability": decision.capability,
+                            "error": str(exc),
+                        }
+                else:
+                    context["routing_missing_fields"] = {
+                        "capability": decision.capability,
+                        "missing_fields": missing,
+                    }
+
+    if routed_result is not None:
+        context["routed_capability_result"] = {
+            "capability": routed_capability,
+            "result": routed_result,
+        }
+
+    assistant_payload = {
+        "question": question,
+        "asker_role": asker_role,
+        "context": context,
+    }
+    agent_result, transport = _invoke_agent("conversational_assistant", assistant_payload)
+
+    response: dict[str, Any] = {
+        "selected_capability": "conversational_assistant",
+        "selected_agent_card": asdict(_card_by_capability("conversational_assistant")),
+        "agent_transport": transport,
+        "agent_result": agent_result,
+    }
+    if routed_capability and routed_card:
+        response["routed_capability"] = routed_capability
+        response["routed_agent_card"] = asdict(routed_card)
+        response["routed_agent_result"] = routed_result
+    return response
+
+
 def route_capability(params: dict[str, Any]) -> dict[str, Any]:
     capability, payload = _select_capability(params)
+
+    if capability == "conversational_assistant":
+        return _route_conversational_assistant(payload)
+
     card = _card_by_capability(capability)
 
     if not card:

@@ -42,6 +42,7 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "provider_candidates",
         "insurance_eligibility",
     },
+    "conversational_assistant": set(),
 }
 
 
