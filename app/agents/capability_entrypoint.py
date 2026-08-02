@@ -61,6 +61,38 @@ _ACTIONABLE_CAPABILITIES = {
 
 _ROUTING_CONFIDENCE_THRESHOLD = 0.6
 
+# Phrases that imply the user wants data/actions this platform never implemented as a
+# real agent/capability (e.g. patient medical history, chart notes, scheduling). These
+# must be hard-blocked with a deterministic message BEFORE the conversational assistant
+# LLM is invoked - otherwise the LLM may "helpfully" answer anyway by grounding itself in
+# unrelated leftover context (e.g. a previous specialist recommendation), which looks like
+# a real answer but is not backed by any actual data source or authorization check.
+_UNSUPPORTED_TOPIC_PHRASES = (
+    "patient history",
+    "medical history",
+    "medical record",
+    "health record",
+    "chart note",
+    "clinical note",
+    "lab result",
+    "test result",
+    "prescription",
+    "medication list",
+    "diagnosis history",
+    "book an appointment",
+    "book appointment",
+    "schedule an appointment",
+    "schedule appointment",
+)
+
+
+def _matches_unsupported_topic(question: str) -> str | None:
+    question_lower = question.lower()
+    for phrase in _UNSUPPORTED_TOPIC_PHRASES:
+        if phrase in question_lower:
+            return phrase
+    return None
+
 # Human end-user role -> capabilities that role is permitted to trigger, either
 # explicitly or via the conversational assistant's auto-routing. This is a second,
 # human-facing RBAC layer on top of the existing agent-to-MCP-tool RBAC in
@@ -189,6 +221,36 @@ def _route_conversational_assistant(payload: dict[str, Any], caller_role: str | 
     asker_role = payload.get("asker_role")
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
     context = dict(context)
+
+    if question:
+        unsupported_phrase = _matches_unsupported_topic(question)
+        if unsupported_phrase:
+            # Hard stop: don't let the LLM "helpfully" answer this by grounding itself
+            # in unrelated leftover context (e.g. a prior specialist recommendation).
+            # There is no real agent/data source behind this request, so refuse
+            # deterministically instead of letting the model improvise.
+            return {
+                "selected_capability": "conversational_assistant",
+                "selected_agent_card": asdict(_card_by_capability("conversational_assistant")),
+                "agent_transport": "none",
+                "agent_result": {
+                    "answer": (
+                        "I'm not able to help with that. This assistant only supports "
+                        "specialist recommendations, referral triage, insurance validation, "
+                        "provider discovery, and alternative provider suggestions - it does "
+                        "not have access to patient medical history, records, or scheduling."
+                    ),
+                    "follow_up_suggestions": [],
+                    "llm_used": False,
+                    "decision_trace": {
+                        "capability": "unsupported",
+                        "caller_role": caller_role,
+                        "mcp_enabled": False,
+                        "tools_invoked": [],
+                        "human_review_required": False,
+                    },
+                },
+            }
 
     routed_capability: str | None = None
     routed_card: AgentCard | None = None

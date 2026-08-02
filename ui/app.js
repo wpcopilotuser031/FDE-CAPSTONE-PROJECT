@@ -249,7 +249,12 @@ function renderChatSuggestions(suggestions) {
 }
 
 function buildChatContext() {
-  return { ...state.lastRoutedContext };
+  // Intentionally NOT carrying forward state.lastRoutedContext here: sending stale
+  // routed-capability data from a previous, unrelated question let the assistant LLM
+  // "ground" its answer to a completely different question in old data (e.g. answering
+  // "Show patient history" using a specialist recommendation from a prior turn). Each
+  // turn now only relies on whatever the backend computes fresh for the CURRENT question.
+  return {};
 }
 
 async function sendChatMessage(rawQuestion) {
@@ -282,15 +287,6 @@ async function sendChatMessage(rawQuestion) {
     const agentResult = response.result?.agent_result || {};
     const routedCapability = response.result?.routed_capability || null;
     const routedResult = response.result?.routed_agent_result || null;
-
-    if (routedCapability && routedResult) {
-      state.lastRoutedContext = {
-        last_routed_capability_result: {
-          capability: routedCapability,
-          result: routedResult,
-        },
-      };
-    }
 
     state.chatMessages = state.chatMessages.filter(msg => msg.role !== 'typing');
     state.chatMessages.push({
