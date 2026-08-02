@@ -1,0 +1,16 @@
+[
+  {
+    "notification_id": "N-1",
+    "referral_id": "REF-1001",
+    "channel": "SMS",
+    "message": "Eligibility review pending. Please upload recent EKG and lab results.",
+    "sent_at": "2026-07-28T10:15:00Z"
+  },
+  {
+    "notification_id": "N-2",
+    "referral_id": "REF-1002",
+    "channel": "Email",
+    "message": "Specialist review completed. Appointment confirmed.",
+    "sent_at": "2026-07-30T14:40:00Z"
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "referral_id": "REF-1001",
+    "patient_id": "PT-001",
+    "status": "Pending Eligibility",
+    "diagnosis": "Chest pain",
+    "specialty": "Cardiology",
+    "submitted_at": "2026-07-28T10:00:00Z",
+    "priority": "High",
+    "target_wait_days": 7,
+    "documents_missing": ["EKG", "Recent labs"]
+  },
+  {
+    "referral_id": "REF-1002",
+    "patient_id": "PT-002",
+    "status": "Awaiting Specialist Review",
+    "diagnosis": "Severe migraine",
+    "specialty": "Neurology",
+    "submitted_at": "2026-07-30T14:20:00Z",
+    "priority": "Medium",
+    "target_wait_days": 14,
+    "documents_missing": []
+  }
+]

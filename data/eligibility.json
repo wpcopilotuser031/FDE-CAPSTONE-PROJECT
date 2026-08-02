@@ -1,0 +1,20 @@
+[
+  {
+    "referral_id": "REF-1001",
+    "patient_id": "PT-001",
+    "insurance_plan": "Aetna",
+    "eligible": true,
+    "copay": 25,
+    "authorization_required": true,
+    "notes": "Cardiology referral requires prior auth."
+  },
+  {
+    "referral_id": "REF-1002",
+    "patient_id": "PT-002",
+    "insurance_plan": "UnitedHealthcare",
+    "eligible": true,
+    "copay": 15,
+    "authorization_required": false,
+    "notes": "Neurology consult covered under specialist tier."
+  }
+]

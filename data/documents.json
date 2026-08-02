@@ -1,0 +1,16 @@
+[
+  {
+    "document_id": "DOC-1",
+    "referral_id": "REF-1001",
+    "type": "Referral Note",
+    "status": "Uploaded",
+    "owner": "Primary Care"
+  },
+  {
+    "document_id": "DOC-2",
+    "referral_id": "REF-1002",
+    "type": "MRI Summary",
+    "status": "Received",
+    "owner": "Radiology"
+  }
+]

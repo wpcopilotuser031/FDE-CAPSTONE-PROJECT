@@ -1,0 +1,22 @@
+[
+  {
+    "appointment_id": "APT-2001",
+    "referral_id": "REF-1001",
+    "provider_id": "P-001",
+    "provider_name": "Dr. Elena Rodriguez",
+    "specialty": "Cardiology",
+    "status": "Proposed",
+    "slot": "2026-08-05 09:00",
+    "location": "Austin, TX"
+  },
+  {
+    "appointment_id": "APT-2002",
+    "referral_id": "REF-1002",
+    "provider_id": "P-003",
+    "provider_name": "Dr. Priya Shah",
+    "specialty": "Neurology",
+    "status": "Confirmed",
+    "slot": "2026-08-10 13:30",
+    "location": "Round Rock, TX"
+  }
+]

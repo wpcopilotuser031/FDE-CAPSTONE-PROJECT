@@ -3,15 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Referral Command Center</title>
+  <title>Intelligent Care Coordination Platform</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page-shell">
     <header class="hero">
       <div>
-        <h1>Intelligent Care Coordination Referral Command Center</h1>
-        <p>AI-assisted specialist recommendation with MCP tool governance, auditing, and human-in-the-loop controls.</p>
+        <h1>Intelligent Care Coordination & Referral Management Platform</h1>
+        <p>Coordinate patients, providers, payers, specialists, and care coordinators through one AI-assisted command center with eligibility checks, document tracking, scheduling support, and governance controls.</p>
+        <div class="hero-tags">
+          <span>Referral intake</span>
+          <span>Insurance eligibility</span>
+          <span>Provider matching</span>
+          <span>Appointment coordination</span>
+        </div>
       </div>
       <div class="config-block">
         <label for="backendBaseUrl">Backend URL</label>
@@ -60,6 +66,7 @@
             <label for="preferredWindow">Preferred Appointment Window</label>
             <select id="preferredWindow">
               <option>Within 7 days</option>
+              <option>Within 14 days</option>
               <option>Within 14 days</option>
               <option>Within 30 days</option>
             </select>
@@ -117,13 +124,49 @@
     </section>
 
     <section class="panel panel-fullwidth">
-      <div class="panel-title">Capability Roadmap</div>
-      <div class="roadmap-grid">
-        <div class="roadmap-card"><strong>Now Live</strong><br>Specialist Recommendation</div>
-        <div class="roadmap-card"><strong>Next</strong><br>Document Gap Detection</div>
-        <div class="roadmap-card"><strong>Next</strong><br>Referral History Summary</div>
-        <div class="roadmap-card"><strong>Next</strong><br>Delay Prediction and Escalation</div>
+      <div class="panel-title">Operations Dashboard</div>
+      <div id="dashboardMetrics" class="stats-grid"></div>
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <div class="card-title">Patient & Referral Pulse</div>
+          <div id="patientSnapshot"></div>
+        </div>
+        <div class="dashboard-card">
+          <div class="card-title">Insurance & Scheduling</div>
+          <div id="eligibilitySnapshot"></div>
+        </div>
+        <div class="dashboard-card">
+          <div class="card-title">Documents & Notifications</div>
+          <div id="documentsSnapshot"></div>
+        </div>
+        <div class="dashboard-card">
+          <div class="card-title">Care Team & Coordination</div>
+          <div id="careTeamSnapshot"></div>
+        </div>
       </div>
+    </section>
+
+    <section class="panel panel-fullwidth">
+      <div class="panel-title">Business Capability Map</div>
+      <div class="capability-grid">
+        <div class="capability-card"><strong>Referral Intake</strong><br>Capture diagnosis, urgency, location, and insurance context.</div>
+        <div class="capability-card"><strong>Eligibility Validation</strong><br>Verify coverage and determine prior authorization needs.</div>
+        <div class="capability-card"><strong>Specialist Recommendation</strong><br>Match providers by specialty, network, and wait time.</div>
+        <div class="capability-card"><strong>Appointment Coordination</strong><br>Propose slots and maintain booking visibility.</div>
+        <div class="capability-card"><strong>Document & Status Tracking</strong><br>Monitor missing records and referral progression.</div>
+        <div class="capability-card"><strong>Conversational Guidance</strong><br>Answer patient and coordinator questions through AI.</div>
+      </div>
+      <div class="nfr-grid">
+        <div class="nfr-card"><strong>Security & Privacy</strong><br>Role-based access, auditability, and protected health data handling.</div>
+        <div class="nfr-card"><strong>Reliability</strong><br>Resilient routing, fallback behavior, and observable workflows.</div>
+        <div class="nfr-card"><strong>Interoperability</strong><br>REST APIs plus MCP integrations for payer and provider systems.</div>
+        <div class="nfr-card"><strong>Human-in-the-loop</strong><br>Escalation for urgent cases and coordinator override.</div>
+      </div>
+    </section>
+
+    <section class="panel panel-fullwidth">
+      <div class="panel-title">Connected Data Sources</div>
+      <div id="dataSources" class="source-grid"></div>
     </section>
 
     <section class="panel panel-fullwidth">

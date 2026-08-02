@@ -18,6 +18,7 @@ const state = {
   overrideLog: [],
   workspaceLiveSteps: [],
   agentCards: null,
+  dashboardData: null,
   isBusy: false,
 };
 
@@ -99,10 +100,10 @@ function renderRecommendationWorkspace() {
     const inNetworkCount = recs.filter(item => item.accepts_insurance).length;
 
     const metrics = `
-      <div class="metric-row">
-        <div class="metric-chip"><strong>Top Candidates</strong><div>${recs.length}</div></div>
-        <div class="metric-chip"><strong>Avg Match Score</strong><div>${avgScore.toFixed(2)}</div></div>
-        <div class="metric-chip"><strong>In-Network Count</strong><div>${inNetworkCount}</div></div>
+      <div class="stats-grid" style="margin-bottom: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+        <div class="stat-card"><strong>${recs.length}</strong>Top candidates</div>
+        <div class="stat-card"><strong>${avgScore.toFixed(2)}</strong>Average match score</div>
+        <div class="stat-card"><strong>${inNetworkCount}</strong>In-network matches</div>
       </div>
     `;
 
@@ -110,8 +111,8 @@ function renderRecommendationWorkspace() {
       const badge = rec.accepts_insurance ? 'In-Network' : 'Out-of-Network';
       const waitBadge = rec.exceeded_wait_window ? '<span class="badge-warn">⚠ Exceeds preferred window</span>' : '';
       return `
-        <div class="workbench-card">
-          <div class="card-header"><strong>#${index + 1} ${rec.provider_name || 'Unknown Provider'}</strong><span>${badge}</span></div>
+        <div class="dashboard-card">
+          <div class="card-title">#${index + 1} ${rec.provider_name || 'Unknown Provider'}</div>
           ${waitBadge}
           <p>${rec.specialty || 'Unknown specialty'} | ${rec.location || 'Unknown location'}</p>
           <p><strong>Score:</strong> ${rec.score ?? '-'}<br>
@@ -122,20 +123,10 @@ function renderRecommendationWorkspace() {
       `;
     }).join('');
 
-    const compare = recs.slice(0, 3).map(rec => `
-      <div class="compare-card">
-        <strong>${rec.provider_name || 'Provider'}</strong>
-        <p>${rec.specialty || '-'} | ${rec.location || '-'}</p>
-        <p>Score: ${rec.score ?? '-'}<br>Network: ${rec.accepts_insurance ? 'Yes' : 'No'}<br>Slot: ${rec.next_available_date || '-'}</p>
-      </div>
-    `).join('');
-
     container.innerHTML = `
       ${metrics}
       <div class="panel-title">Recommendation Workbench</div>
-      ${recommendationCards}
-      <div class="panel-title">Compare Top 3</div>
-      <div class="compare-grid">${compare}</div>
+      <div class="dashboard-grid">${recommendationCards}</div>
     `;
     return;
   }
@@ -163,7 +154,7 @@ function renderAuditPanel() {
   target.innerHTML = `
     <div class="panel-section">
       <div class="panel-title">Governance & Audit</div>
-      <div class="audit-box">
+      <div class="dashboard-card">
         <div><strong>Request ID:</strong> ${state.lastResult.request_id || '-'}</div>
         <div><strong>Generated At:</strong> ${state.lastResult.generated_at || '-'}</div>
         <div><strong>Capability:</strong> ${trace.capability || '-'}</div>
@@ -221,6 +212,75 @@ function renderAgentCards() {
     return;
   }
   target.textContent = JSON.stringify(state.agentCards, null, 2);
+}
+
+function renderDashboard() {
+  const metrics = document.getElementById('dashboardMetrics');
+  const patientSnapshot = document.getElementById('patientSnapshot');
+  const eligibilitySnapshot = document.getElementById('eligibilitySnapshot');
+  const documentsSnapshot = document.getElementById('documentsSnapshot');
+  const careTeamSnapshot = document.getElementById('careTeamSnapshot');
+  const dataSources = document.getElementById('dataSources');
+
+  if (!state.dashboardData) {
+    metrics.innerHTML = '<div class="stat-card"><strong>–</strong>Waiting for platform data</div>';
+    return;
+  }
+
+  const { platform_summary, patients, referrals, eligibility, appointments, notifications, documents, care_team, data_sources } = state.dashboardData;
+
+  metrics.innerHTML = `
+    <div class="stat-card"><strong>${platform_summary.active_patients}</strong>Active patients</div>
+    <div class="stat-card"><strong>${platform_summary.open_referrals}</strong>Open referrals</div>
+    <div class="stat-card"><strong>${platform_summary.eligible_cases}</strong>Eligible cases</div>
+    <div class="stat-card"><strong>${platform_summary.appointments_booked}</strong>Appointments booked</div>
+  `;
+
+  patientSnapshot.innerHTML = `
+    <ul>
+      ${patients.slice(0, 3).map((patient) => `<li><strong>${patient.name}</strong> • ${patient.insurance_plan} • ${patient.priority}</li>`).join('')}
+    </ul>
+    <p><strong>Latest referrals:</strong></p>
+    <ul>
+      ${referrals.slice(0, 3).map((referral) => `<li>${referral.referral_id} • ${referral.status} • ${referral.diagnosis}</li>`).join('')}
+    </ul>
+  `;
+
+  eligibilitySnapshot.innerHTML = `
+    <ul>
+      ${eligibility.map((item) => `<li>${item.referral_id} • ${item.insurance_plan} • ${item.eligible ? 'Eligible' : 'Needs review'}</li>`).join('')}
+    </ul>
+    <p><strong>Appointments:</strong></p>
+    <ul>
+      ${appointments.map((appointment) => `<li>${appointment.provider_name} • ${appointment.status} • ${appointment.slot}</li>`).join('')}
+    </ul>
+  `;
+
+  documentsSnapshot.innerHTML = `
+    <ul>
+      ${documents.map((document) => `<li>${document.type} • ${document.status} • ${document.owner}</li>`).join('')}
+    </ul>
+    <p><strong>Notifications:</strong></p>
+    <ul>
+      ${notifications.map((notification) => `<li>${notification.channel} • ${notification.message}</li>`).join('')}
+    </ul>
+  `;
+
+  careTeamSnapshot.innerHTML = `
+    <ul>
+      ${care_team.map((person) => `<li><strong>${person.name}</strong> • ${person.role} • ${person.contact}</li>`).join('')}
+    </ul>
+    <p><strong>Care coordination focus:</strong></p>
+    <ul>
+      <li>Resolve missing documents before specialist handoff.</li>
+      <li>Escalate cases that exceed target wait times.</li>
+      <li>Monitor payer authorization and appointment confirmation.</li>
+    </ul>
+  `;
+
+  dataSources.innerHTML = data_sources.map((source) => `
+    <div class="source-pill"><strong>${source.filename}</strong><br>${source.records} records</div>
+  `).join('');
 }
 
 function renderRawContract() {
@@ -293,6 +353,22 @@ async function sendJsonRpc(method, params) {
   }
 
   return data;
+}
+
+async function loadPlatformData() {
+  try {
+    const baseUrl = document.getElementById('backendBaseUrl').value.trim() || DEFAULT_BACKEND_URL;
+    const endpoint = `${baseUrl.replace(/\/$/, '')}/api/v1/platform-data`;
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error(`Platform data unavailable: ${response.status}`);
+    }
+    state.dashboardData = await response.json();
+  } catch (error) {
+    state.dashboardData = null;
+    renderToast(error.message);
+  }
+  renderDashboard();
 }
 
 async function loadAgentCards() {
@@ -449,8 +525,10 @@ function init() {
   renderAuditPanel();
   renderOverridePanel();
   renderAgentCards();
+  renderDashboard();
   renderRawContract();
   wireEvents();
+  loadPlatformData();
   loadAgentCards();
 }
 

@@ -1,0 +1,17 @@
+[
+  {
+    "role": "Primary Care Provider",
+    "name": "Dr. Maya Chen",
+    "contact": "maya.chen@clinic.org"
+  },
+  {
+    "role": "Care Coordinator",
+    "name": "Jordan Alvarez",
+    "contact": "jordan.alvarez@carecoord.org"
+  },
+  {
+    "role": "Specialist",
+    "name": "Dr. Elena Rodriguez",
+    "contact": "elena.rodriguez@cardio.org"
+  }
+]

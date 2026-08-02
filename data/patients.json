@@ -1,0 +1,22 @@
+[
+  {
+    "patient_id": "PT-001",
+    "name": "Aisha Patel",
+    "age": 42,
+    "primary_care_provider": "Dr. Maya Chen",
+    "insurance_plan": "Aetna",
+    "priority": "High",
+    "preferred_location": "Austin, TX",
+    "recent_conditions": ["Chest pain", "Hypertension"]
+  },
+  {
+    "patient_id": "PT-002",
+    "name": "Luis Moreno",
+    "age": 61,
+    "primary_care_provider": "Dr. Noah Kim",
+    "insurance_plan": "UnitedHealthcare",
+    "priority": "Medium",
+    "preferred_location": "Round Rock, TX",
+    "recent_conditions": ["Severe migraine", "Diabetes"]
+  }
+]
