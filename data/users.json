@@ -1,0 +1,26 @@
+{
+  "_comment": "Demo-only hardcoded credentials (no database). Do not use plaintext credentials like this in production.",
+  "users": [
+    {
+      "username": "patient1",
+      "password": "Patient@123",
+      "role": "patient",
+      "display_name": "Aviroop Basu",
+      "scope": "PT-001"
+    },
+    {
+      "username": "provider1",
+      "password": "Provider@123",
+      "role": "provider",
+      "display_name": "Dr. Ravi Johnson",
+      "scope": "P1001"
+    },
+    {
+      "username": "careagent1",
+      "password": "CareAgent@123",
+      "role": "care_agent",
+      "display_name": "Morgan Lee",
+      "scope": null
+    }
+  ]
+}

@@ -61,6 +61,48 @@ _ACTIONABLE_CAPABILITIES = {
 
 _ROUTING_CONFIDENCE_THRESHOLD = 0.6
 
+# Human end-user role -> capabilities that role is permitted to trigger, either
+# explicitly or via the conversational assistant's auto-routing. This is a second,
+# human-facing RBAC layer on top of the existing agent-to-MCP-tool RBAC in
+# app/mcp_server/server.py (USE_CASE_TOOL_MAP), which governs service identity
+# rather than the logged-in end user's role.
+ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
+    "patient": {
+        "specialist_recommendation",
+        "alternative_provider_suggestion",
+        "insurance_validation",
+        "provider_discovery",
+        "conversational_assistant",
+    },
+    "provider": {
+        "specialist_recommendation",
+        "alternative_provider_suggestion",
+        "referral_triage",
+        "insurance_validation",
+        "provider_discovery",
+        "conversational_assistant",
+    },
+    "care_agent": {
+        "specialist_recommendation",
+        "alternative_provider_suggestion",
+        "referral_triage",
+        "insurance_validation",
+        "provider_discovery",
+        "conversational_assistant",
+    },
+}
+
+
+def _role_allows(caller_role: str | None, capability: str) -> bool:
+    if caller_role is None:
+        # No authenticated end-user role attached to this call (e.g. server-to-server
+        # or test harness) - fall back to permissive behavior for backward compatibility.
+        return True
+    allowed = ROLE_CAPABILITY_MAP.get(caller_role.strip().lower())
+    if allowed is None:
+        return False
+    return capability in allowed
+
 def _invoke_agent_http(capability: str, payload: dict[str, Any]) -> dict[str, Any]:
     base_url = os.getenv("AGENT_RUNTIME_BASE_URL", "http://127.0.0.1:8091").rstrip("/")
     endpoint = f"{base_url}/api/v1/agents/{capability}/invoke"
@@ -136,12 +178,13 @@ def _missing_required_fields(card: AgentCard, slots: dict[str, Any]) -> list[str
     return [field for field in card.input_contract.get("required", []) if not slots.get(field)]
 
 
-def _route_conversational_assistant(payload: dict[str, Any]) -> dict[str, Any]:
+def _route_conversational_assistant(payload: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
     """Answers via the conversational assistant, but first tries to detect whether the
     question actually implies an actionable capability (e.g. "recommend a specialist for
-    chest pain in Austin with Aetna") and, if enough slots are present, executes that
-    capability live so the assistant can ground its answer in real computed data instead
-    of just talking generically about the platform."""
+    chest pain in Austin with Aetna") and, if enough slots are present AND the caller's
+    role is permitted to use that capability, executes it live so the assistant can
+    ground its answer in real computed data instead of just talking generically about
+    the platform."""
     question = str(payload.get("question", "")).strip()
     asker_role = payload.get("asker_role")
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
@@ -156,26 +199,35 @@ def _route_conversational_assistant(payload: dict[str, Any]) -> dict[str, Any]:
         decision = interpretation.decision
 
         if decision.capability in _ACTIONABLE_CAPABILITIES and decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD:
-            candidate_card = _card_by_capability(decision.capability)
-            slots = {key: value for key, value in interpretation.slots.items() if value}
+            if not _role_allows(caller_role, decision.capability):
+                context["routing_denied"] = {
+                    "capability": decision.capability,
+                    "reason": (
+                        f"Role '{caller_role}' is not permitted to use capability "
+                        f"'{decision.capability}'."
+                    ),
+                }
+            else:
+                candidate_card = _card_by_capability(decision.capability)
+                slots = {key: value for key, value in interpretation.slots.items() if value}
 
-            if candidate_card:
-                missing = _missing_required_fields(candidate_card, slots)
-                if not missing:
-                    try:
-                        routed_result, _ = _invoke_agent(decision.capability, slots)
-                        routed_capability = decision.capability
-                        routed_card = candidate_card
-                    except Exception as exc:  # noqa: BLE001
-                        context["routing_attempt_failed"] = {
+                if candidate_card:
+                    missing = _missing_required_fields(candidate_card, slots)
+                    if not missing:
+                        try:
+                            routed_result, _ = _invoke_agent(decision.capability, slots)
+                            routed_capability = decision.capability
+                            routed_card = candidate_card
+                        except Exception as exc:  # noqa: BLE001
+                            context["routing_attempt_failed"] = {
+                                "capability": decision.capability,
+                                "error": str(exc),
+                            }
+                    else:
+                        context["routing_missing_fields"] = {
                             "capability": decision.capability,
-                            "error": str(exc),
+                            "missing_fields": missing,
                         }
-                else:
-                    context["routing_missing_fields"] = {
-                        "capability": decision.capability,
-                        "missing_fields": missing,
-                    }
 
     if routed_result is not None:
         context["routed_capability_result"] = {
@@ -203,11 +255,16 @@ def _route_conversational_assistant(payload: dict[str, Any]) -> dict[str, Any]:
     return response
 
 
-def route_capability(params: dict[str, Any]) -> dict[str, Any]:
+def route_capability(params: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
     capability, payload = _select_capability(params)
 
     if capability == "conversational_assistant":
-        return _route_conversational_assistant(payload)
+        return _route_conversational_assistant(payload, caller_role=caller_role)
+
+    if not _role_allows(caller_role, capability):
+        raise PermissionError(
+            f"Role '{caller_role}' is not permitted to use capability '{capability}'."
+        )
 
     card = _card_by_capability(capability)
 
@@ -226,7 +283,7 @@ def route_capability(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def handle_jsonrpc_request(request: dict[str, Any]) -> dict[str, Any]:
+def handle_jsonrpc_request(request: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
     request_id = request.get("id")
     method = str(request.get("method", "")).strip()
     jsonrpc_version = request.get("jsonrpc")
@@ -248,7 +305,7 @@ def handle_jsonrpc_request(request: dict[str, Any]) -> dict[str, Any]:
             params = request.get("params", {})
             if not isinstance(params, dict):
                 raise ValueError("params must be an object.")
-            result = route_capability(params)
+            result = route_capability(params, caller_role=caller_role)
         else:
             return {
                 "jsonrpc": "2.0",
@@ -270,6 +327,15 @@ def handle_jsonrpc_request(request: dict[str, Any]) -> dict[str, Any]:
             "id": request_id,
             "error": {
                 "code": -32602,
+                "message": str(exc),
+            },
+        }
+    except PermissionError as exc:
+        return {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": {
+                "code": -32001,
                 "message": str(exc),
             },
         }

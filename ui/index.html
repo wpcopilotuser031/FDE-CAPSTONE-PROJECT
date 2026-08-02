@@ -3,315 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intelligent Care Coordination Platform</title>
+  <title>Care Coordination Assistant</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page-shell">
-    <header class="hero">
-      <div>
-        <h1>Intelligent Care Coordination & Referral Management Platform</h1>
-        <p>Coordinate patients, providers, payers, specialists, and care coordinators through one AI-assisted command center with eligibility checks, document tracking, scheduling support, and governance controls.</p>
-        <div class="hero-tags">
-          <span>Referral intake</span>
-          <span>Insurance eligibility</span>
-          <span>Provider matching</span>
-          <span>Alternative providers</span>
-          <span>Conversational assistant</span>
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h1>Care Coordination Assistant</h1>
+      <p class="login-subtitle">Sign in to chat with your AI referral assistant. Access is scoped to your role.</p>
+
+      <div class="field-row">
+        <label for="loginUsername">Username</label>
+        <input id="loginUsername" type="text" autocomplete="username" placeholder="e.g., patient1" />
+      </div>
+
+      <div class="field-row">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" />
+      </div>
+
+      <button id="loginBtn" class="action-button primary">Sign In</button>
+      <p id="loginError" class="login-error hidden"></p>
+
+      <div class="demo-logins">
+        <p class="demo-logins-title">Quick demo sign-in</p>
+        <div class="demo-logins-row">
+          <button type="button" class="demo-btn" data-username="patient1" data-password="Patient@123">🧑 Patient</button>
+          <button type="button" class="demo-btn" data-username="provider1" data-password="Provider@123">🩺 Provider</button>
+          <button type="button" class="demo-btn" data-username="careagent1" data-password="CareAgent@123">🛡️ Care Agent</button>
         </div>
       </div>
-      <div class="config-block">
-        <label for="backendBaseUrl">Backend URL</label>
-        <input id="backendBaseUrl" type="text" placeholder="http://127.0.0.1:8090" />
-      </div>
-    </header>
-
-    <nav class="tab-nav" id="tabNav">
-      <button class="tab-btn active" data-tab="dashboard" type="button">📊 Dashboard</button>
-      <button class="tab-btn" data-tab="referral" type="button">📝 New Referral</button>
-      <button class="tab-btn" data-tab="alternatives" type="button">🔄 Alternative Providers</button>
-      <button class="tab-btn" data-tab="governance" type="button">🛡️ Governance & Audit</button>
-      <button class="tab-btn" data-tab="map" type="button">🗺️ Platform Map</button>
-      <button class="tab-btn tab-btn-assistant" id="navAssistantBtn" type="button">💬 Ask Assistant</button>
-    </nav>
-
-    <!-- ===================== DASHBOARD TAB ===================== -->
-    <section class="tab-panel active" data-tab-panel="dashboard">
-      <div class="panel panel-fullwidth">
-        <div class="panel-title">Operations Dashboard</div>
-        <div id="dashboardMetrics" class="stats-grid"></div>
-        <div class="dashboard-grid">
-          <div class="dashboard-card">
-            <div class="card-title">Patient & Referral Pulse</div>
-            <div id="patientSnapshot"></div>
-          </div>
-          <div class="dashboard-card">
-            <div class="card-title">Insurance & Scheduling</div>
-            <div id="eligibilitySnapshot"></div>
-          </div>
-          <div class="dashboard-card">
-            <div class="card-title">Documents & Notifications</div>
-            <div id="documentsSnapshot"></div>
-          </div>
-          <div class="dashboard-card">
-            <div class="card-title">Care Team & Coordination</div>
-            <div id="careTeamSnapshot"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel panel-fullwidth">
-        <div class="panel-title">Connected Data Sources</div>
-        <div id="dataSources" class="source-grid"></div>
-      </div>
-    </section>
-
-    <!-- ===================== NEW REFERRAL TAB ===================== -->
-    <section class="tab-panel" data-tab-panel="referral">
-      <div class="page-grid">
-        <aside class="panel panel-left">
-          <div class="panel-title">Referral Intake</div>
-          <div class="field-row">
-            <label for="patientId">Patient ID</label>
-            <input id="patientId" type="text" readonly />
-          </div>
-
-          <div class="field-row">
-            <label for="diagnosis">Diagnosis</label>
-            <input id="diagnosis" type="text" placeholder="e.g., chest pain" />
-          </div>
-
-          <div class="field-row">
-            <label for="location">Preferred Location</label>
-            <input id="location" type="text" placeholder="e.g., Austin, TX" />
-          </div>
-
-          <div class="field-row">
-            <label for="insurancePlan">Insurance Plan</label>
-            <select id="insurancePlan">
-              <option>Aetna</option>
-              <option>BlueCross</option>
-              <option>Cigna</option>
-              <option>UnitedHealthcare</option>
-            </select>
-          </div>
-
-          <div class="field-row split">
-            <div>
-              <label for="urgency">Clinical Urgency</label>
-              <select id="urgency">
-                <option>Routine</option>
-                <option>Priority</option>
-                <option>Urgent</option>
-              </select>
-            </div>
-            <div>
-              <label for="preferredWindow">Preferred Appointment Window</label>
-              <select id="preferredWindow">
-                <option>Within 7 days</option>
-                <option>Within 14 days</option>
-                <option>Within 30 days</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field-row">
-            <label for="maxResults">Max Recommendations</label>
-            <input id="maxResults" type="range" min="1" max="10" value="5" />
-            <span id="maxResultsLabel">5</span>
-          </div>
-
-          <div class="panel-section">
-            <div class="panel-subtitle">Intake Completeness</div>
-            <ul id="intakeChecks" class="status-list"></ul>
-          </div>
-
-          <button id="generateBtn" class="action-button primary">Generate Recommendations</button>
-          <p class="field-note" id="intakeCaption">Urgency: Routine | Preferred window: Within 7 days</p>
-        </aside>
-
-        <main class="panel panel-middle">
-          <div class="panel-title">Recommendation Workspace</div>
-          <div id="workspaceStatus" class="info-box">Submit intake details or ask in chat to trigger agentic routing and populate this workspace.</div>
-          <div id="workspaceLiveSteps" class="progress-box"></div>
-          <div id="recommendationContent"></div>
-        </main>
-
-        <aside class="panel panel-right">
-          <div class="panel-title">Capability Router (Free Text)</div>
-          <p class="panel-copy">Ask in natural language. The router infers the capability and dispatches it through the agentic runtime — useful for testing routing logic.</p>
-          <pre class="code-sample">Recommend specialist for diagnosis: chest pain, location: Austin, TX, insurance: Aetna</pre>
-
-          <div class="field-row">
-            <label for="queryInput">Your query</label>
-            <textarea id="queryInput" rows="4" placeholder="Type your referral question..."></textarea>
-          </div>
-
-          <div class="field-row">
-            <label for="maxChatResults">Result Limit</label>
-            <input id="maxChatResults" type="range" min="1" max="10" value="3" />
-            <span id="maxChatResultsLabel">3</span>
-          </div>
-
-          <button id="askBtn" class="action-button secondary">Route Query</button>
-
-          <details class="panel-section" open>
-            <summary>Registered Agent Cards</summary>
-            <pre id="agentCards" class="json-box">Loading agent cards...</pre>
-          </details>
-        </aside>
-      </div>
-    </section>
-
-    <!-- ===================== ALTERNATIVE PROVIDERS TAB ===================== -->
-    <section class="tab-panel" data-tab-panel="alternatives">
-      <div class="page-grid page-grid-2col">
-        <aside class="panel panel-left">
-          <div class="panel-title">Find Alternative Providers</div>
-          <p class="panel-copy">Use this when a recommended provider's next availability exceeds the patient's preferred appointment window. Excludes the original provider and re-ranks the remaining candidates.</p>
-
-          <div class="field-row">
-            <label for="altDiagnosis">Diagnosis</label>
-            <input id="altDiagnosis" type="text" placeholder="e.g., chest pain" />
-          </div>
-
-          <div class="field-row">
-            <label for="altLocation">Preferred Location</label>
-            <input id="altLocation" type="text" placeholder="e.g., Austin, TX" />
-          </div>
-
-          <div class="field-row">
-            <label for="altInsurancePlan">Insurance Plan</label>
-            <select id="altInsurancePlan">
-              <option>Aetna</option>
-              <option>BlueCross</option>
-              <option>Cigna</option>
-              <option>UnitedHealthcare</option>
-            </select>
-          </div>
-
-          <div class="field-row">
-            <label for="altExcludedProviderId">Excluded Provider ID</label>
-            <input id="altExcludedProviderId" type="text" placeholder="e.g., P001" />
-          </div>
-
-          <div class="field-row split">
-            <div>
-              <label for="altUrgency">Clinical Urgency</label>
-              <select id="altUrgency">
-                <option>Routine</option>
-                <option>Priority</option>
-                <option>Urgent</option>
-              </select>
-            </div>
-            <div>
-              <label for="altPreferredWindow">Preferred Appointment Window</label>
-              <select id="altPreferredWindow">
-                <option>Within 7 days</option>
-                <option>Within 14 days</option>
-                <option>Within 30 days</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field-row">
-            <label for="altMaxResults">Max Alternatives</label>
-            <input id="altMaxResults" type="range" min="1" max="10" value="5" />
-            <span id="altMaxResultsLabel">5</span>
-          </div>
-
-          <button id="findAlternativesBtn" class="action-button primary">Find Alternatives</button>
-        </aside>
-
-        <main class="panel panel-middle">
-          <div class="panel-title">Alternative Provider Workspace</div>
-          <div id="alternativesStatus" class="info-box">Submit the form to search for alternative providers within the preferred window.</div>
-          <div id="alternativesLiveSteps" class="progress-box"></div>
-          <div id="alternativesContent"></div>
-        </main>
-      </div>
-    </section>
-
-    <!-- ===================== GOVERNANCE & AUDIT TAB ===================== -->
-    <section class="tab-panel" data-tab-panel="governance">
-      <div class="page-grid page-grid-2col">
-        <div class="panel">
-          <div id="auditPanel"></div>
-        </div>
-        <div class="panel">
-          <div id="overridePanel"></div>
-        </div>
-      </div>
-
-      <div class="panel panel-fullwidth">
-        <div class="panel-title">Raw Contract Preview</div>
-        <p>The JSON-RPC payload shape used by the capability router:</p>
-        <pre class="json-box" id="rawContract"></pre>
-      </div>
-    </section>
-
-    <!-- ===================== PLATFORM MAP TAB ===================== -->
-    <section class="tab-panel" data-tab-panel="map">
-      <div class="panel panel-fullwidth">
-        <div class="panel-title">Business Capability Map</div>
-        <div class="capability-grid">
-          <div class="capability-card"><strong>Referral Intake</strong><br>Capture diagnosis, urgency, location, and insurance context.</div>
-          <div class="capability-card"><strong>Eligibility Validation</strong><br>Verify coverage and determine prior authorization needs.</div>
-          <div class="capability-card"><strong>Specialist Recommendation</strong><br>Match providers by specialty, network, and wait time.</div>
-          <div class="capability-card"><strong>Alternative Provider Suggestion</strong><br>Re-rank alternatives when wait times exceed the preferred window.</div>
-          <div class="capability-card"><strong>Document & Status Tracking</strong><br>Monitor missing records and referral progression.</div>
-          <div class="capability-card"><strong>Conversational Assistant</strong><br>Answer patient, caregiver, and provider questions through AI.</div>
-        </div>
-        <div class="nfr-grid">
-          <div class="nfr-card"><strong>Security & Privacy</strong><br>Role-based access, auditability, and protected health data handling.</div>
-          <div class="nfr-card"><strong>Reliability</strong><br>Resilient routing, fallback behavior, and observable workflows.</div>
-          <div class="nfr-card"><strong>Interoperability</strong><br>REST APIs plus MCP integrations for payer and provider systems.</div>
-          <div class="nfr-card"><strong>Human-in-the-loop</strong><br>Escalation for urgent cases and coordinator override.</div>
-        </div>
-      </div>
-    </section>
-
-    <div id="toast" class="toast hidden"></div>
-  </div>
-
-  <!-- ===================== FLOATING CHATBOT WIDGET ===================== -->
-  <div id="chatWidget" class="chat-widget">
-    <button id="chatBubbleBtn" class="chat-bubble-btn" type="button" aria-label="Open assistant chat">💬</button>
-
-    <div id="chatPanel" class="chat-panel hidden">
-      <div class="chat-panel-header">
-        <div>
-          <div class="chat-panel-title">Care Coordination Assistant</div>
-          <div class="chat-panel-subtitle">Ask anything — referrals, providers, insurance, or how to use this platform.</div>
-        </div>
-        <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="Close chat">✕</button>
-      </div>
-
-      <div class="chat-role-row">
-        <label for="chatAskerRole">I am a:</label>
-        <select id="chatAskerRole">
-          <option value="patient">Patient</option>
-          <option value="caregiver">Caregiver</option>
-          <option value="primary care provider">Primary Care Provider</option>
-          <option value="specialist">Specialist</option>
-          <option value="care coordinator">Care Coordinator</option>
-        </select>
-        <label class="chat-context-toggle">
-          <input type="checkbox" id="chatUseContext" checked />
-          Use latest workflow context
-        </label>
-      </div>
-
-      <div id="chatMessages" class="chat-messages"></div>
-
-      <div class="chat-suggestions" id="chatSuggestions"></div>
-
-      <form id="chatForm" class="chat-input-row">
-        <textarea id="chatInput" rows="1" placeholder="Type your question..." autocomplete="off"></textarea>
-        <button id="chatSendBtn" class="action-button primary chat-send-btn" type="submit">Send</button>
-      </form>
     </div>
   </div>
+
+  <!-- ===================== CHAT SCREEN ===================== -->
+  <div id="chatScreen" class="chat-screen hidden">
+    <header class="chat-header">
+      <div>
+        <div class="chat-header-title">Care Coordination Assistant</div>
+        <div class="chat-header-subtitle" id="roleBadge"></div>
+      </div>
+      <button id="logoutBtn" class="action-button secondary">Log out</button>
+    </header>
+
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-suggestions" id="chatSuggestions"></div>
+
+    <form id="chatForm" class="chat-input-row">
+      <textarea id="chatInput" rows="1" placeholder="Ask about referrals, specialists, insurance..." autocomplete="off"></textarea>
+      <button id="chatSendBtn" class="action-button primary chat-send-btn" type="submit">Send</button>
+    </form>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
 
   <script src="app.js"></script>
 </body>

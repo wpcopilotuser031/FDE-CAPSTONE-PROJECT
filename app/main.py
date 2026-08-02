@@ -2,12 +2,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 from app.agents.capability_entrypoint import handle_jsonrpc_request
 from app.agents.llm_gateway import LLMGatewayError
+from app.auth import authenticate, end_session, get_session
 from app.mcp_clients.specialist_recommendation_client import MCPClientError
 from app.agents.specialist_recommendation_graph import run_specialist_recommendation_flow
 from app.config import DATA_DIR
@@ -98,6 +100,50 @@ def frontend() -> dict[str, str]:
     return {"message": "Visit /static/index.html to open the Referral Command Center frontend."}
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class LoginResponse(BaseModel):
+    token: str
+    role: str
+    display_name: str
+    scope: str | None = None
+
+
+@app.post("/api/v1/auth/login", response_model=LoginResponse)
+def login(request: LoginRequest) -> LoginResponse:
+    session = authenticate(request.username, request.password)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid username or password.")
+    return LoginResponse(
+        token=session.token,
+        role=session.role,
+        display_name=session.display_name,
+        scope=session.scope,
+    )
+
+
+@app.post("/api/v1/auth/logout")
+def logout(x_session_token: str | None = Header(default=None, alias="X-Session-Token")) -> dict[str, bool]:
+    end_session(x_session_token)
+    return {"ok": True}
+
+
+@app.get("/api/v1/auth/me", response_model=LoginResponse)
+def whoami(x_session_token: str | None = Header(default=None, alias="X-Session-Token")) -> LoginResponse:
+    session = get_session(x_session_token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired session.")
+    return LoginResponse(
+        token=session.token,
+        role=session.role,
+        display_name=session.display_name,
+        scope=session.scope,
+    )
+
+
 @app.get("/api/v1/platform-data")
 def platform_data() -> dict[str, Any]:
     return _build_platform_data()
@@ -122,5 +168,11 @@ def recommend_specialists(request: RecommendationRequest) -> RecommendationRespo
 
 
 @app.post("/api/v1/capability-router")
-def capability_router(request: JsonRpcRequest) -> dict:
-    return handle_jsonrpc_request(request.model_dump())
+def capability_router(
+    request: JsonRpcRequest,
+    x_session_token: str | None = Header(default=None, alias="X-Session-Token"),
+) -> dict:
+    session = get_session(x_session_token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired session. Please log in again.")
+    return handle_jsonrpc_request(request.model_dump(), caller_role=session.role)
