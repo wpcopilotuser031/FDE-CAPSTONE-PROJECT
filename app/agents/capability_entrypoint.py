@@ -200,12 +200,31 @@ def _route_conversational_assistant(payload: dict[str, Any], caller_role: str | 
 
         if decision.capability in _ACTIONABLE_CAPABILITIES and decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD:
             if not _role_allows(caller_role, decision.capability):
-                context["routing_denied"] = {
-                    "capability": decision.capability,
-                    "reason": (
-                        f"Role '{caller_role}' is not permitted to use capability "
-                        f"'{decision.capability}'."
-                    ),
+                # Hard stop: the conversational assistant must not use the LLM to
+                # "work around" a denied capability (e.g. by falling back on stale
+                # context from an earlier, permitted turn). Return a deterministic
+                # authorization error instead of invoking the assistant agent.
+                denied_card = _card_by_capability(decision.capability)
+                return {
+                    "selected_capability": "conversational_assistant",
+                    "selected_agent_card": asdict(_card_by_capability("conversational_assistant")),
+                    "agent_transport": "none",
+                    "agent_result": {
+                        "answer": (
+                            "You are not authorized to perform this action. "
+                            f"The '{denied_card.display_name if denied_card else decision.capability}' "
+                            "capability is restricted to other roles."
+                        ),
+                        "follow_up_suggestions": [],
+                        "llm_used": False,
+                        "decision_trace": {
+                            "capability": decision.capability,
+                            "caller_role": caller_role,
+                            "mcp_enabled": False,
+                            "tools_invoked": [],
+                            "human_review_required": False,
+                        },
+                    },
                 }
             else:
                 candidate_card = _card_by_capability(decision.capability)
