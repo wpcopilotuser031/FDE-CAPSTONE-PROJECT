@@ -154,7 +154,6 @@ def score_provider_with_breakdown(
         "location_component": round(location_component, 4),
         "insurance_component": round(insurance_component, 4),
         "wait_time_component": round(wait_time_component, 4),
-        "urgency": urgency,
     }
 
 

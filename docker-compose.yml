@@ -5,6 +5,8 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8090
     ports:
       - "8090:8090"
+    env_file:
+      - .env
     environment:
       - USE_MCP_TOOLS=true
     restart: unless-stopped
@@ -15,6 +17,8 @@ services:
     command: uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091
     ports:
       - "8091:8091"
+    env_file:
+      - .env
     restart: unless-stopped
 
   mcp_gateway:
@@ -23,6 +27,8 @@ services:
     command: uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092
     ports:
       - "8092:8092"
+    env_file:
+      - .env
     restart: unless-stopped
 
   ui:

@@ -179,12 +179,14 @@ This will build the image and start the following services:
 - MCP gateway: http://127.0.0.1:8092
 - UI (nginx): http://127.0.0.1:8093
 
-If you prefer to run only the backend container directly:
+If you prefer to run only the backend container directly, build the reusable image and pass runtime environment values from `.env`:
 
 ```bash
 docker build -t referral-platform:phase1 .
-docker run --rm -p 8090:8090 referral-platform:phase1
+docker run --rm -p 8090:8090 --env-file .env referral-platform:phase1
 ```
+
+This lets you run the backend image from another machine while keeping secrets and runtime URLs out of the image.
 
 Open the standalone UI at:
 

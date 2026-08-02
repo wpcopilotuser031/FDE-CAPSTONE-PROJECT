@@ -28,6 +28,14 @@ def test_infer_insurance_validation_capability() -> None:
     assert decision.capability == "insurance_validation"
 
 
+def test_infer_alternative_provider_capability() -> None:
+    decision = infer_capability_from_query(
+        "Find alternative providers for chest pain in Austin, TX, excluding provider PROV-001"
+    )
+    assert decision.capability == "alternative_provider_suggestion"
+    assert decision.confidence >= 0.5
+
+
 def test_heuristic_slot_extraction() -> None:
     slots = heuristic_slot_extraction(
         "Recommend specialist for diagnosis: chest pain, location: Austin, TX, insurance: Aetna"
@@ -35,6 +43,18 @@ def test_heuristic_slot_extraction() -> None:
     assert slots["diagnosis"] == "chest pain"
     assert slots["location"] == "Austin"
     assert slots["insurance_plan"] == "Aetna"
+
+
+def test_heuristic_slot_extraction_alternative_provider() -> None:
+    slots = heuristic_slot_extraction(
+        "Find alternative providers for diagnosis: chest pain, location: Austin, TX, insurance: Aetna, excluding provider PROV-001, within 7 days, urgency: Routine"
+    )
+    assert slots["diagnosis"] == "chest pain"
+    assert slots["location"] == "Austin"
+    assert slots["insurance_plan"] == "Aetna"
+    assert slots["excluded_provider_id"] == "PROV-001"
+    assert slots["preferred_window_days"] == "7"
+    assert slots["urgency"] == "Routine"
 
 
 def test_infer_query_llm_success(monkeypatch) -> None:

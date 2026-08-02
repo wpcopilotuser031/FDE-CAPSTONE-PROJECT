@@ -31,6 +31,20 @@ RECOMMENDATION_KEYWORDS = {
     "referral",
 }
 
+ALTERNATIVE_PROVIDER_KEYWORDS = {
+    "alternative",
+    "alternatives",
+    "alternate",
+    "another",
+    "other",
+    "instead",
+    "exclude",
+    "excluding",
+    "except",
+    "besides",
+    "replacement",
+}
+
 TRIAGE_KEYWORDS = {
     "triage",
     "urgent",
@@ -67,17 +81,31 @@ def heuristic_slot_extraction(query: str) -> dict[str, str | None]:
         "diagnosis": _extract_field(r"diagnosis\s*[:=-]\s*([^,;]+)", query),
         "location": _extract_field(r"location\s*[:=-]\s*([^,;]+)", query),
         "insurance_plan": _extract_field(r"insurance\s*[:=-]\s*([^,;]+)", query),
+        "excluded_provider_id": _extract_field(
+            r"(?:excluding|except|exclude)\s+(?:provider\s+)?([A-Za-z0-9\-_]+)",
+            query,
+        ),
+        "preferred_window_days": _extract_field(r"(?:within|in)\s+(\d+)\s+days?", query),
+        "urgency": _extract_field(r"urgency\s*[:=-]\s*([A-Za-z]+)", query),
     }
 
 
 def infer_capability_from_query(query: str) -> CapabilityDecision:
     query_lower = query.lower()
     recommendation_score = sum(1 for keyword in RECOMMENDATION_KEYWORDS if keyword in query_lower)
+    alternative_score = 0
+    if any(term in query_lower for term in {"alternative", "alternatives", "alternate", "another"}):
+        alternative_score += 2
+    if any(term in query_lower for term in {"other provider", "other providers", "instead of", "besides", "except", "excluding", "exclude"}):
+        alternative_score += 2
+    if "provider" in query_lower and ("other" in query_lower or "alternative" in query_lower):
+        alternative_score += 1
     triage_score = sum(1 for keyword in TRIAGE_KEYWORDS if keyword in query_lower)
     insurance_score = sum(1 for keyword in INSURANCE_KEYWORDS if keyword in query_lower)
     discovery_score = sum(1 for keyword in DISCOVERY_KEYWORDS if keyword in query_lower)
 
     scored_capabilities = [
+        ("alternative_provider_suggestion", alternative_score),
         ("specialist_recommendation", recommendation_score),
         ("referral_triage", triage_score),
         ("insurance_validation", insurance_score),
@@ -103,8 +131,10 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
 def infer_query_with_llm(query: str) -> QueryInterpretation:
     system_prompt = (
         "You are a healthcare referral capability router. "
-        "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan. "
-        "Allowed capability values: specialist_recommendation, referral_triage, insurance_validation, provider_discovery, unknown. "
+        "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
+        "excluded_provider_id, preferred_window_days, urgency. "
+        "Allowed capability values: specialist_recommendation, referral_triage, insurance_validation, "
+        "provider_discovery, alternative_provider_suggestion, unknown. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
     )
     user_prompt = f"User query: {query}"
@@ -120,6 +150,7 @@ def infer_query_with_llm(query: str) -> QueryInterpretation:
         "referral_triage",
         "insurance_validation",
         "provider_discovery",
+        "alternative_provider_suggestion",
         "unknown",
     }:
         capability = "unknown"
@@ -128,6 +159,9 @@ def infer_query_with_llm(query: str) -> QueryInterpretation:
         "diagnosis": response_json.get("diagnosis"),
         "location": response_json.get("location"),
         "insurance_plan": response_json.get("insurance_plan"),
+        "excluded_provider_id": response_json.get("excluded_provider_id"),
+        "preferred_window_days": response_json.get("preferred_window_days"),
+        "urgency": response_json.get("urgency"),
     }
     slots = {key: (str(value).strip() if value is not None else None) for key, value in slots.items()}
 

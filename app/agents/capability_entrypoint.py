@@ -6,7 +6,12 @@ import os
 from typing import Any
 from urllib import error, request as urlrequest
 
+from app.agents.alternative_provider_agent import build_agent_card as build_alternative_provider_card
 from app.agents.capability_router import infer_capability_from_query, infer_query
+from app.agents.insurance_validation_agent import build_agent_card as build_insurance_validation_card
+from app.agents.provider_discovery_agent import build_agent_card as build_provider_discovery_card
+from app.agents.referral_triage_agent import build_agent_card as build_referral_triage_card
+from app.agents.specialist_recommendation_agent import build_agent_card as build_specialist_card
 
 
 @dataclass
@@ -20,73 +25,29 @@ class AgentCard:
     mcp_tools: list[str]
 
 
-_AGENT_CARDS: list[AgentCard] = [
-    AgentCard(
-        agent_id="agent.specialist_recommendation.v1",
-        capability="specialist_recommendation",
-        display_name="Specialist Recommendation Agent",
-        description="Recommends ranked specialists by diagnosis, geography, and payer coverage.",
-        input_contract={
-            "required": ["diagnosis", "location", "insurance_plan"],
-            "optional": ["max_results"],
-        },
-        rbac_role="specialist_recommendation",
-        mcp_tools=["diagnosis_to_specialty", "provider_candidates", "insurance_eligibility"],
-    ),
-    AgentCard(
-        agent_id="agent.referral_triage.v1",
-        capability="referral_triage",
-        display_name="Referral Triage Agent",
-        description="Assigns referral priority and suggests specialty domains.",
-        input_contract={
-            "required": ["diagnosis"],
-            "optional": [],
-        },
-        rbac_role="referral_triage",
-        mcp_tools=["diagnosis_to_specialty", "provider_candidates"],
-    ),
-    AgentCard(
-        agent_id="agent.provider_discovery.v1",
-        capability="provider_discovery",
-        display_name="Provider Discovery Agent",
-        description="Finds candidate providers for a diagnosis in a given geography.",
-        input_contract={
-            "required": ["diagnosis", "location"],
-            "optional": ["max_results"],
-        },
-        rbac_role="provider_discovery",
-        mcp_tools=["provider_candidates"],
-    ),
-    AgentCard(
-        agent_id="agent.insurance_validation.v1",
-        capability="insurance_validation",
-        display_name="Insurance Validation Agent",
-        description="Validates whether a provider is in-network for a payer plan.",
-        input_contract={
-            "required": ["provider_id", "insurance_plan"],
-            "optional": [],
-        },
-        rbac_role="insurance_validation",
-        mcp_tools=["insurance_eligibility"],
-    ),
-    AgentCard(
-        agent_id="agent.alternative_provider_suggestion.v1",
-        capability="alternative_provider_suggestion",
-        display_name="Alternative Provider Suggestion Agent",
-        description=(
-            "Suggests ranked alternative providers when the originally recommended "
-            "provider exceeds the patient's preferred appointment window. "
-            "Excludes the original provider, filters by availability window, "
-            "and applies urgency-adjusted scoring."
-        ),
-        input_contract={
-            "required": ["diagnosis", "location", "insurance_plan", "excluded_provider_id"],
-            "optional": ["preferred_window_days", "urgency", "max_results"],
-        },
-        rbac_role="alternative_provider_suggestion",
-        mcp_tools=["diagnosis_to_specialty", "provider_candidates", "insurance_eligibility"],
-    ),
-]
+def _build_agent_cards() -> list[AgentCard]:
+    card_builders = [
+        build_specialist_card,
+        build_referral_triage_card,
+        build_provider_discovery_card,
+        build_insurance_validation_card,
+        build_alternative_provider_card,
+    ]
+    return [
+        AgentCard(
+            agent_id=card_data["agent_id"],
+            capability=card_data["capability"],
+            display_name=card_data["display_name"],
+            description=card_data["description"],
+            input_contract=card_data["input_contract"],
+            rbac_role=card_data["rbac_role"],
+            mcp_tools=card_data["mcp_tools"],
+        )
+        for card_data in (builder() for builder in card_builders)
+    ]
+
+
+_AGENT_CARDS: list[AgentCard] = _build_agent_cards()
 
 def _invoke_agent_http(capability: str, payload: dict[str, Any]) -> dict[str, Any]:
     base_url = os.getenv("AGENT_RUNTIME_BASE_URL", "http://127.0.0.1:8091").rstrip("/")

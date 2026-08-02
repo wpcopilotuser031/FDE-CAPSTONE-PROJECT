@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 from typing import Any
 from urllib import error, request as urlrequest
 
 from dotenv import load_dotenv
 
-load_dotenv()
+ROOT_PATH = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_PATH / ".env", override=False)
 
 
 class MCPClientError(RuntimeError):

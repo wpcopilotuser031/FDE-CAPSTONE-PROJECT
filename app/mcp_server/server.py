@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 from app.mcp_server.tools import (
     check_provider_in_network,
@@ -10,7 +11,8 @@ from app.mcp_server.tools import (
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
-load_dotenv()
+ROOT_PATH = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_PATH / ".env")
 
 mcp = FastMCP("referral-tools-mcp")
 
