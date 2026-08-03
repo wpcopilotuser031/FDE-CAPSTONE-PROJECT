@@ -40,7 +40,46 @@ def build_agent_card() -> dict[str, Any]:
     }
 
 
-def _fallback_answer() -> dict[str, Any]:
+def _format_recommendations(recommendations: list[dict[str, Any]]) -> str:
+    """Format specialist recommendations as readable text."""
+    if not recommendations:
+        return "No recommendations found."
+
+    lines = [f"Found {len(recommendations)} recommendation(s):"]
+    for i, rec in enumerate(recommendations[:5], 1):  # Show top 5
+        name = rec.get("provider_name", "Unknown")
+        specialty = rec.get("specialty", "Unknown specialty")
+        available = rec.get("next_available_date", "TBD")
+        score = rec.get("score", 0)
+        in_network = "✓ In-network" if rec.get("accepts_insurance") else "❌ Out-of-network"
+        lines.append(
+            f"{i}. {name} – {specialty} | {in_network} | Available: {available} | Score: {score:.2f}"
+        )
+    return "\n".join(lines)
+
+
+def _fallback_answer(context: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Generate fallback response. If context has routed results, format those instead of generic error."""
+    # If LLM failed but we have actual agent results, display them anyway
+    if context and "routed_capability_result" in context:
+        routed = context["routed_capability_result"]
+        result = routed.get("result", {})
+
+        # Format specialist recommendations
+        if routed.get("capability") == "specialist_recommendation":
+            recommendations = result.get("recommendations", [])
+            answer = _format_recommendations(recommendations)
+            if recommendations:
+                return {
+                    "answer": answer,
+                    "follow_up_suggestions": [
+                        "Show me alternatives to the top provider",
+                        "Filter by in-network providers only",
+                        "What's the appointment window for each?",
+                    ],
+                }
+
+    # Generic fallback if no context
     return {
         "answer": (
             "I couldn't reach the language model just now, so I can't answer that in "
@@ -90,9 +129,10 @@ def conversational_assistant_agent(payload: dict[str, Any]) -> dict[str, Any]:
             raise ValueError("LLM returned an empty answer.")
         llm_used = True
     except Exception:  # noqa: BLE001
-        fallback = _fallback_answer()
+        # LLM failed - but check if we have routed agent results to display anyway
+        fallback = _fallback_answer(context=context)
         answer = fallback["answer"]
-        follow_ups = fallback["follow_up_suggestions"]
+        follow_ups = fallback.get("follow_up_suggestions", [])
 
     return {
         "answer": answer,
