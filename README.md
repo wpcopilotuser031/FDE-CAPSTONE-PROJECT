@@ -1,4 +1,4 @@
-# Intelligent Care Coordination & Referral Management Platform
+# Intelligent Care Coordination & Referral Management Platform.
 
 Phase 1 implementation of the capstone use case.
 
