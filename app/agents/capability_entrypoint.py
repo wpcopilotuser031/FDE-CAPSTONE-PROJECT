@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 import json
 import os
+import threading
 from typing import Any
 from urllib import error, request as urlrequest
 
@@ -60,6 +61,11 @@ _ACTIONABLE_CAPABILITIES = {
 }
 
 _ROUTING_CONFIDENCE_THRESHOLD = 0.6
+
+# Session-based context cache: session_token → last agent result
+# Allows conversational assistant to access context from previous queries
+_SESSION_CONTEXT_LOCK = threading.Lock()
+_SESSION_CONTEXT: dict[str, dict[str, Any]] = {}
 
 # Phrases that imply the user wants data/actions this platform never implemented as a
 # real agent/capability (e.g. patient medical history, chart notes, scheduling). These
@@ -128,6 +134,25 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         "conversational_assistant",
     },
 }
+
+
+def _save_session_context(session_token: str | None, capability: str, result: dict[str, Any]) -> None:
+    """Cache the last agent result for a session to provide context for follow-up queries."""
+    if not session_token:
+        return
+    with _SESSION_CONTEXT_LOCK:
+        _SESSION_CONTEXT[session_token.strip()] = {
+            "capability": capability,
+            "result": result,
+        }
+
+
+def _get_session_context(session_token: str | None) -> dict[str, Any] | None:
+    """Retrieve the cached context for a session."""
+    if not session_token:
+        return None
+    with _SESSION_CONTEXT_LOCK:
+        return _SESSION_CONTEXT.get(session_token.strip())
 
 
 def _role_allows(caller_role: str | None, capability: str) -> bool:
@@ -215,17 +240,31 @@ def _missing_required_fields(card: AgentCard, slots: dict[str, Any]) -> list[str
     return [field for field in card.input_contract.get("required", []) if not slots.get(field)]
 
 
-def _route_conversational_assistant(payload: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
+def _route_conversational_assistant(
+    payload: dict[str, Any],
+    caller_role: str | None = None,
+    session_token: str | None = None,
+) -> dict[str, Any]:
     """Answers via the conversational assistant, but first tries to detect whether the
     question actually implies an actionable capability (e.g. "recommend a specialist for
     chest pain in Austin with Aetna") and, if enough slots are present AND the caller's
     role is permitted to use that capability, executes it live so the assistant can
     ground its answer in real computed data instead of just talking generically about
-    the platform."""
+    the platform.
+
+    Also automatically injects cached context from previous queries in this session,
+    allowing the assistant to answer contextual follow-up questions like "suggest
+    alternatives to the first doctor" without requiring the user to re-specify all details."""
     question = str(payload.get("question", "")).strip()
     asker_role = payload.get("asker_role")
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
     context = dict(context)
+
+    # Auto-inject cached session context if available
+    if session_token:
+        cached = _get_session_context(session_token)
+        if cached and "routed_capability_result" not in context:
+            context["routed_capability_result"] = cached
 
     if question:
         unsupported_phrase = _matches_unsupported_topic(question)
@@ -341,11 +380,19 @@ def _route_conversational_assistant(payload: dict[str, Any], caller_role: str | 
     return response
 
 
-def route_capability(params: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
+def route_capability(
+    params: dict[str, Any],
+    caller_role: str | None = None,
+    session_token: str | None = None,
+) -> dict[str, Any]:
     capability, payload = _select_capability(params)
 
     if capability == "conversational_assistant":
-        return _route_conversational_assistant(payload, caller_role=caller_role)
+        return _route_conversational_assistant(
+            payload,
+            caller_role=caller_role,
+            session_token=session_token,
+        )
 
     if not _role_allows(caller_role, capability):
         raise PermissionError(
@@ -361,6 +408,9 @@ def route_capability(params: dict[str, Any], caller_role: str | None = None) -> 
 
     result, transport = _invoke_agent(capability, payload)
 
+    # Cache result for this session so follow-up queries have context
+    _save_session_context(session_token, capability, result)
+
     return {
         "selected_capability": capability,
         "selected_agent_card": asdict(card),
@@ -369,7 +419,11 @@ def route_capability(params: dict[str, Any], caller_role: str | None = None) -> 
     }
 
 
-def handle_jsonrpc_request(request: dict[str, Any], caller_role: str | None = None) -> dict[str, Any]:
+def handle_jsonrpc_request(
+    request: dict[str, Any],
+    caller_role: str | None = None,
+    session_token: str | None = None,
+) -> dict[str, Any]:
     request_id = request.get("id")
     method = str(request.get("method", "")).strip()
     jsonrpc_version = request.get("jsonrpc")
@@ -391,7 +445,11 @@ def handle_jsonrpc_request(request: dict[str, Any], caller_role: str | None = No
             params = request.get("params", {})
             if not isinstance(params, dict):
                 raise ValueError("params must be an object.")
-            result = route_capability(params, caller_role=caller_role)
+            result = route_capability(
+                params,
+                caller_role=caller_role,
+                session_token=session_token,
+            )
         else:
             return {
                 "jsonrpc": "2.0",

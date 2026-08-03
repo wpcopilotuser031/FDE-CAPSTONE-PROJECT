@@ -185,4 +185,8 @@ def capability_router(
     session = get_session(x_session_token)
     if not session:
         raise HTTPException(status_code=401, detail="Invalid or expired session. Please log in again.")
-    return handle_jsonrpc_request(request.model_dump(), caller_role=session.role)
+    return handle_jsonrpc_request(
+        request.model_dump(),
+        caller_role=session.role,
+        session_token=x_session_token,
+    )
