@@ -102,6 +102,7 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
     "patient": {
         "specialist_recommendation",
         "alternative_provider_suggestion",
+        "referral_triage",
         "insurance_validation",
         "provider_discovery",
         "conversational_assistant",

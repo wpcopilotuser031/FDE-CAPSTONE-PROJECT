@@ -74,7 +74,15 @@ def retrieve_candidate_providers(
     if mcp_client:
         return mcp_client.provider_candidates(diagnosis, location, max_candidates=max_candidates)
 
-    query = f"{diagnosis} specialists in {location}"
+    # Map diagnosis to specialty first, then search for providers of that specialty in the location
+    specialties = infer_specialties_llm_assisted(diagnosis)[0]
+
+    if not specialties:
+        return []
+
+    # Query providers by specialty and location
+    specialty_str = " ".join(specialties)
+    query = f"{specialty_str} in {location}"
     return _provider_index.query(query, top_k=max_candidates)
 
 

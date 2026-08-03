@@ -47,7 +47,6 @@ ALTERNATIVE_PROVIDER_KEYWORDS = {
 
 TRIAGE_KEYWORDS = {
     "triage",
-    "urgent",
     "acuity",
     "priority",
     "severity",
@@ -130,11 +129,14 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
 
 def infer_query_with_llm(query: str) -> QueryInterpretation:
     system_prompt = (
-        "You are a healthcare referral capability router. "
+        "You are a healthcare referral capability router. Route to the most specific capability:\n"
+        "- specialist_recommendation: when asking for provider/specialist recommendations for a diagnosis with location/insurance details\n"
+        "- referral_triage: when explicitly asking to assess priority/urgency level of a referral (not when describing urgent symptoms)\n"
+        "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
+        "- insurance_validation: when asking if a provider is in-network\n"
+        "- provider_discovery: when searching for providers by specialty/location without a specific diagnosis\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
         "excluded_provider_id, preferred_window_days, urgency. "
-        "Allowed capability values: specialist_recommendation, referral_triage, insurance_validation, "
-        "provider_discovery, alternative_provider_suggestion, unknown. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
     )
     user_prompt = f"User query: {query}"
