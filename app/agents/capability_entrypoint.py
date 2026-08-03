@@ -99,22 +99,26 @@ def _matches_unsupported_topic(question: str) -> str | None:
 # app/mcp_server/server.py (USE_CASE_TOOL_MAP), which governs service identity
 # rather than the logged-in end user's role.
 ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
+    # Patient: Can get recommendations for themselves, find alternatives, check insurance
     "patient": {
         "specialist_recommendation",
         "alternative_provider_suggestion",
         "referral_triage",
-        "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
+        # EXCLUDED: "insurance_validation" - sensitive, patient can't check coverage directly
     },
+    # Provider: Can refer to specialists but NOT get recommendations for themselves
+    # Can triage, discover providers, check insurance, and converse
     "provider": {
-        "specialist_recommendation",
-        "alternative_provider_suggestion",
         "referral_triage",
         "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
+        # EXCLUDED: "specialist_recommendation" - for patient self-help, not provider self-care
+        # EXCLUDED: "alternative_provider_suggestion" - same reason
     },
+    # Care Agent: Full access to manage patient workflows
     "care_agent": {
         "specialist_recommendation",
         "alternative_provider_suggestion",
