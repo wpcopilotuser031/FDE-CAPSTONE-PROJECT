@@ -165,7 +165,21 @@ def run_specialist_recommendation_flow(
     urgency: str = "Routine",
     preferred_window_days: int = 7,
     progress_callback: Callable[[str], None] | None = None,
+    user_role: str | None = None,
 ) -> dict[str, Any]:
+    """
+    Execute specialist recommendation workflow.
+
+    Args:
+        diagnosis: Patient diagnosis
+        location: Geographic location for provider search
+        insurance_plan: Patient insurance plan name
+        max_results: Maximum recommendations to return
+        urgency: Referral urgency (Routine/Priority/Urgent)
+        preferred_window_days: Preferred appointment window in days
+        progress_callback: Optional callback for progress updates
+        user_role: Logged-in end-user role (patient/provider/care_agent) - enables user-level RBAC checks
+    """
     graph = build_specialist_recommendation_graph()
 
     use_mcp = os.getenv("USE_MCP_TOOLS", "true").strip().lower() in {"true", "1", "yes", "on"}
@@ -173,7 +187,8 @@ def run_specialist_recommendation_flow(
     try:
         if use_mcp:
             with SpecialistRecommendationMCPClient(
-                caller_role=SPECIALIST_RECOMMENDATION_ROLE
+                caller_role=SPECIALIST_RECOMMENDATION_ROLE,
+                user_role=user_role,
             ) as mcp_client:
                 initial_state: SpecialistRecommendationState = {
                     "diagnosis": diagnosis,

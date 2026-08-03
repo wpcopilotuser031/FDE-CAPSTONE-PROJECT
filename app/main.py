@@ -153,7 +153,13 @@ def platform_data() -> dict[str, Any]:
 
 
 @app.post("/api/v1/recommend-specialists", response_model=RecommendationResponse)
-def recommend_specialists(request: RecommendationRequest) -> RecommendationResponse:
+def recommend_specialists(
+    request: RecommendationRequest,
+    x_session_token: str | None = Header(default=None, alias="X-Session-Token"),
+) -> RecommendationResponse:
+    session = get_session(x_session_token)
+    user_role = session.role if session else None
+
     try:
         result = run_specialist_recommendation_flow(
             diagnosis=request.diagnosis,
@@ -162,6 +168,7 @@ def recommend_specialists(request: RecommendationRequest) -> RecommendationRespo
             max_results=request.max_results,
             urgency=request.urgency,
             preferred_window_days=request.preferred_window_days,
+            user_role=user_role,
         )
     except LLMGatewayError as exc:
         raise HTTPException(status_code=503, detail=f"LLM dependency unavailable: {exc}") from exc

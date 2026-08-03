@@ -17,10 +17,16 @@ class MCPClientError(RuntimeError):
 
 
 class SpecialistRecommendationMCPClient:
-    """Blocking HTTP MCP client for specialist recommendation use-case tool calls."""
+    """Blocking HTTP MCP client for specialist recommendation use-case tool calls.
 
-    def __init__(self, caller_role: str) -> None:
+    Supports dual-layer RBAC:
+    - caller_role: The capability/service name (e.g., 'specialist_recommendation')
+    - user_role: Optional logged-in end-user role (patient/provider/care_agent)
+    """
+
+    def __init__(self, caller_role: str, user_role: str | None = None) -> None:
         self._caller_role = caller_role.strip().lower()
+        self._user_role = user_role.strip().lower() if user_role else None
         self._internal_key = os.getenv("MCP_INTERNAL_KEY", "").strip()
         self._transport = os.getenv("MCP_TRANSPORT", "http").strip().lower()
         self._http_base_url = os.getenv("MCP_HTTP_BASE_URL", "http://127.0.0.1:8092").rstrip("/")
@@ -41,6 +47,10 @@ class SpecialistRecommendationMCPClient:
             "caller_role": self._caller_role,
             "internal_key": self._internal_key,
         }
+
+        # Include user_role if provided (dual-layer RBAC)
+        if self._user_role:
+            payload["user_role"] = self._user_role
 
         if self._transport != "http":
             raise MCPClientError("Only HTTP transport is supported for MCP calls. Set MCP_TRANSPORT=http.")
