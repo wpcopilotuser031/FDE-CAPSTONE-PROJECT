@@ -211,7 +211,10 @@ def _card_by_capability(capability: str) -> AgentCard | None:
     return None
 
 
-def _select_capability(params: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+def _select_capability(
+    params: dict[str, Any],
+    session_token: str | None = None,
+) -> tuple[str, dict[str, Any]]:
     requested_capability = str(params.get("capability", "")).strip()
     payload = params.get("payload")
     query = str(params.get("query", "")).strip()
@@ -223,7 +226,15 @@ def _select_capability(params: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         return requested_capability, payload
 
     if query:
-        interpretation = infer_query(query)
+        # Get cached context to pass to LLM for slot extraction
+        context = None
+        if session_token:
+            cached = _get_session_context(session_token)
+            if cached:
+                context = {"routed_capability_result": cached}
+
+        # LLM intelligently extracts slots from query and context
+        interpretation = infer_query(query, context=context)
         if interpretation.decision.capability != "unknown":
             for key, value in interpretation.slots.items():
                 if value and key not in payload:
@@ -385,7 +396,7 @@ def route_capability(
     caller_role: str | None = None,
     session_token: str | None = None,
 ) -> dict[str, Any]:
-    capability, payload = _select_capability(params)
+    capability, payload = _select_capability(params, session_token=session_token)
 
     if capability == "conversational_assistant":
         return _route_conversational_assistant(

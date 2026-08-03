@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from typing import Any
 
 from app.agents.llm_gateway import LLMGatewayError, call_llm_json
 
@@ -127,7 +128,7 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
     )
 
 
-def infer_query_with_llm(query: str) -> QueryInterpretation:
+def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> QueryInterpretation:
     system_prompt = (
         "You are a healthcare referral capability router. Route to the most specific capability:\n"
         "- specialist_recommendation: when asking for provider/specialist recommendations for a diagnosis with location/insurance details\n"
@@ -135,11 +136,26 @@ def infer_query_with_llm(query: str) -> QueryInterpretation:
         "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
         "- insurance_validation: when asking if a provider is in-network\n"
         "- provider_discovery: when searching for providers by specialty/location without a specific diagnosis\n"
+        "\n"
+        "IMPORTANT: If a previous result is provided in context with recommendations, and the user asks for 'alternatives to [Provider Name]':\n"
+        "1. Route to 'alternative_provider_suggestion'\n"
+        "2. Extract the provider_id by matching [Provider Name] against the recommendations in context\n"
+        "3. Return the matched provider_id as 'excluded_provider_id'\n"
+        "\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
         "excluded_provider_id, preferred_window_days, urgency. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
     )
-    user_prompt = f"User query: {query}"
+
+    context_str = ""
+    if context and "routed_capability_result" in context:
+        prev_result = context["routed_capability_result"].get("result", {})
+        if prev_result.get("recommendations"):
+            context_str = "\nPrevious recommendations available:\n"
+            for rec in prev_result["recommendations"]:
+                context_str += f"- {rec.get('provider_name')} (ID: {rec.get('provider_id')}, {rec.get('specialty')})\n"
+
+    user_prompt = f"User query: {query}{context_str}"
 
     response_json = call_llm_json(system_prompt=system_prompt, user_prompt=user_prompt)
 
@@ -174,5 +190,5 @@ def infer_query_with_llm(query: str) -> QueryInterpretation:
     )
 
 
-def infer_query(query: str) -> QueryInterpretation:
-    return infer_query_with_llm(query)
+def infer_query(query: str, context: dict[str, Any] | None = None) -> QueryInterpretation:
+    return infer_query_with_llm(query, context=context)
