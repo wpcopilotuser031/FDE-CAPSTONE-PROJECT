@@ -74,6 +74,9 @@ start_service() {
   fi
 }
 
+echo "Rebuilding ChromaDB RAG provider index from providers.json ..."
+python "$ROOT_DIR/scripts/build_rag_index.py"
+
 start_service "backend" "app.main:app" "8090" "http://127.0.0.1:8090/health"
 start_service "agent_runtime" "app.agent_runtime:app" "8091" "http://127.0.0.1:8091/health"
 start_service "mcp_gateway" "app.mcp_gateway:app" "8092" "http://127.0.0.1:8092/health"
