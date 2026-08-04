@@ -131,19 +131,19 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
 def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> QueryInterpretation:
     system_prompt = (
         "You are a healthcare referral capability router. Route to the most specific capability:\n"
-        "- specialist_recommendation: when asking for provider/specialist recommendations for a DIAGNOSIS (e.g., 'I have chest pain, find me cardiologists')\n"
+        "- specialist_recommendation: when asking for provider/specialist recommendations driven by a diagnosis or condition\n"
         "- referral_triage: when explicitly asking to assess priority/urgency level of a referral\n"
         "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
         "- insurance_validation: when asking if a provider is in-network\n"
-        "- provider_discovery: when DIRECTLY SEARCHING for providers by specialty NAME (e.g., 'find me cardiologists', 'search for gastroenterologists')\n"
+        "- provider_discovery: when directly searching for providers by specialty or directory-like criteria\n"
         "\n"
         "KEY DISTINCTION:\n"
-        "- 'I have heart pain, find me specialists' → specialist_recommendation (diagnosis-based)\n"
-        "- 'Find me Cardiology providers' → provider_discovery (specialty-based)\n"
+        "- Diagnosis/condition-driven request → specialist_recommendation\n"
+        "- Specialty-only or directory-style request → provider_discovery\n"
         "\n"
-        "When user mentions specialty names (Cardiology, Gastroenterology, Orthopedics, etc.):\n"
-        "1. If paired with a DIAGNOSIS ('I have chest pain, find cardiologists') → specialist_recommendation\n"
-        "2. If just the SPECIALTY NAME ('find cardiologists', 'search gastroenterology') → provider_discovery\n"
+        "When user mentions a specialty term:\n"
+        "1. If paired with a diagnosis/condition, route to specialist_recommendation\n"
+        "2. If it is only specialty/directory search intent, route to provider_discovery\n"
         "\n"
         "IMPORTANT: If a previous result is provided in context with recommendations, and the user asks for 'alternatives to [Provider Name]':\n"
         "1. Route to 'alternative_provider_suggestion'\n"
@@ -163,7 +163,17 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
             for rec in prev_result["recommendations"]:
                 context_str += f"- {rec.get('provider_name')} (ID: {rec.get('provider_id')}, {rec.get('specialty')})\n"
 
-    user_prompt = f"User query: {query}{context_str}"
+    prior_slots_str = ""
+    if context and isinstance(context.get("collected_slots"), dict):
+        known_slots = {
+            key: value
+            for key, value in context["collected_slots"].items()
+            if value is not None and str(value).strip()
+        }
+        if known_slots:
+            prior_slots_str = f"\nPreviously collected fields: {known_slots}"
+
+    user_prompt = f"User query: {query}{context_str}{prior_slots_str}"
 
     response_json = call_llm_json(system_prompt=system_prompt, user_prompt=user_prompt)
 

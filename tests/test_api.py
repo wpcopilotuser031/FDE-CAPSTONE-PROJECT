@@ -153,7 +153,7 @@ def test_jsonrpc_route_to_specialist_agent(monkeypatch) -> None:
 def test_http_agent_invoke_endpoint(monkeypatch) -> None:
     monkeypatch.setenv("USE_MCP_TOOLS", "false")
     monkeypatch.setattr(
-        "app.agents.use_case_agents.retrieve_candidate_providers",
+        "app.agents.provider_discovery_agent.retrieve_candidate_providers",
         lambda diagnosis, location, max_candidates=5: [{"provider_id": "P-1", "provider_name": "Dr. Demo"}],
     )
 
@@ -168,6 +168,64 @@ def test_http_agent_invoke_endpoint(monkeypatch) -> None:
     body = response.json()
     assert "providers" in body
     assert len(body["providers"]) == 1
+
+
+def test_provider_discovery_with_specialty_and_filters(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    providers_fixture = [
+        {
+            "provider_id": "P-100",
+            "provider_name": "Dr. Cardio One",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna", "Cigna"],
+            "next_available_date": "2026-08-07",
+        },
+        {
+            "provider_id": "P-101",
+            "provider_name": "Dr. GI Two",
+            "specialty": "Gastroenterology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-06",
+        },
+        {
+            "provider_id": "P-102",
+            "provider_name": "Dr. Cardio Three",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["BlueCross"],
+            "next_available_date": "2026-08-05",
+        },
+        {
+            "provider_id": "P-103",
+            "provider_name": "Dr. GI Four",
+            "specialty": "Gastroenterology",
+            "location": "Austin, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-05",
+        },
+    ]
+
+    monkeypatch.setattr(
+        "app.agents.provider_discovery_agent.load_json",
+        lambda _path: providers_fixture,
+    )
+
+    payload = {
+        "specialty": "Cardiology or Gastroenterology",
+        "location": "Dallas",
+        "insurance_plan": "Aetna",
+        "preferred_window_days": 7,
+        "max_results": 5,
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/provider_discovery/invoke", json=payload)
+    assert response.status_code == 200
+
+    body = response.json()
+    assert [item["provider_id"] for item in body["providers"]] == ["P-101", "P-100"]
 
 
 def test_http_mcp_call_endpoint(monkeypatch) -> None:

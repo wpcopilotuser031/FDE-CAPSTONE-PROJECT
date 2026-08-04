@@ -66,6 +66,7 @@ _ROUTING_CONFIDENCE_THRESHOLD = 0.6
 # Allows conversational assistant to access context from previous queries
 _SESSION_CONTEXT_LOCK = threading.Lock()
 _SESSION_CONTEXT: dict[str, dict[str, Any]] = {}
+_SESSION_SLOTS: dict[str, dict[str, Any]] = {}
 
 # Phrases that imply the user wants data/actions this platform never implemented as a
 # real agent/capability (e.g. patient medical history, chart notes, scheduling). These
@@ -155,6 +156,65 @@ def _get_session_context(session_token: str | None) -> dict[str, Any] | None:
         return _SESSION_CONTEXT.get(session_token.strip())
 
 
+def _save_session_slots(session_token: str | None, slots: dict[str, Any]) -> None:
+    """Persist non-empty extracted slots for follow-up turns in the same session."""
+    if not session_token or not slots:
+        return
+    normalized = {
+        key: value
+        for key, value in slots.items()
+        if value is not None and str(value).strip()
+    }
+    if not normalized:
+        return
+    token = session_token.strip()
+    with _SESSION_CONTEXT_LOCK:
+        existing = dict(_SESSION_SLOTS.get(token, {}))
+        existing.update(normalized)
+        _SESSION_SLOTS[token] = existing
+
+
+def _get_session_slots(session_token: str | None) -> dict[str, Any]:
+    """Return a copy of slot memory for this session token."""
+    if not session_token:
+        return {}
+    with _SESSION_CONTEXT_LOCK:
+        return dict(_SESSION_SLOTS.get(session_token.strip(), {}))
+
+
+def _humanize_field_name(field: str) -> str:
+    return field.replace("_", " ")
+
+
+def _build_missing_fields_response(
+    capability: str,
+    missing_fields: list[str],
+    caller_role: str | None,
+) -> dict[str, Any]:
+    card = _card_by_capability(capability)
+    display_name = card.display_name if card else capability
+    pretty_fields = ", ".join(_humanize_field_name(field) for field in missing_fields)
+    return {
+        "selected_capability": "conversational_assistant",
+        "selected_agent_card": asdict(_card_by_capability("conversational_assistant")),
+        "agent_transport": "none",
+        "agent_result": {
+            "answer": (
+                f"To continue with {display_name}, I still need: {pretty_fields}."
+            ),
+            "follow_up_suggestions": [],
+            "llm_used": False,
+            "decision_trace": {
+                "capability": capability,
+                "caller_role": caller_role,
+                "mcp_enabled": False,
+                "tools_invoked": [],
+                "human_review_required": False,
+            },
+        },
+    }
+
+
 def _role_allows(caller_role: str | None, capability: str) -> bool:
     if caller_role is None:
         # No authenticated end-user role attached to this call (e.g. server-to-server
@@ -223,15 +283,24 @@ def _select_capability(
         payload = {}
 
     if requested_capability:
+        _save_session_slots(session_token, payload)
         return requested_capability, payload
 
     if query:
+        cached_slots = _get_session_slots(session_token)
+        for key, value in cached_slots.items():
+            if value and key not in payload:
+                payload[key] = value
+
         # Get cached context to pass to LLM for slot extraction
         context = None
         if session_token:
             cached = _get_session_context(session_token)
             if cached:
                 context = {"routed_capability_result": cached}
+            if cached_slots:
+                context = dict(context or {})
+                context["collected_slots"] = cached_slots
 
         # LLM intelligently extracts slots from query and context
         interpretation = infer_query(query, context=context)
@@ -239,6 +308,7 @@ def _select_capability(
             for key, value in interpretation.slots.items():
                 if value and key not in payload:
                     payload[key] = value
+            _save_session_slots(session_token, interpretation.slots)
             return interpretation.decision.capability, payload
 
         heuristic = infer_capability_from_query(query)
@@ -270,12 +340,15 @@ def _route_conversational_assistant(
     asker_role = payload.get("asker_role")
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
     context = dict(context)
+    cached_slots = _get_session_slots(session_token)
 
     # Auto-inject cached session context if available
     if session_token:
         cached = _get_session_context(session_token)
         if cached and "routed_capability_result" not in context:
             context["routed_capability_result"] = cached
+    if cached_slots and "collected_slots" not in context:
+        context["collected_slots"] = cached_slots
 
     if question:
         unsupported_phrase = _matches_unsupported_topic(question)
@@ -312,7 +385,7 @@ def _route_conversational_assistant(
     routed_result: dict[str, Any] | None = None
 
     if question:
-        interpretation = infer_query(question)
+        interpretation = infer_query(question, context=context)
         decision = interpretation.decision
 
         if decision.capability in _ACTIONABLE_CAPABILITIES and decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD:
@@ -346,12 +419,14 @@ def _route_conversational_assistant(
             else:
                 candidate_card = _card_by_capability(decision.capability)
                 slots = {key: value for key, value in interpretation.slots.items() if value}
+                merged_slots = {**cached_slots, **slots}
+                _save_session_slots(session_token, merged_slots)
 
                 if candidate_card:
-                    missing = _missing_required_fields(candidate_card, slots)
+                    missing = _missing_required_fields(candidate_card, merged_slots)
                     if not missing:
                         try:
-                            routed_result, _ = _invoke_agent(decision.capability, slots)
+                            routed_result, _ = _invoke_agent(decision.capability, merged_slots)
                             routed_capability = decision.capability
                             routed_card = candidate_card
                         except Exception as exc:  # noqa: BLE001
@@ -360,16 +435,18 @@ def _route_conversational_assistant(
                                 "error": str(exc),
                             }
                     else:
-                        context["routing_missing_fields"] = {
-                            "capability": decision.capability,
-                            "missing_fields": missing,
-                        }
+                        return _build_missing_fields_response(
+                            decision.capability,
+                            missing,
+                            caller_role,
+                        )
 
     if routed_result is not None:
         context["routed_capability_result"] = {
             "capability": routed_capability,
             "result": routed_result,
         }
+        _save_session_context(session_token, str(routed_capability), routed_result)
 
     assistant_payload = {
         "question": question,
