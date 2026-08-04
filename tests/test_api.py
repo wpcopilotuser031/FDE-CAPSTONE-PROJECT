@@ -406,6 +406,39 @@ def test_referral_triage_agent_delegates_to_graph_flow(monkeypatch) -> None:
     assert body["human_intervention_ticket"]["ticket_id"].startswith("TCK-")
 
 
+def test_referral_triage_resolves_diagnosis_from_patient_id(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def _mock_flow(**kwargs):
+        captured.update(kwargs)
+        return {
+            "triage_priority": "high",
+            "priority_score": 0.9,
+            "recommended_specialties": ["Cardiology"],
+            "human_intervention_ticket": {"ticket_id": "TCK-XYZ123", "status": "OPEN"},
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "referral_triage",
+                "caller_role": "referral_triage",
+                "mcp_enabled": True,
+                "tools_invoked": ["triage_assess", "create_triage_ticket"],
+                "human_review_required": True,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.referral_triage_agent.run_referral_triage_flow", _mock_flow)
+
+    payload = {
+        "question": "Show patient referral of PT-001",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/referral_triage/invoke", json=payload)
+    assert response.status_code == 200
+    assert captured.get("patient_id") == "PT-001"
+    assert captured.get("diagnosis") == "Chest pain"
+
+
 def test_jsonrpc_invalid_version_returns_error() -> None:
     payload = {
         "jsonrpc": "1.0",

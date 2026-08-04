@@ -273,6 +273,21 @@ def test_referral_triage_capability_denied_for_provider() -> None:
         assert "not permitted" in str(exc)
 
 
+def test_referral_triage_capability_denied_for_patient() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "referral_triage",
+                "payload": {"diagnosis": "chest pain"},
+            },
+            caller_role="patient",
+            session_token="role-test-patient-triage",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
+
+
 def test_conversational_insurance_route_for_care_agent_passes_user_role(monkeypatch) -> None:
     def _mock_infer_query(query, context=None):
         return QueryInterpretation(
@@ -328,3 +343,45 @@ def test_conversational_insurance_route_for_care_agent_passes_user_role(monkeypa
         session_token="care-agent-insurance-route",
     )
     assert result.get("routed_capability") == "insurance_validation"
+
+
+def test_conversational_provider_cannot_bypass_rbac_on_misroute(monkeypatch) -> None:
+    def _mock_infer_query(query, context=None):
+        return QueryInterpretation(
+            decision=CapabilityDecision(
+                capability="provider_discovery",
+                confidence=0.95,
+                reason="llm misroute",
+            ),
+            slots={
+                "diagnosis": "chest pain",
+                "location": "Dallas",
+                "insurance_plan": "BlueCross",
+                "excluded_provider_id": None,
+                "preferred_window_days": "2",
+                "urgency": None,
+            },
+            source="llm",
+        )
+
+    monkeypatch.setattr("app.agents.capability_entrypoint.infer_query", _mock_infer_query)
+    monkeypatch.setattr(
+        "app.agents.capability_entrypoint.infer_capability_from_query",
+        lambda _query: CapabilityDecision(
+            capability="specialist_recommendation",
+            confidence=0.82,
+            reason="heuristic diagnosis-based recommendation",
+        ),
+    )
+
+    result = route_capability(
+        {
+            "capability": "conversational_assistant",
+            "payload": {"question": "I am having chest pain, need providers near Dallas in next 2 days under BlueCross"},
+        },
+        caller_role="provider",
+        session_token="provider-misroute-rbac",
+    )
+
+    assert result["agent_transport"] == "none"
+    assert "not authorized" in result["agent_result"]["answer"].lower()

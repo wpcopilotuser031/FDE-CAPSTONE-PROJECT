@@ -57,14 +57,18 @@ def test_authorize_insurance_tools_reject_provider_user_role(monkeypatch) -> Non
         assert "not permitted" in str(exc)
 
 
-def test_authorize_triage_tools_allow_patient_user_role(monkeypatch) -> None:
+def test_authorize_triage_tools_reject_patient_user_role(monkeypatch) -> None:
     monkeypatch.setenv("MCP_INTERNAL_KEY", "test-internal-key")
-    _authorize_tool_call(
-        "triage_assess",
-        "referral_triage",
-        "test-internal-key",
-        user_role="patient",
-    )
+    try:
+        _authorize_tool_call(
+            "triage_assess",
+            "referral_triage",
+            "test-internal-key",
+            user_role="patient",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
 
 
 def test_authorize_triage_tools_allow_care_agent_user_role(monkeypatch) -> None:

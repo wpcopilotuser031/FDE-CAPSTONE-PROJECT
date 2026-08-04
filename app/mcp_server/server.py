@@ -60,8 +60,6 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
     "patient": {
         "diagnosis_to_specialty",
         "provider_candidates",
-        "triage_assess",
-        "create_triage_ticket",
         # Insurance tools intentionally excluded for patient role.
     },
     "provider": {

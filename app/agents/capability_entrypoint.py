@@ -110,7 +110,6 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
     "patient": {
         "specialist_recommendation",
         "alternative_provider_suggestion",
-        "referral_triage",
         "provider_discovery",
         "conversational_assistant",
         # EXCLUDED: "insurance_validation" - sensitive, patient can't check coverage directly
@@ -409,6 +408,23 @@ def _route_conversational_assistant(
     if question:
         interpretation = infer_query(question, context=context)
         decision = interpretation.decision
+        heuristic_decision = infer_capability_from_query(question)
+
+        # Guardrail: if heuristic detects a denied actionable capability with strong
+        # confidence, enforce RBAC on that capability even when the LLM picks a
+        # different route. This prevents role bypass due to occasional LLM misrouting.
+        if (
+            heuristic_decision.capability in _ACTIONABLE_CAPABILITIES
+            and heuristic_decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD
+            and not _role_allows(caller_role, heuristic_decision.capability)
+        ):
+            decision = heuristic_decision
+        elif (
+            heuristic_decision.capability in _ACTIONABLE_CAPABILITIES
+            and heuristic_decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD
+            and decision.capability == "unknown"
+        ):
+            decision = heuristic_decision
 
         if decision.capability in _ACTIONABLE_CAPABILITIES and decision.confidence >= _ROUTING_CONFIDENCE_THRESHOLD:
             if not _role_allows(caller_role, decision.capability):
