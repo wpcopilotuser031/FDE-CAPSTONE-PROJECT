@@ -14,7 +14,9 @@ services:
   agent_runtime:
     build: .
     container_name: referral-agent-runtime
-    command: uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091
+    command: >-
+      sh -c "python scripts/build_rag_index.py &&
+             uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091"
     ports:
       - "8091:8091"
     env_file:
@@ -24,7 +26,9 @@ services:
   mcp_gateway:
     build: .
     container_name: referral-mcp-gateway
-    command: uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092
+    command: >-
+      sh -c "python scripts/build_rag_index.py &&
+             uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092"
     ports:
       - "8092:8092"
     env_file:
