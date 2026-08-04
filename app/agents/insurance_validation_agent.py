@@ -1,13 +1,36 @@
 from __future__ import annotations
 
-import os
-from datetime import UTC, datetime
+import re
 from typing import Any
 
-from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
-from app.mcp_server.tools import check_provider_in_network
+from app.agents.insurance_validation_graph import run_insurance_validation_flow
 
 INSURANCE_VALIDATION_ROLE = "insurance_validation"
+
+
+def _extract_text(pattern: str, text: str) -> str:
+    match = re.search(pattern, text, flags=re.IGNORECASE)
+    if not match:
+        return ""
+    return str(match.group(1)).strip()
+
+
+def _extract_fields_from_question(question: str) -> dict[str, str]:
+    fields: dict[str, str] = {
+        "patient_id": "",
+        "patient_name": "",
+        "member_id": "",
+        "provider_id": "",
+        "insurance_plan": "",
+    }
+
+    fields["patient_id"] = _extract_text(r"\b(PT-\d+)\b", question)
+    fields["member_id"] = _extract_text(r"member\s*id\s*[:=-]\s*([A-Za-z0-9\-_]+)", question)
+    fields["provider_id"] = _extract_text(r"\b(P\d{3,})\b", question)
+    fields["patient_name"] = _extract_text(r"patient\s+name\s*(?:is|:|=|-)\s*([^,;]+)", question)
+    fields["insurance_plan"] = _extract_text(r"insurance\s*plan\s*(?:is|:|=|-)\s*([^,;]+)", question)
+
+    return fields
 
 
 def build_agent_card() -> dict[str, Any]:
@@ -15,60 +38,40 @@ def build_agent_card() -> dict[str, Any]:
         "agent_id": "agent.insurance_validation.v1",
         "capability": "insurance_validation",
         "display_name": "Insurance Validation Agent",
-        "description": "Validates whether a provider is in-network for a payer plan.",
+        "description": "Checks provider in-network eligibility or retrieves a patient's current insurance plan.",
         "input_contract": {
-            "required": ["provider_id", "insurance_plan"],
-            "optional": [],
+            "required": [],
+            "optional": ["provider_id", "insurance_plan", "patient_id", "patient_name", "member_id"],
         },
         "rbac_role": INSURANCE_VALIDATION_ROLE,
-        "mcp_tools": ["insurance_eligibility"],
+        "mcp_tools": ["insurance_eligibility", "patient_insurance_profile", "provider_insurance_plans"],
     }
-
-
-def _use_mcp_tools() -> bool:
-    return os.getenv("USE_MCP_TOOLS", "true").strip().lower() in {"true", "1", "yes", "on"}
-
-
-def _utc_now() -> str:
-    return datetime.now(UTC).isoformat()
 
 
 def insurance_validation_agent(payload: dict[str, Any]) -> dict[str, Any]:
     provider_id = str(payload.get("provider_id", "")).strip()
     insurance_plan = str(payload.get("insurance_plan", "")).strip()
+    patient_id = str(payload.get("patient_id", "")).strip()
+    patient_name = str(payload.get("patient_name", "")).strip()
+    member_id = str(payload.get("member_id", "")).strip()
+    question = str(payload.get("question", "")).strip()
 
-    if not provider_id or not insurance_plan:
-        return {
-            "eligible": False,
-            "missing_information": ["provider_id and insurance_plan are required"],
-            "decision_trace": {
-                "capability": "insurance_validation",
-                "caller_role": INSURANCE_VALIDATION_ROLE,
-                "mcp_enabled": _use_mcp_tools(),
-                "tools_invoked": [],
-            },
-        }
+    if question:
+        inferred = _extract_fields_from_question(question)
+        patient_id = patient_id or inferred["patient_id"]
+        patient_name = patient_name or inferred["patient_name"]
+        member_id = member_id or inferred["member_id"]
+        provider_id = provider_id or inferred["provider_id"]
+        insurance_plan = insurance_plan or inferred["insurance_plan"]
 
-    tools_invoked: list[str] = []
-    if _use_mcp_tools():
-        with SpecialistRecommendationMCPClient(caller_role=INSURANCE_VALIDATION_ROLE) as mcp_client:
-            eligible = mcp_client.insurance_eligibility(provider_id, insurance_plan)
-            tools_invoked.append("insurance_eligibility")
-    else:
-        eligible = check_provider_in_network(provider_id, insurance_plan)
-
-    return {
-        "provider_id": provider_id,
-        "insurance_plan": insurance_plan,
-        "eligible": eligible,
-        "generated_at": _utc_now(),
-        "decision_trace": {
-            "capability": "insurance_validation",
-            "caller_role": INSURANCE_VALIDATION_ROLE,
-            "mcp_enabled": _use_mcp_tools(),
-            "tools_invoked": tools_invoked,
-        },
-    }
+    return run_insurance_validation_flow(
+        provider_id=provider_id,
+        insurance_plan=insurance_plan,
+        patient_id=patient_id,
+        patient_name=patient_name,
+        member_id=member_id,
+        user_role=str(payload.get("user_role", "")).strip() or None,
+    )
 
 
 __all__ = ["INSURANCE_VALIDATION_ROLE", "build_agent_card", "insurance_validation_agent"]

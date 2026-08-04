@@ -105,6 +105,31 @@ def heuristic_slot_extraction(query: str) -> dict[str, str | None]:
 def infer_capability_from_query(query: str) -> CapabilityDecision:
     query_lower = query.lower()
     recommendation_score = sum(1 for keyword in RECOMMENDATION_KEYWORDS if keyword in query_lower)
+    symptom_terms = {
+        "i have",
+        "i am having",
+        "am having",
+        "having",
+        "pain",
+        "symptom",
+        "symptoms",
+        "diagnosed",
+        "condition",
+    }
+    provider_seek_terms = {
+        "doctor",
+        "doctors",
+        "specialist",
+        "specialists",
+        "provider",
+        "providers",
+    }
+    symptom_intent = any(term in query_lower for term in symptom_terms)
+    provider_seek_intent = any(term in query_lower for term in provider_seek_terms)
+    if symptom_intent and provider_seek_intent:
+        # Deterministic override signal: this is diagnosis/symptom-driven care matching.
+        recommendation_score += 3
+
     alternative_score = 0
     if any(term in query_lower for term in {"alternative", "alternatives", "alternate", "another"}):
         alternative_score += 2
@@ -114,7 +139,15 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
         alternative_score += 1
     triage_score = sum(1 for keyword in TRIAGE_KEYWORDS if keyword in query_lower)
     insurance_score = sum(1 for keyword in INSURANCE_KEYWORDS if keyword in query_lower)
+    if "insurance" in query_lower and "plan" in query_lower:
+        insurance_score += 2
+    if "registered under" in query_lower and "insurance" in query_lower:
+        insurance_score += 2
+    if "pt-" in query_lower and "insurance" in query_lower:
+        insurance_score += 2
     discovery_score = sum(1 for keyword in DISCOVERY_KEYWORDS if keyword in query_lower)
+    if symptom_intent:
+        discovery_score = max(0, discovery_score - 1)
     extraction_score = sum(1 for keyword in DOCUMENT_EXTRACTION_KEYWORDS if keyword in query_lower)
 
     scored_capabilities = [
@@ -143,27 +176,39 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
 
 
 def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> QueryInterpretation:
+    agent_cards = []
+    if context and isinstance(context.get("agent_cards"), list):
+        agent_cards = [card for card in context["agent_cards"] if isinstance(card, dict)]
+
+    if agent_cards:
+        capability_lines = []
+        for card in agent_cards:
+            capability = str(card.get("capability", "")).strip()
+            description = str(card.get("description", "")).strip()
+            required = card.get("required", [])
+            optional = card.get("optional", [])
+            capability_lines.append(
+                f"- {capability}: {description} | required={required} optional={optional}"
+            )
+        capability_block = "\n".join(capability_lines)
+    else:
+        capability_block = (
+            "- specialist_recommendation: recommendations for specialists\n"
+            "- referral_triage: assess referral urgency/priority\n"
+            "- alternative_provider_suggestion: alternatives to prior provider\n"
+            "- insurance_validation: insurance eligibility/plan checks\n"
+            "- provider_discovery: provider directory search"
+        )
+
     system_prompt = (
-        "You are a healthcare referral capability router. Route to the most specific capability:\n"
-        "- specialist_recommendation: when asking for provider/specialist recommendations for a DIAGNOSIS (e.g., 'I have chest pain, find me cardiologists')\n"
-        "- referral_triage: when explicitly asking to assess priority/urgency level of a referral\n"
-        "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
-        "- insurance_validation: when asking if a provider is in-network\n"
-        "- provider_discovery: when DIRECTLY SEARCHING for providers by specialty NAME (e.g., 'find me cardiologists', 'search for gastroenterologists')\n"
-        "\n"
-        "KEY DISTINCTION:\n"
-        "- 'I have heart pain, find me specialists' → specialist_recommendation (diagnosis-based)\n"
-        "- 'Find me Cardiology providers' → provider_discovery (specialty-based)\n"
-        "\n"
-        "When user mentions specialty names (Cardiology, Gastroenterology, Orthopedics, etc.):\n"
-        "1. If paired with a DIAGNOSIS ('I have chest pain, find cardiologists') → specialist_recommendation\n"
-        "2. If just the SPECIALTY NAME ('find cardiologists', 'search gastroenterology') → provider_discovery\n"
-        "\n"
-        "IMPORTANT: If a previous result is provided in context with recommendations, and the user asks for 'alternatives to [Provider Name]':\n"
-        "1. Route to 'alternative_provider_suggestion'\n"
-        "2. Extract the provider_id by matching [Provider Name] against the recommendations in context\n"
-        "3. Return the matched provider_id as 'excluded_provider_id'\n"
-        "\n"
+        "You are a healthcare referral capability router. "
+        "Choose ONE capability from the provided agent cards, based on best semantic fit and required fields.\n"
+        "Available capabilities:\n"
+        f"{capability_block}\n\n"
+        "Prefer the most specific capability that can satisfy the user goal. "
+        "If unclear, return capability='unknown'.\n"
+        "If a previous recommendation result is in context and user asks for alternatives to a provider name, "
+        "resolve excluded_provider_id from that context when possible.\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
         "excluded_provider_id, preferred_window_days, urgency. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
@@ -177,7 +222,17 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
             for rec in prev_result["recommendations"]:
                 context_str += f"- {rec.get('provider_name')} (ID: {rec.get('provider_id')}, {rec.get('specialty')})\n"
 
-    user_prompt = f"User query: {query}{context_str}"
+    prior_slots_str = ""
+    if context and isinstance(context.get("collected_slots"), dict):
+        known_slots = {
+            key: value
+            for key, value in context["collected_slots"].items()
+            if value is not None and str(value).strip()
+        }
+        if known_slots:
+            prior_slots_str = f"\nPreviously collected fields: {known_slots}"
+
+    user_prompt = f"User query: {query}{context_str}{prior_slots_str}"
 
     response_json = call_llm_json(system_prompt=system_prompt, user_prompt=user_prompt)
 

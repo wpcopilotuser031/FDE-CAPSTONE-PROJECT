@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import os
-from datetime import UTC, datetime
+import re
 from typing import Any
 
-from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
-from app.mcp_server.tools import map_diagnosis_to_specialties
+from app.agents.referral_triage_graph import run_referral_triage_flow
+from app.config import DATA_DIR
+from app.data_loader import load_json
 
 REFERRAL_TRIAGE_ROLE = "referral_triage"
 
@@ -18,72 +18,52 @@ def build_agent_card() -> dict[str, Any]:
         "description": "Assigns referral priority and suggests specialty domains.",
         "input_contract": {
             "required": ["diagnosis"],
-            "optional": [],
+            "optional": ["patient_id", "urgency_hint", "user_role", "question"],
         },
         "rbac_role": REFERRAL_TRIAGE_ROLE,
-        "mcp_tools": ["diagnosis_to_specialty", "provider_candidates"],
+        "mcp_tools": ["triage_assess", "create_triage_ticket"],
     }
 
 
-def _use_mcp_tools() -> bool:
-    return os.getenv("USE_MCP_TOOLS", "true").strip().lower() in {"true", "1", "yes", "on"}
+def _extract_text(pattern: str, text: str) -> str:
+    match = re.search(pattern, text, flags=re.IGNORECASE)
+    if not match:
+        return ""
+    return str(match.group(1)).strip()
 
 
-def _utc_now() -> str:
-    return datetime.now(UTC).isoformat()
+def _resolve_diagnosis_from_referrals(patient_id: str) -> str:
+    if not patient_id:
+        return ""
+    rows = load_json(DATA_DIR / "referrals.json")
+    patient_id_lower = patient_id.lower()
+    for row in rows:
+        if str(row.get("patient_id", "")).strip().lower() == patient_id_lower:
+            diagnosis = str(row.get("diagnosis", "")).strip()
+            if diagnosis:
+                return diagnosis
+    return ""
 
 
 def referral_triage_agent(payload: dict[str, Any]) -> dict[str, Any]:
     diagnosis = str(payload.get("diagnosis", "")).strip()
-    if not diagnosis:
-        return {
-            "triage_priority": "unknown",
-            "priority_score": 0.0,
-            "recommended_specialties": [],
-            "missing_information": ["diagnosis is required"],
-            "decision_trace": {
-                "capability": "referral_triage",
-                "caller_role": REFERRAL_TRIAGE_ROLE,
-                "mcp_enabled": _use_mcp_tools(),
-                "tools_invoked": [],
-            },
-        }
+    question = str(payload.get("question", "")).strip()
+    if question and not diagnosis:
+        diagnosis = _extract_text(r"diagnosis\s*(?:is|:|=|-)\s*([^,;]+)", question)
 
-    specialties: list[str]
-    tools_invoked: list[str] = []
-    if _use_mcp_tools():
-        with SpecialistRecommendationMCPClient(caller_role=REFERRAL_TRIAGE_ROLE) as mcp_client:
-            specialties = mcp_client.diagnosis_to_specialty(diagnosis)
-            tools_invoked.append("diagnosis_to_specialty")
-    else:
-        specialties = map_diagnosis_to_specialties(diagnosis)
+    patient_id = str(payload.get("patient_id", "")).strip()
+    if question and not patient_id:
+        patient_id = _extract_text(r"\b(PT-\d+)\b", question)
 
-    diagnosis_lower = diagnosis.lower()
-    high_urgency_terms = {"chest pain", "stroke", "sepsis", "hemorrhage"}
-    medium_urgency_terms = {"worsening", "persistent", "uncontrolled"}
+    if patient_id and not diagnosis:
+        diagnosis = _resolve_diagnosis_from_referrals(patient_id)
 
-    if any(term in diagnosis_lower for term in high_urgency_terms):
-        triage_priority = "high"
-        priority_score = 0.9
-    elif any(term in diagnosis_lower for term in medium_urgency_terms):
-        triage_priority = "medium"
-        priority_score = 0.65
-    else:
-        triage_priority = "low"
-        priority_score = 0.4
-
-    return {
-        "triage_priority": triage_priority,
-        "priority_score": priority_score,
-        "recommended_specialties": specialties,
-        "generated_at": _utc_now(),
-        "decision_trace": {
-            "capability": "referral_triage",
-            "caller_role": REFERRAL_TRIAGE_ROLE,
-            "mcp_enabled": _use_mcp_tools(),
-            "tools_invoked": tools_invoked,
-        },
-    }
+    return run_referral_triage_flow(
+        diagnosis=diagnosis,
+        patient_id=patient_id,
+        urgency_hint=str(payload.get("urgency_hint", "")).strip(),
+        user_role=str(payload.get("user_role", "")).strip() or None,
+    )
 
 
 __all__ = ["REFERRAL_TRIAGE_ROLE", "build_agent_card", "referral_triage_agent"]

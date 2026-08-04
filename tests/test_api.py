@@ -153,7 +153,7 @@ def test_jsonrpc_route_to_specialist_agent(monkeypatch) -> None:
 def test_http_agent_invoke_endpoint(monkeypatch) -> None:
     monkeypatch.setenv("USE_MCP_TOOLS", "false")
     monkeypatch.setattr(
-        "app.agents.use_case_agents.retrieve_candidate_providers",
+        "app.agents.provider_discovery_agent.retrieve_candidate_providers",
         lambda diagnosis, location, max_candidates=5: [{"provider_id": "P-1", "provider_name": "Dr. Demo"}],
     )
 
@@ -168,6 +168,94 @@ def test_http_agent_invoke_endpoint(monkeypatch) -> None:
     body = response.json()
     assert "providers" in body
     assert len(body["providers"]) == 1
+
+
+def test_provider_discovery_with_specialty_and_filters(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    providers_fixture = [
+        {
+            "provider_id": "P-100",
+            "provider_name": "Dr. Cardio One",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna", "Cigna"],
+            "next_available_date": "2026-08-07",
+        },
+        {
+            "provider_id": "P-101",
+            "provider_name": "Dr. GI Two",
+            "specialty": "Gastroenterology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-06",
+        },
+        {
+            "provider_id": "P-102",
+            "provider_name": "Dr. Cardio Three",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["BlueCross"],
+            "next_available_date": "2026-08-05",
+        },
+        {
+            "provider_id": "P-103",
+            "provider_name": "Dr. GI Four",
+            "specialty": "Gastroenterology",
+            "location": "Austin, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-05",
+        },
+    ]
+
+    monkeypatch.setattr(
+        "app.agents.provider_discovery_agent.load_json",
+        lambda _path: providers_fixture,
+    )
+
+    payload = {
+        "specialty": "Cardiology or Gastroenterology",
+        "location": "Dallas",
+        "insurance_plan": "Aetna",
+        "preferred_window_days": 7,
+        "max_results": 5,
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/provider_discovery/invoke", json=payload)
+    assert response.status_code == 200
+
+    body = response.json()
+    assert [item["provider_id"] for item in body["providers"]] == ["P-101", "P-100"]
+
+
+def test_provider_discovery_extracts_specialty_and_location_from_question(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    providers_fixture = [
+        {
+            "provider_id": "P-200",
+            "provider_name": "Dr. Cardio Dallas",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-07",
+        },
+    ]
+
+    monkeypatch.setattr(
+        "app.agents.provider_discovery_agent.load_json",
+        lambda _path: providers_fixture,
+    )
+
+    payload = {
+        "question": "Find cardiologists near Dallas",
+        "max_results": 5,
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/provider_discovery/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert [item["provider_id"] for item in body["providers"]] == ["P-200"]
 
 
 def test_http_mcp_call_endpoint(monkeypatch) -> None:
@@ -188,6 +276,167 @@ def test_http_mcp_call_endpoint(monkeypatch) -> None:
     assert "result" in body
     assert isinstance(body["result"], list)
     assert "Cardiology" in body["result"]
+
+
+def test_insurance_validation_patient_plan_lookup_by_patient_id(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "app.agents.insurance_validation_agent.run_insurance_validation_flow",
+        lambda **kwargs: {
+            "mode": "patient_insurance_profile",
+            "patient_id": "PT-001",
+            "patient_name": "Aisha Patel",
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "eligibility_records": [],
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        },
+    )
+
+    payload = {
+        "patient_id": "PT-001",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["patient_id"] == "PT-001"
+    assert body["insurance_plan"] == "Aetna"
+
+
+def test_insurance_validation_patient_plan_lookup_by_patient_name(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "app.agents.insurance_validation_agent.run_insurance_validation_flow",
+        lambda **kwargs: {
+            "mode": "patient_insurance_profile",
+            "patient_id": "PT-001",
+            "patient_name": "Aisha Patel",
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "eligibility_records": [],
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        },
+    )
+
+    payload = {
+        "patient_name": "Aviroop Basu",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["patient_id"] == "PT-001"
+    assert body["insurance_plan"] == "Aetna"
+
+
+def test_insurance_validation_extracts_patient_id_from_question(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def _mock_flow(**kwargs):
+        captured.update(kwargs)
+        return {
+            "mode": "patient_insurance_profile",
+            "patient_id": kwargs.get("patient_id"),
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.insurance_validation_agent.run_insurance_validation_flow", _mock_flow)
+
+    payload = {
+        "question": "PT-001 is registered under which insurance plan?",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    assert captured.get("patient_id") == "PT-001"
+
+
+def test_referral_triage_agent_delegates_to_graph_flow(monkeypatch) -> None:
+    def _mock_flow(**kwargs):
+        return {
+            "triage_priority": "high",
+            "priority_score": 0.9,
+            "recommended_specialties": ["Cardiology"],
+            "human_intervention_ticket": {"ticket_id": "TCK-ABC123", "status": "OPEN"},
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "referral_triage",
+                "caller_role": "referral_triage",
+                "mcp_enabled": True,
+                "tools_invoked": ["triage_assess", "create_triage_ticket"],
+                "human_review_required": True,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.referral_triage_agent.run_referral_triage_flow", _mock_flow)
+
+    payload = {
+        "diagnosis": "chest pain",
+        "patient_id": "PT-001",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/referral_triage/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["triage_priority"] == "high"
+    assert body["human_intervention_ticket"]["ticket_id"].startswith("TCK-")
+
+
+def test_referral_triage_resolves_diagnosis_from_patient_id(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def _mock_flow(**kwargs):
+        captured.update(kwargs)
+        return {
+            "triage_priority": "high",
+            "priority_score": 0.9,
+            "recommended_specialties": ["Cardiology"],
+            "human_intervention_ticket": {"ticket_id": "TCK-XYZ123", "status": "OPEN"},
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "referral_triage",
+                "caller_role": "referral_triage",
+                "mcp_enabled": True,
+                "tools_invoked": ["triage_assess", "create_triage_ticket"],
+                "human_review_required": True,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.referral_triage_agent.run_referral_triage_flow", _mock_flow)
+
+    payload = {
+        "question": "Show patient referral of PT-001",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/referral_triage/invoke", json=payload)
+    assert response.status_code == 200
+    assert captured.get("patient_id") == "PT-001"
+    assert captured.get("diagnosis") == "Chest pain"
 
 
 def test_jsonrpc_invalid_version_returns_error() -> None:

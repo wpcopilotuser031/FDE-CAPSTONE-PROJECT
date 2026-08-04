@@ -5,9 +5,13 @@ from pathlib import Path
 
 from app.mcp_server.tools import (
     check_provider_in_network,
+    create_triage_ticket,
     extract_diagnosis_and_procedure_codes,
+    list_provider_insurance_plans,
     map_diagnosis_to_specialties,
+    patient_insurance_profile,
     retrieve_candidate_providers,
+    triage_assess,
 )
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
@@ -25,11 +29,13 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "insurance_eligibility",
     },
     "referral_triage": {
-        "diagnosis_to_specialty",
-        "provider_candidates",
+        "triage_assess",
+        "create_triage_ticket",
     },
     "insurance_validation": {
         "insurance_eligibility",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
     "provider_discovery": {
         "provider_candidates",
@@ -47,6 +53,8 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "provider_candidates",
         "insurance_eligibility",
         "extract_codes",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
     "conversational_assistant": set(),
 }
@@ -69,11 +77,14 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
     "care_agent": {
         "diagnosis_to_specialty",
         "provider_candidates",
+        "triage_assess",
+        "create_triage_ticket",
         "insurance_eligibility",
         "extract_codes",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
 }
-
 
 def _authorize_tool_call(
     tool_name: str,
@@ -209,6 +220,75 @@ def extract_codes(
     """
     _authorize_tool_call("extract_codes", caller_role, internal_key, user_role=user_role)
     return extract_diagnosis_and_procedure_codes(document_text, document_id=document_id)
+
+
+@mcp.tool()
+def patient_insurance_profile_tool(
+    internal_key: str,
+    caller_role: str,
+    patient_id: str = "",
+    patient_name: str = "",
+    member_id: str = "",
+    insurance_plan: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Fetch patient insurance profile and eligibility records.
+
+    Args:
+        internal_key: Shared MCP authentication key
+        caller_role: The capability/service invoking this tool
+        patient_id: Optional patient id (e.g., PT-001)
+        patient_name: Optional display name alias
+        member_id: Optional member id alias
+        insurance_plan: Optional explicit plan filter/check
+        user_role: Optional end-user role for dual-layer RBAC
+    """
+    _authorize_tool_call("patient_insurance_profile", caller_role, internal_key, user_role=user_role)
+    return patient_insurance_profile(
+        patient_id=patient_id,
+        patient_name=patient_name,
+        member_id=member_id,
+        insurance_plan=insurance_plan,
+    )
+
+
+@mcp.tool()
+def provider_insurance_plans(
+    provider_id: str,
+    internal_key: str,
+    caller_role: str,
+    user_role: str | None = None,
+) -> list[str]:
+    """List insurance plans accepted by a provider."""
+    _authorize_tool_call("provider_insurance_plans", caller_role, internal_key, user_role=user_role)
+    return list_provider_insurance_plans(provider_id)
+
+
+@mcp.tool()
+def triage_assess_tool(
+    diagnosis: str,
+    internal_key: str,
+    caller_role: str,
+    urgency_hint: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Assess triage priority from diagnosis and urgency hints."""
+    _authorize_tool_call("triage_assess", caller_role, internal_key, user_role=user_role)
+    return triage_assess(diagnosis, urgency_hint)
+
+
+@mcp.tool()
+def create_triage_ticket_tool(
+    reason: str,
+    triage_priority: str,
+    internal_key: str,
+    caller_role: str,
+    patient_id: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Create a human-intervention triage ticket."""
+    _authorize_tool_call("create_triage_ticket", caller_role, internal_key, user_role=user_role)
+    return create_triage_ticket(reason=reason, triage_priority=triage_priority, patient_id=patient_id)
 
 
 if __name__ == "__main__":

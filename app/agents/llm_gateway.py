@@ -67,6 +67,39 @@ def call_llm_json(system_prompt: str, user_prompt: str, max_tokens: int = 300) -
             response = client.post(_gateway_endpoint(base_url), headers=headers, json=payload)
             response.raise_for_status()
             response_json = response.json()
+    except httpx.HTTPStatusError as exc:
+        response = exc.response
+        status = response.status_code if response is not None else "unknown"
+        detail = ""
+        if response is not None:
+            try:
+                response_payload = response.json()
+                if isinstance(response_payload, dict):
+                    error_node = response_payload.get("error")
+                    if isinstance(error_node, dict):
+                        detail = str(error_node.get("message") or error_node)
+                    else:
+                        detail = str(response_payload)
+                else:
+                    detail = str(response_payload)
+            except Exception:  # noqa: BLE001
+                detail = (response.text or "").strip()
+
+        hint = ""
+        if status == 400:
+            hint = (
+                " Hint: verify that this API key is authorized for the configured model "
+                f"'{model}', and that the gateway expects Anthropic Messages payload format."
+            )
+        elif status in {401, 403}:
+            hint = " Hint: verify API key validity and gateway permissions."
+
+        message = f"LLM gateway call failed (HTTP {status})."
+        if detail:
+            message += f" Details: {detail}"
+        if hint:
+            message += hint
+        raise LLMGatewayError(message) from exc
     except Exception as exc:  # noqa: BLE001
         raise LLMGatewayError(f"LLM gateway call failed: {exc}") from exc
 

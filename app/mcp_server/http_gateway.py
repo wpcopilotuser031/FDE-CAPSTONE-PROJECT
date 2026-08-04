@@ -5,17 +5,23 @@ from typing import Any
 from app.mcp_server.server import _authorize_tool_call
 from app.mcp_server.tools import (
     check_provider_in_network,
+    create_triage_ticket,
     extract_diagnosis_and_procedure_codes,
+    list_provider_insurance_plans,
     map_diagnosis_to_specialties,
+    patient_insurance_profile,
     retrieve_candidate_providers,
+    triage_assess,
 )
 
 
 def call_tool_http(tool_name: str, arguments: dict[str, Any]) -> Any:
     caller_role = str(arguments.get("caller_role", "")).strip()
     internal_key = str(arguments.get("internal_key", "")).strip()
+    user_role = arguments.get("user_role")
+    user_role = str(user_role).strip() if user_role is not None else None
 
-    _authorize_tool_call(tool_name, caller_role, internal_key)
+    _authorize_tool_call(tool_name, caller_role, internal_key, user_role=user_role)
 
     if tool_name == "diagnosis_to_specialty":
         diagnosis = str(arguments.get("diagnosis", "")).strip()
@@ -36,5 +42,28 @@ def call_tool_http(tool_name: str, arguments: dict[str, Any]) -> Any:
         document_text = str(arguments.get("document_text", "")).strip()
         document_id = arguments.get("document_id")
         return extract_diagnosis_and_procedure_codes(document_text, document_id=document_id)
+
+    if tool_name == "patient_insurance_profile":
+        return patient_insurance_profile(
+            patient_id=str(arguments.get("patient_id", "")).strip(),
+            patient_name=str(arguments.get("patient_name", "")).strip(),
+            member_id=str(arguments.get("member_id", "")).strip(),
+            insurance_plan=str(arguments.get("insurance_plan", "")).strip(),
+        )
+
+    if tool_name == "provider_insurance_plans":
+        provider_id = str(arguments.get("provider_id", "")).strip()
+        return list_provider_insurance_plans(provider_id)
+
+    if tool_name == "triage_assess":
+        diagnosis = str(arguments.get("diagnosis", "")).strip()
+        urgency_hint = str(arguments.get("urgency_hint", "")).strip()
+        return triage_assess(diagnosis=diagnosis, urgency_hint=urgency_hint)
+
+    if tool_name == "create_triage_ticket":
+        reason = str(arguments.get("reason", "")).strip()
+        triage_priority = str(arguments.get("triage_priority", "")).strip()
+        patient_id = str(arguments.get("patient_id", "")).strip()
+        return create_triage_ticket(reason=reason, triage_priority=triage_priority, patient_id=patient_id)
 
     raise ValueError(f"Unsupported MCP tool '{tool_name}'.")
