@@ -249,7 +249,25 @@ def test_http_mcp_call_endpoint(monkeypatch) -> None:
 
 
 def test_insurance_validation_patient_plan_lookup_by_patient_id(monkeypatch) -> None:
-    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+    monkeypatch.setattr(
+        "app.agents.insurance_validation_agent.run_insurance_validation_flow",
+        lambda **kwargs: {
+            "mode": "patient_insurance_profile",
+            "patient_id": "PT-001",
+            "patient_name": "Aisha Patel",
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "eligibility_records": [],
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        },
+    )
 
     payload = {
         "patient_id": "PT-001",
@@ -263,7 +281,25 @@ def test_insurance_validation_patient_plan_lookup_by_patient_id(monkeypatch) -> 
 
 
 def test_insurance_validation_patient_plan_lookup_by_patient_name(monkeypatch) -> None:
-    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+    monkeypatch.setattr(
+        "app.agents.insurance_validation_agent.run_insurance_validation_flow",
+        lambda **kwargs: {
+            "mode": "patient_insurance_profile",
+            "patient_id": "PT-001",
+            "patient_name": "Aisha Patel",
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "eligibility_records": [],
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        },
+    )
 
     payload = {
         "patient_name": "Aviroop Basu",

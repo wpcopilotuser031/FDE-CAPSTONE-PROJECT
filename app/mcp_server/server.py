@@ -5,7 +5,9 @@ from pathlib import Path
 
 from app.mcp_server.tools import (
     check_provider_in_network,
+    list_provider_insurance_plans,
     map_diagnosis_to_specialties,
+    patient_insurance_profile,
     retrieve_candidate_providers,
 )
 from dotenv import load_dotenv
@@ -29,6 +31,8 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
     },
     "insurance_validation": {
         "insurance_eligibility",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
     "provider_discovery": {
         "provider_candidates",
@@ -42,6 +46,8 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "diagnosis_to_specialty",
         "provider_candidates",
         "insurance_eligibility",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
     "conversational_assistant": set(),
 }
@@ -52,20 +58,21 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
     "patient": {
         "diagnosis_to_specialty",
         "provider_candidates",
-        # INTENTIONALLY EXCLUDED: "insurance_eligibility" - patients can't check coverage details
+        # Insurance tools intentionally excluded for patient role.
     },
     "provider": {
         "diagnosis_to_specialty",
         "provider_candidates",
-        "insurance_eligibility",
+        # Insurance tools intentionally excluded for provider role.
     },
     "care_agent": {
         "diagnosis_to_specialty",
         "provider_candidates",
         "insurance_eligibility",
+        "patient_insurance_profile",
+        "provider_insurance_plans",
     },
 }
-
 
 def _authorize_tool_call(
     tool_name: str,
@@ -180,6 +187,48 @@ def insurance_eligibility(
     """
     _authorize_tool_call("insurance_eligibility", caller_role, internal_key, user_role=user_role)
     return check_provider_in_network(provider_id, insurance_plan)
+
+
+@mcp.tool()
+def patient_insurance_profile_tool(
+    internal_key: str,
+    caller_role: str,
+    patient_id: str = "",
+    patient_name: str = "",
+    member_id: str = "",
+    insurance_plan: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Fetch patient insurance profile and eligibility records.
+
+    Args:
+        internal_key: Shared MCP authentication key
+        caller_role: The capability/service invoking this tool
+        patient_id: Optional patient id (e.g., PT-001)
+        patient_name: Optional display name alias
+        member_id: Optional member id alias
+        insurance_plan: Optional explicit plan filter/check
+        user_role: Optional end-user role for dual-layer RBAC
+    """
+    _authorize_tool_call("patient_insurance_profile", caller_role, internal_key, user_role=user_role)
+    return patient_insurance_profile(
+        patient_id=patient_id,
+        patient_name=patient_name,
+        member_id=member_id,
+        insurance_plan=insurance_plan,
+    )
+
+
+@mcp.tool()
+def provider_insurance_plans(
+    provider_id: str,
+    internal_key: str,
+    caller_role: str,
+    user_role: str | None = None,
+) -> list[str]:
+    """List insurance plans accepted by a provider."""
+    _authorize_tool_call("provider_insurance_plans", caller_role, internal_key, user_role=user_role)
+    return list_provider_insurance_plans(provider_id)
 
 
 if __name__ == "__main__":

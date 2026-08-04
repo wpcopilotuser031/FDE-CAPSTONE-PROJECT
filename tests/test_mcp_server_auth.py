@@ -31,3 +31,27 @@ def test_authorize_tool_call_rejects_unknown_use_case(monkeypatch) -> None:
         assert False, "Expected PermissionError"
     except PermissionError as exc:
         assert "not recognized" in str(exc)
+
+
+def test_authorize_insurance_tools_allow_care_agent_user_role(monkeypatch) -> None:
+    monkeypatch.setenv("MCP_INTERNAL_KEY", "test-internal-key")
+    _authorize_tool_call(
+        "patient_insurance_profile",
+        "insurance_validation",
+        "test-internal-key",
+        user_role="care_agent",
+    )
+
+
+def test_authorize_insurance_tools_reject_provider_user_role(monkeypatch) -> None:
+    monkeypatch.setenv("MCP_INTERNAL_KEY", "test-internal-key")
+    try:
+        _authorize_tool_call(
+            "insurance_eligibility",
+            "insurance_validation",
+            "test-internal-key",
+            user_role="provider",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)

@@ -2,7 +2,9 @@ from app.mcp_server.tools import (
     build_recommendation_rationale_llm_assisted,
     check_provider_in_network,
     infer_specialties_llm_assisted,
+    list_provider_insurance_plans,
     map_diagnosis_to_specialties,
+    patient_insurance_profile,
     retrieve_candidate_providers,
 )
 from app.agents.llm_gateway import LLMGatewayError
@@ -36,6 +38,23 @@ def test_retrieve_candidate_providers() -> None:
     results = retrieve_candidate_providers("chest pain", "Austin, TX", max_candidates=5)
     assert len(results) > 0
     assert "provider_id" in results[0]
+
+
+def test_list_provider_insurance_plans() -> None:
+    plans = list_provider_insurance_plans("P1001")
+    assert "Aetna" in plans
+
+
+def test_patient_insurance_profile_lookup_by_patient_id() -> None:
+    profile = patient_insurance_profile(patient_id="PT-001")
+    assert profile["patient_id"] == "PT-001"
+    assert profile["insurance_plan"] == "Aetna"
+
+
+def test_patient_insurance_profile_lookup_by_patient_name_alias() -> None:
+    profile = patient_insurance_profile(patient_name="Aviroop Basu")
+    assert profile["patient_id"] == "PT-001"
+    assert profile["insurance_plan"] == "Aetna"
 
 
 def test_infer_specialties_llm_assisted(monkeypatch) -> None:

@@ -7,9 +7,19 @@ from app.agents.llm_gateway import LLMGatewayError, call_llm_json
 from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
 from app.config import DATA_DIR
 from app.data_loader import load_json
-from app.rag.provider_index import ProviderIndex
 
-_provider_index = ProviderIndex()
+_provider_index: Any | None = None
+
+
+def _get_provider_index() -> Any:
+    global _provider_index
+    if _provider_index is None:
+        # Lazy import avoids hard dependency on chromadb for non-RAG tool paths
+        # such as insurance validation and patient coverage lookups.
+        from app.rag.provider_index import ProviderIndex
+
+        _provider_index = ProviderIndex()
+    return _provider_index
 
 
 def map_diagnosis_to_specialties(diagnosis: str) -> list[str]:
@@ -83,7 +93,7 @@ def retrieve_candidate_providers(
     # Query providers by specialty and location
     specialty_str = " ".join(specialties)
     query = f"{specialty_str} in {location}"
-    return _provider_index.query(query, top_k=max_candidates)
+    return _get_provider_index().query(query, top_k=max_candidates)
 
 
 def check_provider_in_network(
@@ -97,6 +107,115 @@ def check_provider_in_network(
     networks = load_json(DATA_DIR / "insurance_networks.json")
     eligible_providers = set(networks.get(insurance_plan, []))
     return provider_id in eligible_providers
+
+
+def list_provider_insurance_plans(provider_id: str) -> list[str]:
+    providers = load_json(DATA_DIR / "providers.json")
+    provider_id_lower = provider_id.strip().lower()
+    for provider in providers:
+        if str(provider.get("provider_id", "")).strip().lower() == provider_id_lower:
+            plans = provider.get("insurance_networks", [])
+            if isinstance(plans, list):
+                return [str(plan) for plan in plans if str(plan).strip()]
+            return []
+    return []
+
+
+def _resolve_patient_id(patient_id: str, patient_name: str, member_id: str) -> str | None:
+    if patient_id.strip():
+        return patient_id.strip()
+
+    users_payload = load_json(DATA_DIR / "users.json")
+    users = users_payload.get("users", []) if isinstance(users_payload, dict) else []
+
+    if member_id.strip():
+        member_id_lower = member_id.strip().lower()
+        for user in users:
+            scope = str(user.get("scope", "")).strip()
+            if scope.lower() == member_id_lower:
+                return scope
+
+    if patient_name.strip():
+        patient_name_lower = patient_name.strip().lower()
+        for user in users:
+            display_name = str(user.get("display_name", "")).strip().lower()
+            if display_name == patient_name_lower:
+                scope = str(user.get("scope", "")).strip()
+                if scope:
+                    return scope
+
+    return None
+
+
+def patient_insurance_profile(
+    patient_id: str = "",
+    patient_name: str = "",
+    member_id: str = "",
+    insurance_plan: str = "",
+) -> dict[str, Any]:
+    resolved_patient_id = _resolve_patient_id(patient_id, patient_name, member_id)
+    if not resolved_patient_id:
+        return {
+            "patient_id": None,
+            "insurance_plan": None,
+            "eligible": False,
+            "patient_found": False,
+            "eligibility_records": [],
+            "missing_information": ["patient_id or patient_name or member_id"],
+        }
+
+    patients = load_json(DATA_DIR / "patients.json")
+    resolved_lower = resolved_patient_id.lower()
+    patient_row = next(
+        (row for row in patients if str(row.get("patient_id", "")).strip().lower() == resolved_lower),
+        None,
+    )
+
+    eligibility_rows = load_json(DATA_DIR / "eligibility.json")
+    matching = [
+        row
+        for row in eligibility_rows
+        if str(row.get("patient_id", "")).strip().lower() == resolved_lower
+    ]
+
+    plan = ""
+    if patient_row:
+        plan = str(patient_row.get("insurance_plan", "")).strip()
+    if not plan and matching:
+        plan = str(matching[0].get("insurance_plan", "")).strip()
+
+    effective_plan = insurance_plan.strip() or plan
+    effective_plan_lower = effective_plan.lower()
+
+    filtered_rows = matching
+    if effective_plan_lower:
+        filtered_rows = [
+            row
+            for row in matching
+            if str(row.get("insurance_plan", "")).strip().lower() == effective_plan_lower
+        ]
+
+    eligible = any(bool(row.get("eligible")) for row in filtered_rows)
+
+    return {
+        "patient_id": resolved_patient_id,
+        "patient_name": str(patient_row.get("name", "")).strip() if patient_row else "",
+        "insurance_plan": effective_plan or None,
+        "eligible": eligible,
+        "patient_found": patient_row is not None,
+        "eligibility_records": [
+            {
+                "referral_id": row.get("referral_id"),
+                "insurance_plan": row.get("insurance_plan"),
+                "eligible": row.get("eligible"),
+                "copay": row.get("copay"),
+                "authorization_required": row.get("authorization_required"),
+                "notes": row.get("notes"),
+            }
+            for row in filtered_rows
+        ],
+        "missing_information": [] if (effective_plan or patient_row or matching) else ["insurance plan"],
+    }
 
 
 def days_until(date_str: str) -> int:

@@ -77,20 +77,10 @@ def _extract_field(pattern: str, query: str) -> str | None:
 
 
 def heuristic_slot_extraction(query: str) -> dict[str, str | None]:
-    patient_id = _extract_field(r"patient(?:\s+id)?\s*[:=-]\s*([A-Za-z0-9\-_]+)", query)
-    if not patient_id:
-        patient_id = _extract_field(r"\b(PT-\d+)\b", query)
-
-    patient_name = _extract_field(r"patient\s+name\s*(?:is|:|=|-)\s*([^,;]+)", query)
-    member_id = _extract_field(r"member\s*id\s*[:=-]\s*([A-Za-z0-9\-_]+)", query)
-
     return {
         "diagnosis": _extract_field(r"diagnosis\s*[:=-]\s*([^,;]+)", query),
         "location": _extract_field(r"location\s*[:=-]\s*([^,;]+)", query),
         "insurance_plan": _extract_field(r"insurance\s*[:=-]\s*([^,;]+)", query),
-        "patient_id": patient_id,
-        "patient_name": patient_name,
-        "member_id": member_id,
         "excluded_provider_id": _extract_field(
             r"(?:excluding|except|exclude)\s+(?:provider\s+)?([A-Za-z0-9\-_]+)",
             query,
@@ -161,7 +151,7 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "3. Return the matched provider_id as 'excluded_provider_id'\n"
         "\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
-        "patient_id, patient_name, member_id, excluded_provider_id, preferred_window_days, urgency. "
+        "excluded_provider_id, preferred_window_days, urgency. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
     )
 
@@ -205,9 +195,6 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "diagnosis": response_json.get("diagnosis"),
         "location": response_json.get("location"),
         "insurance_plan": response_json.get("insurance_plan"),
-        "patient_id": response_json.get("patient_id"),
-        "patient_name": response_json.get("patient_name"),
-        "member_id": response_json.get("member_id"),
         "excluded_provider_id": response_json.get("excluded_provider_id"),
         "preferred_window_days": response_json.get("preferred_window_days"),
         "urgency": response_json.get("urgency"),

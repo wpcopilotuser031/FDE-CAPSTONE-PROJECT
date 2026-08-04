@@ -60,15 +60,6 @@ def test_heuristic_slot_extraction_alternative_provider() -> None:
     assert slots["urgency"] == "Routine"
 
 
-def test_heuristic_slot_extraction_patient_identifiers() -> None:
-    slots = heuristic_slot_extraction(
-        "Check eligibility for patient id: PT-001, patient name is Aviroop Basu, member id: PT-001"
-    )
-    assert slots["patient_id"] == "PT-001"
-    assert slots["patient_name"] == "Aviroop Basu"
-    assert slots["member_id"] == "PT-001"
-
-
 def test_infer_query_llm_success(monkeypatch) -> None:
     def _mock_llm_json(*args, **kwargs):
         return {
