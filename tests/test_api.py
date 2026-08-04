@@ -248,6 +248,34 @@ def test_http_mcp_call_endpoint(monkeypatch) -> None:
     assert "Cardiology" in body["result"]
 
 
+def test_insurance_validation_patient_plan_lookup_by_patient_id(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    payload = {
+        "patient_id": "PT-001",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["patient_id"] == "PT-001"
+    assert body["insurance_plan"] == "Aetna"
+
+
+def test_insurance_validation_patient_plan_lookup_by_patient_name(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    payload = {
+        "patient_name": "Aviroop Basu",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["patient_id"] == "PT-001"
+    assert body["insurance_plan"] == "Aetna"
+
+
 def test_jsonrpc_invalid_version_returns_error() -> None:
     payload = {
         "jsonrpc": "1.0",
