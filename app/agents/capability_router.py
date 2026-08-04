@@ -93,6 +93,31 @@ def heuristic_slot_extraction(query: str) -> dict[str, str | None]:
 def infer_capability_from_query(query: str) -> CapabilityDecision:
     query_lower = query.lower()
     recommendation_score = sum(1 for keyword in RECOMMENDATION_KEYWORDS if keyword in query_lower)
+    symptom_terms = {
+        "i have",
+        "i am having",
+        "am having",
+        "having",
+        "pain",
+        "symptom",
+        "symptoms",
+        "diagnosed",
+        "condition",
+    }
+    provider_seek_terms = {
+        "doctor",
+        "doctors",
+        "specialist",
+        "specialists",
+        "provider",
+        "providers",
+    }
+    symptom_intent = any(term in query_lower for term in symptom_terms)
+    provider_seek_intent = any(term in query_lower for term in provider_seek_terms)
+    if symptom_intent and provider_seek_intent:
+        # Deterministic override signal: this is diagnosis/symptom-driven care matching.
+        recommendation_score += 3
+
     alternative_score = 0
     if any(term in query_lower for term in {"alternative", "alternatives", "alternate", "another"}):
         alternative_score += 2
@@ -109,6 +134,8 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
     if "pt-" in query_lower and "insurance" in query_lower:
         insurance_score += 2
     discovery_score = sum(1 for keyword in DISCOVERY_KEYWORDS if keyword in query_lower)
+    if symptom_intent:
+        discovery_score = max(0, discovery_score - 1)
 
     scored_capabilities = [
         ("alternative_provider_suggestion", alternative_score),

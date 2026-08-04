@@ -16,6 +16,13 @@ def test_infer_specialist_recommendation_capability() -> None:
     assert decision.confidence >= 0.5
 
 
+def test_infer_specialist_recommendation_for_symptom_doctor_search() -> None:
+    query = "Am having chest pain, find doctors in dallas in 30 days under aetna plan"
+    decision = infer_capability_from_query(query)
+    assert decision.capability == "specialist_recommendation"
+    assert decision.confidence >= 0.6
+
+
 def test_infer_unknown_capability() -> None:
     decision = infer_capability_from_query("What is the weather in Austin?")
     assert decision.capability == "unknown"
