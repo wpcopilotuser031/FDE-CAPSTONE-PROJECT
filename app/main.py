@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 
@@ -242,9 +243,7 @@ def list_sample_documents(
     for doc_path in sorted(docs_dir.glob("*.txt")):
         try:
             content = doc_path.read_text(encoding="utf-8")
-            # Extract first non-empty line as title
             lines = [ln.strip() for ln in content.splitlines() if ln.strip()]
-            # Find Document ID
             doc_id = next(
                 (ln.split(":", 1)[1].strip() for ln in lines if ln.startswith("Document ID:")),
                 doc_path.stem,
@@ -260,3 +259,68 @@ def list_sample_documents(
             continue
 
     return samples
+
+
+def _extract_text_from_upload(filename: str, content: bytes) -> str:
+    """Extract plain text from an uploaded file (PDF or TXT)."""
+    if filename.lower().endswith(".pdf"):
+        try:
+            from pypdf import PdfReader  # lazy import — only needed for PDF uploads
+            reader = PdfReader(BytesIO(content))
+            pages = [page.extract_text() or "" for page in reader.pages]
+            return "\n".join(pages).strip()
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=422,
+                detail=f"Could not extract text from PDF: {exc}",
+            ) from exc
+    # Plain text
+    try:
+        return content.decode("utf-8", errors="replace").strip()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=422, detail=f"Could not read file: {exc}") from exc
+
+
+@app.post("/api/v1/documents/upload-extract", response_model=DocumentExtractionResponse)
+async def upload_and_extract_codes(
+    file: UploadFile = File(...),
+    x_session_token: str | None = Header(default=None, alias="X-Session-Token"),
+) -> DocumentExtractionResponse:
+    """
+    Upload a referral document file (PDF or TXT) and extract ICD-10 + CPT codes.
+
+    Accessible to: provider, care_agent roles.
+    """
+    session = get_session(x_session_token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired session. Please log in again.")
+
+    if session.role not in {"provider", "care_agent"}:
+        raise HTTPException(
+            status_code=403,
+            detail="Document code extraction is only available to providers and care agents.",
+        )
+
+    filename = file.filename or "upload"
+    allowed_ext = {".pdf", ".txt", ".text"}
+    suffix = Path(filename).suffix.lower()
+    if suffix not in allowed_ext:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unsupported file type '{suffix}'. Upload a .pdf or .txt file.",
+        )
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=422, detail="Uploaded file is empty.")
+
+    document_text = _extract_text_from_upload(filename, content)
+    if not document_text.strip():
+        raise HTTPException(status_code=422, detail="Could not extract any text from the uploaded file.")
+
+    result = document_extraction_agent({
+        "document_text": document_text,
+        "document_id": filename,
+    })
+
+    return DocumentExtractionResponse(**result)

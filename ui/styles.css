@@ -309,6 +309,79 @@ input[type="text"], input[type="password"], select, textarea {
   padding: 12px 22px;
 }
 
+/* ===================== Chat attach button ===================== */
+
+.chat-attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background 120ms;
+  user-select: none;
+}
+
+.chat-attach-btn:hover {
+  background: #cfe8ec;
+}
+
+/* ===================== In-chat document result card ===================== */
+
+.chat-doc-card {
+  background: #f0f7f9;
+  border: 1px solid #b8dde4;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.83rem;
+}
+
+.chat-doc-card-header {
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.chat-doc-summary {
+  color: var(--slate);
+  font-style: italic;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.chat-doc-tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 560px) {
+  .chat-doc-tables { grid-template-columns: 1fr; }
+}
+
+.chat-doc-table-title {
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--slate);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chat-doc-meta {
+  font-size: 0.75rem;
+  color: var(--slate);
+  margin-top: 6px;
+}
+
 @media (max-width: 650px) {
   .demo-logins-row {
     flex-direction: column;

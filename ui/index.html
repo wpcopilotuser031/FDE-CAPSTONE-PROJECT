@@ -57,7 +57,9 @@
       <div class="chat-suggestions" id="chatSuggestions"></div>
 
       <form id="chatForm" class="chat-input-row">
-        <textarea id="chatInput" rows="1" placeholder="Ask about referrals, specialists, insurance..." autocomplete="off"></textarea>
+        <label for="chatFileInput" class="chat-attach-btn" title="Attach referral document (.txt or .pdf)">📎</label>
+        <input type="file" id="chatFileInput" accept=".txt,.text,.pdf" class="hidden" />
+        <textarea id="chatInput" rows="1" placeholder="Ask about referrals, specialists, insurance... or attach a doc 📎" autocomplete="off"></textarea>
         <button id="chatSendBtn" class="action-button primary chat-send-btn" type="submit">Send</button>
       </form>
     </div>

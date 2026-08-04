@@ -224,11 +224,39 @@ function renderRoutedSummary(routed) {
   return '';
 }
 
+function renderDocResultCard(msg) {
+  const r = msg.docResult;
+  if (!r) return '';
+  const method = r.extraction_method || 'unknown';
+  const dxRows = (r.diagnosis_codes || []).map(c =>
+    `<tr><td><span class="code-tag">${escapeHtml(c.code)}</span></td><td>${escapeHtml(c.description)}</td></tr>`
+  ).join('');
+  const pxRows = (r.procedure_codes || []).map(c =>
+    `<tr><td><span class="code-tag">${escapeHtml(c.code)}</span></td><td>${escapeHtml(c.description)}</td></tr>`
+  ).join('');
+  const summary = r.clinical_summary ? `<div class="chat-doc-summary">${escapeHtml(r.clinical_summary)}</div>` : '';
+  const methodBadge = `<span class="method-badge method-${method.replace(/\+/g,'-').replace(/_/g,'-')}">${escapeHtml(method)}</span>`;
+  return `
+    <div class="chat-doc-card">
+      <div class="chat-doc-card-header">📄 ${escapeHtml(msg.filename || 'document')} &nbsp;${methodBadge}</div>
+      ${summary}
+      <div class="chat-doc-tables">
+        ${ dxRows ? `<div><div class="chat-doc-table-title">🩺 ICD-10 Diagnosis</div><table class="code-table"><tbody>${dxRows}</tbody></table></div>` : '' }
+        ${ pxRows ? `<div><div class="chat-doc-table-title">⚕️ CPT Procedures</div><table class="code-table"><tbody>${pxRows}</tbody></table></div>` : '' }
+      </div>
+      <div class="chat-doc-meta">${r.total_diagnosis_codes} diagnosis · ${r.total_procedure_codes} procedure code(s)</div>
+    </div>
+  `;
+}
+
 function renderChatMessages() {
   const container = document.getElementById('chatMessages');
   container.innerHTML = state.chatMessages.map((msg) => {
     if (msg.role === 'typing') {
       return '<div class="chat-msg typing">Assistant is typing...</div>';
+    }
+    if (msg.role === 'doc_result') {
+      return `<div class="chat-msg assistant">${renderDocResultCard(msg)}</div>`;
     }
     const cls = msg.role === 'user' ? 'user' : msg.role === 'system' ? 'system' : 'assistant';
     const routedHtml = msg.routed ? renderRoutedSummary(msg.routed) : '';
@@ -352,6 +380,12 @@ function wireEvents() {
     if (chip) {
       sendChatMessage(chip.textContent);
     }
+  });
+
+  // Chat file attachment (paperclip button)
+  document.getElementById('chatFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) handleChatFileAttach(file);
   });
 
   // Tab switching
@@ -557,6 +591,103 @@ function injectCodesToChat() {
   switchTab('chat');
   document.getElementById('chatInput').value = question;
   document.getElementById('chatInput').focus();
+}
+
+// ===================== Chat document attachment =====================
+
+async function handleChatFileAttach(file) {
+  if (!file || !file.name.match(/\.(txt|text|pdf)$/i)) {
+    renderToast('Only .pdf and .txt files are supported.');
+    return;
+  }
+  if (state.chatBusy) return;
+
+  // Patient role cannot extract codes
+  if (state.role === 'patient') {
+    state.chatMessages.push({
+      role: 'assistant',
+      text: 'Document code extraction is only available to providers and care agents. As a patient you can ask your provider to share the extracted codes.',
+    });
+    renderChatMessages();
+    return;
+  }
+
+  // Show user bubble: file name
+  state.chatMessages.push({ role: 'user', text: `📎 Attached: ${file.name}` });
+  state.chatMessages.push({ role: 'typing', text: '' });
+  renderChatMessages();
+  state.chatBusy = true;
+  document.getElementById('chatSendBtn').disabled = true;
+
+  try {
+    // Use multipart upload endpoint — handles both PDF and TXT server-side
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch(`${DEFAULT_BACKEND_URL}/api/v1/documents/upload-extract`, {
+      method: 'POST',
+      headers: { 'X-Session-Token': state.token || '' },
+      body: formData,
+    });
+
+    if (res.status === 401) { logout(); return; }
+
+    state.chatMessages = state.chatMessages.filter(m => m.role !== 'typing');
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      state.chatMessages.push({ role: 'assistant', text: `Could not extract codes: ${body.detail || res.status}` });
+      renderChatMessages();
+      return;
+    }
+
+    const result = await res.json();
+    // Store for potential inject-to-chat use
+    docState.lastResult = result;
+
+    // Show structured doc result card in chat
+    state.chatMessages.push({ role: 'doc_result', filename: file.name, docResult: result });
+    renderChatMessages();
+
+    // If codes were found, auto-ask the conversational assistant to comment
+    if (result.total_diagnosis_codes > 0) {
+      const dxList = result.diagnosis_codes.map(c => `${c.code} (${c.description})`).join(', ');
+      const pxList = result.procedure_codes.length
+        ? result.procedure_codes.map(c => `${c.code} (${c.description})`).join(', ')
+        : 'none';
+      const autoQuestion = `Based on this referral document, the extracted ICD-10 codes are: ${dxList}. Procedure codes: ${pxList}. What specialist should this patient be referred to?`;
+
+      state.chatMessages.push({ role: 'typing', text: '' });
+      renderChatMessages();
+
+      const rpcRes = await sendJsonRpc('capability.route', {
+        capability: 'conversational_assistant',
+        payload: { question: autoQuestion, asker_role: roleLabel(state.role), context: {} },
+      });
+
+      state.chatMessages = state.chatMessages.filter(m => m.role !== 'typing');
+
+      if (!rpcRes.error) {
+        const agentResult = rpcRes.result?.agent_result || {};
+        state.chatMessages.push({
+          role: 'assistant',
+          text: agentResult.answer || 'I could not generate a recommendation.',
+          routed: rpcRes.result?.routed_capability ? { capability: rpcRes.result.routed_capability, result: rpcRes.result.routed_agent_result } : null,
+        });
+        renderChatSuggestions(agentResult.follow_up_suggestions || []);
+      }
+      renderChatMessages();
+    }
+  } catch (err) {
+    state.chatMessages = state.chatMessages.filter(m => m.role !== 'typing');
+    state.chatMessages.push({ role: 'assistant', text: `Error processing document: ${err.message}` });
+    renderChatMessages();
+  } finally {
+    state.chatBusy = false;
+    document.getElementById('chatSendBtn').disabled = false;
+    // Reset so the same file can be re-attached
+    document.getElementById('chatFileInput').value = '';
+  }
 }
 
 function init() {
