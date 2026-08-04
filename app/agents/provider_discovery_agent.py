@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from datetime import UTC, datetime
 from typing import Any
 
@@ -39,7 +40,55 @@ def _split_specialties(raw: str) -> list[str]:
     normalized = raw.replace("/", ",").replace("|", ",")
     normalized = normalized.replace(" and ", ",").replace(" or ", ",")
     values = [part.strip() for part in normalized.split(",")]
-    return [value for value in values if value]
+    aliases = {
+        "cardiologist": "Cardiology",
+        "cardiologists": "Cardiology",
+        "cardiology": "Cardiology",
+        "gastroenterologist": "Gastroenterology",
+        "gastroenterologists": "Gastroenterology",
+        "gastroenterology": "Gastroenterology",
+        "neurologist": "Neurology",
+        "neurologists": "Neurology",
+        "neurology": "Neurology",
+        "dermatologist": "Dermatology",
+        "dermatologists": "Dermatology",
+        "dermatology": "Dermatology",
+        "endocrinologist": "Endocrinology",
+        "endocrinologists": "Endocrinology",
+        "endocrinology": "Endocrinology",
+        "orthopedic": "Orthopedics",
+        "orthopedics": "Orthopedics",
+        "orthopedic surgeon": "Orthopedics",
+    }
+
+    canonical: list[str] = []
+    for value in values:
+        if not value:
+            continue
+        mapped = aliases.get(value.lower(), value)
+        if mapped not in canonical:
+            canonical.append(mapped)
+    return canonical
+
+
+def _extract_from_question(question: str) -> tuple[str, str]:
+    specialty = ""
+    location = ""
+
+    # Examples: "find cardiologists near dallas", "gastroenterology in austin"
+    specialty_match = re.search(
+        r"\b((?:cardiolog(?:y|ist(?:s)?)|gastroenterolog(?:y|ist(?:s)?)|neurolog(?:y|ist(?:s)?)|orthopedic(?:s)?|orthopedics|dermatolog(?:y|ist(?:s)?)|endocrinolog(?:y|ist(?:s)?)))\b",
+        question,
+        flags=re.IGNORECASE,
+    )
+    if specialty_match:
+        specialty = specialty_match.group(1).strip()
+
+    location_match = re.search(r"\b(?:near|in)\s+([A-Za-z\s]+?)(?:\?|\.|,|$)", question, flags=re.IGNORECASE)
+    if location_match:
+        location = location_match.group(1).strip()
+
+    return specialty, location
 
 
 def _filter_local_providers(
@@ -87,6 +136,14 @@ def provider_discovery_agent(payload: dict[str, Any]) -> dict[str, Any]:
     insurance_plan = str(payload.get("insurance_plan", "")).strip()
     preferred_window_days = int(payload.get("preferred_window_days", 0))
     max_results = int(payload.get("max_results", 5))
+    question = str(payload.get("question", "")).strip()
+
+    if question and (not specialty or not location):
+        inferred_specialty, inferred_location = _extract_from_question(question)
+        if not specialty and inferred_specialty:
+            specialty = inferred_specialty
+        if not location and inferred_location:
+            location = inferred_location
 
     missing_information: list[str] = []
     if not location:

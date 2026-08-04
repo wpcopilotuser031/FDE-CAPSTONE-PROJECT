@@ -258,6 +258,21 @@ def test_insurance_capability_denied_for_provider() -> None:
         assert "not permitted" in str(exc)
 
 
+def test_referral_triage_capability_denied_for_provider() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "referral_triage",
+                "payload": {"diagnosis": "chest pain"},
+            },
+            caller_role="provider",
+            session_token="role-test-provider-triage",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
+
+
 def test_conversational_insurance_route_for_care_agent_passes_user_role(monkeypatch) -> None:
     def _mock_infer_query(query, context=None):
         return QueryInterpretation(

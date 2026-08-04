@@ -1,11 +1,13 @@
 from app.mcp_server.tools import (
     build_recommendation_rationale_llm_assisted,
     check_provider_in_network,
+    create_triage_ticket,
     infer_specialties_llm_assisted,
     list_provider_insurance_plans,
     map_diagnosis_to_specialties,
     patient_insurance_profile,
     retrieve_candidate_providers,
+    triage_assess,
 )
 from app.agents.llm_gateway import LLMGatewayError
 from app.data_loader import load_json
@@ -55,6 +57,23 @@ def test_patient_insurance_profile_lookup_by_patient_name_alias() -> None:
     profile = patient_insurance_profile(patient_name="Aviroop Basu")
     assert profile["patient_id"] == "PT-001"
     assert profile["insurance_plan"] == "Aetna"
+
+
+def test_triage_assess_returns_priority_and_specialties() -> None:
+    assessment = triage_assess("chest pain")
+    assert assessment["triage_priority"] == "high"
+    assert assessment["priority_score"] > 0.8
+    assert "Cardiology" in assessment["recommended_specialties"]
+
+
+def test_create_triage_ticket_generates_ticket_id() -> None:
+    ticket = create_triage_ticket(
+        reason="Need manual review",
+        triage_priority="high",
+        patient_id="PT-001",
+    )
+    assert ticket["ticket_id"].startswith("TCK-")
+    assert ticket["status"] == "OPEN"
 
 
 def test_infer_specialties_llm_assisted(monkeypatch) -> None:

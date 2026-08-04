@@ -135,27 +135,39 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
 
 
 def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> QueryInterpretation:
+    agent_cards = []
+    if context and isinstance(context.get("agent_cards"), list):
+        agent_cards = [card for card in context["agent_cards"] if isinstance(card, dict)]
+
+    if agent_cards:
+        capability_lines = []
+        for card in agent_cards:
+            capability = str(card.get("capability", "")).strip()
+            description = str(card.get("description", "")).strip()
+            required = card.get("required", [])
+            optional = card.get("optional", [])
+            capability_lines.append(
+                f"- {capability}: {description} | required={required} optional={optional}"
+            )
+        capability_block = "\n".join(capability_lines)
+    else:
+        capability_block = (
+            "- specialist_recommendation: recommendations for specialists\n"
+            "- referral_triage: assess referral urgency/priority\n"
+            "- alternative_provider_suggestion: alternatives to prior provider\n"
+            "- insurance_validation: insurance eligibility/plan checks\n"
+            "- provider_discovery: provider directory search"
+        )
+
     system_prompt = (
-        "You are a healthcare referral capability router. Route to the most specific capability:\n"
-        "- specialist_recommendation: when asking for provider/specialist recommendations driven by a diagnosis or condition\n"
-        "- referral_triage: when explicitly asking to assess priority/urgency level of a referral\n"
-        "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
-        "- insurance_validation: when asking insurance eligibility/coverage details for either a patient/member plan or provider in-network status\n"
-        "- provider_discovery: when directly searching for providers by specialty or directory-like criteria\n"
-        "\n"
-        "KEY DISTINCTION:\n"
-        "- Diagnosis/condition-driven request → specialist_recommendation\n"
-        "- Specialty-only or directory-style request → provider_discovery\n"
-        "\n"
-        "When user mentions a specialty term:\n"
-        "1. If paired with a diagnosis/condition, route to specialist_recommendation\n"
-        "2. If it is only specialty/directory search intent, route to provider_discovery\n"
-        "\n"
-        "IMPORTANT: If a previous result is provided in context with recommendations, and the user asks for 'alternatives to [Provider Name]':\n"
-        "1. Route to 'alternative_provider_suggestion'\n"
-        "2. Extract the provider_id by matching [Provider Name] against the recommendations in context\n"
-        "3. Return the matched provider_id as 'excluded_provider_id'\n"
-        "\n"
+        "You are a healthcare referral capability router. "
+        "Choose ONE capability from the provided agent cards, based on best semantic fit and required fields.\n"
+        "Available capabilities:\n"
+        f"{capability_block}\n\n"
+        "Prefer the most specific capability that can satisfy the user goal. "
+        "If unclear, return capability='unknown'.\n"
+        "If a previous recommendation result is in context and user asks for alternatives to a provider name, "
+        "resolve excluded_provider_id from that context when possible.\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
         "excluded_provider_id, preferred_window_days, urgency. "
         "If a field is missing, return null. Confidence must be between 0 and 1."

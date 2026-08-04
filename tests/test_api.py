@@ -228,6 +228,36 @@ def test_provider_discovery_with_specialty_and_filters(monkeypatch) -> None:
     assert [item["provider_id"] for item in body["providers"]] == ["P-101", "P-100"]
 
 
+def test_provider_discovery_extracts_specialty_and_location_from_question(monkeypatch) -> None:
+    monkeypatch.setenv("USE_MCP_TOOLS", "false")
+
+    providers_fixture = [
+        {
+            "provider_id": "P-200",
+            "provider_name": "Dr. Cardio Dallas",
+            "specialty": "Cardiology",
+            "location": "Dallas, TX",
+            "insurance_networks": ["Aetna"],
+            "next_available_date": "2026-08-07",
+        },
+    ]
+
+    monkeypatch.setattr(
+        "app.agents.provider_discovery_agent.load_json",
+        lambda _path: providers_fixture,
+    )
+
+    payload = {
+        "question": "Find cardiologists near Dallas",
+        "max_results": 5,
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/provider_discovery/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert [item["provider_id"] for item in body["providers"]] == ["P-200"]
+
+
 def test_http_mcp_call_endpoint(monkeypatch) -> None:
     monkeypatch.setenv("MCP_INTERNAL_KEY", "test-key")
 
@@ -342,6 +372,38 @@ def test_insurance_validation_extracts_patient_id_from_question(monkeypatch) -> 
     response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
     assert response.status_code == 200
     assert captured.get("patient_id") == "PT-001"
+
+
+def test_referral_triage_agent_delegates_to_graph_flow(monkeypatch) -> None:
+    def _mock_flow(**kwargs):
+        return {
+            "triage_priority": "high",
+            "priority_score": 0.9,
+            "recommended_specialties": ["Cardiology"],
+            "human_intervention_ticket": {"ticket_id": "TCK-ABC123", "status": "OPEN"},
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "referral_triage",
+                "caller_role": "referral_triage",
+                "mcp_enabled": True,
+                "tools_invoked": ["triage_assess", "create_triage_ticket"],
+                "human_review_required": True,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.referral_triage_agent.run_referral_triage_flow", _mock_flow)
+
+    payload = {
+        "diagnosis": "chest pain",
+        "patient_id": "PT-001",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/referral_triage/invoke", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["triage_priority"] == "high"
+    assert body["human_intervention_ticket"]["ticket_id"].startswith("TCK-")
 
 
 def test_jsonrpc_invalid_version_returns_error() -> None:

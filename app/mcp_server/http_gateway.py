@@ -5,10 +5,12 @@ from typing import Any
 from app.mcp_server.server import _authorize_tool_call
 from app.mcp_server.tools import (
     check_provider_in_network,
+    create_triage_ticket,
     list_provider_insurance_plans,
     map_diagnosis_to_specialties,
     patient_insurance_profile,
     retrieve_candidate_providers,
+    triage_assess,
 )
 
 
@@ -46,5 +48,16 @@ def call_tool_http(tool_name: str, arguments: dict[str, Any]) -> Any:
     if tool_name == "provider_insurance_plans":
         provider_id = str(arguments.get("provider_id", "")).strip()
         return list_provider_insurance_plans(provider_id)
+
+    if tool_name == "triage_assess":
+        diagnosis = str(arguments.get("diagnosis", "")).strip()
+        urgency_hint = str(arguments.get("urgency_hint", "")).strip()
+        return triage_assess(diagnosis=diagnosis, urgency_hint=urgency_hint)
+
+    if tool_name == "create_triage_ticket":
+        reason = str(arguments.get("reason", "")).strip()
+        triage_priority = str(arguments.get("triage_priority", "")).strip()
+        patient_id = str(arguments.get("patient_id", "")).strip()
+        return create_triage_ticket(reason=reason, triage_priority=triage_priority, patient_id=patient_id)
 
     raise ValueError(f"Unsupported MCP tool '{tool_name}'.")

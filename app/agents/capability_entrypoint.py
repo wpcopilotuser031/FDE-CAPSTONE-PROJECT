@@ -118,7 +118,6 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
     # Provider: Can refer to specialists but NOT get recommendations for themselves
     # Can triage, discover providers, and converse
     "provider": {
-        "referral_triage",
         "provider_discovery",
         "conversational_assistant",
         # EXCLUDED: "specialist_recommendation" - for patient self-help, not provider self-care
@@ -300,6 +299,18 @@ def _select_capability(
             if cached_slots:
                 context = dict(context or {})
                 context["collected_slots"] = cached_slots
+        context = dict(context or {})
+        context["agent_cards"] = [
+            {
+                "capability": card.capability,
+                "display_name": card.display_name,
+                "description": card.description,
+                "required": card.input_contract.get("required", []),
+                "optional": card.input_contract.get("optional", []),
+            }
+            for card in _AGENT_CARDS
+            if card.capability != "conversational_assistant"
+        ]
 
         # LLM intelligently extracts slots from query and context
         interpretation = infer_query(query, context=context)
@@ -348,6 +359,18 @@ def _route_conversational_assistant(
             context["routed_capability_result"] = cached
     if cached_slots and "collected_slots" not in context:
         context["collected_slots"] = cached_slots
+    if "agent_cards" not in context:
+        context["agent_cards"] = [
+            {
+                "capability": card.capability,
+                "display_name": card.display_name,
+                "description": card.description,
+                "required": card.input_contract.get("required", []),
+                "optional": card.input_contract.get("optional", []),
+            }
+            for card in _AGENT_CARDS
+            if card.capability != "conversational_assistant"
+        ]
 
     if question:
         unsupported_phrase = _matches_unsupported_topic(question)

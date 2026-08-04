@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from typing import Any
+from uuid import uuid4
 
 from app.agents.llm_gateway import LLMGatewayError, call_llm_json
 from app.mcp_clients.specialist_recommendation_client import SpecialistRecommendationMCPClient
@@ -215,6 +216,48 @@ def patient_insurance_profile(
             for row in filtered_rows
         ],
         "missing_information": [] if (effective_plan or patient_row or matching) else ["insurance plan"],
+    }
+
+
+def triage_assess(diagnosis: str, urgency_hint: str = "") -> dict[str, Any]:
+    diagnosis_lower = diagnosis.strip().lower()
+    urgency_hint_lower = urgency_hint.strip().lower()
+
+    high_urgency_terms = {"chest pain", "stroke", "sepsis", "hemorrhage", "heart attack"}
+    medium_urgency_terms = {"worsening", "persistent", "uncontrolled", "severe"}
+
+    if "urgent" in urgency_hint_lower or any(term in diagnosis_lower for term in high_urgency_terms):
+        triage_priority = "high"
+        priority_score = 0.9
+    elif "priority" in urgency_hint_lower or any(term in diagnosis_lower for term in medium_urgency_terms):
+        triage_priority = "medium"
+        priority_score = 0.65
+    else:
+        triage_priority = "low"
+        priority_score = 0.4
+
+    specialties = map_diagnosis_to_specialties(diagnosis)
+    return {
+        "triage_priority": triage_priority,
+        "priority_score": priority_score,
+        "recommended_specialties": specialties,
+    }
+
+
+def create_triage_ticket(
+    reason: str,
+    triage_priority: str,
+    patient_id: str = "",
+) -> dict[str, Any]:
+    ticket_id = f"TCK-{str(uuid4()).split('-')[0].upper()}"
+    return {
+        "ticket_id": ticket_id,
+        "status": "OPEN",
+        "queue": "human-triage",
+        "triage_priority": triage_priority,
+        "patient_id": patient_id or None,
+        "reason": reason,
+        "created_at": datetime.now(UTC).isoformat(),
     }
 
 

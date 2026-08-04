@@ -5,10 +5,12 @@ from pathlib import Path
 
 from app.mcp_server.tools import (
     check_provider_in_network,
+    create_triage_ticket,
     list_provider_insurance_plans,
     map_diagnosis_to_specialties,
     patient_insurance_profile,
     retrieve_candidate_providers,
+    triage_assess,
 )
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
@@ -26,8 +28,8 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "insurance_eligibility",
     },
     "referral_triage": {
-        "diagnosis_to_specialty",
-        "provider_candidates",
+        "triage_assess",
+        "create_triage_ticket",
     },
     "insurance_validation": {
         "insurance_eligibility",
@@ -58,6 +60,8 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
     "patient": {
         "diagnosis_to_specialty",
         "provider_candidates",
+        "triage_assess",
+        "create_triage_ticket",
         # Insurance tools intentionally excluded for patient role.
     },
     "provider": {
@@ -68,6 +72,8 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
     "care_agent": {
         "diagnosis_to_specialty",
         "provider_candidates",
+        "triage_assess",
+        "create_triage_ticket",
         "insurance_eligibility",
         "patient_insurance_profile",
         "provider_insurance_plans",
@@ -229,6 +235,33 @@ def provider_insurance_plans(
     """List insurance plans accepted by a provider."""
     _authorize_tool_call("provider_insurance_plans", caller_role, internal_key, user_role=user_role)
     return list_provider_insurance_plans(provider_id)
+
+
+@mcp.tool()
+def triage_assess_tool(
+    diagnosis: str,
+    internal_key: str,
+    caller_role: str,
+    urgency_hint: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Assess triage priority from diagnosis and urgency hints."""
+    _authorize_tool_call("triage_assess", caller_role, internal_key, user_role=user_role)
+    return triage_assess(diagnosis, urgency_hint)
+
+
+@mcp.tool()
+def create_triage_ticket_tool(
+    reason: str,
+    triage_priority: str,
+    internal_key: str,
+    caller_role: str,
+    patient_id: str = "",
+    user_role: str | None = None,
+) -> dict:
+    """Create a human-intervention triage ticket."""
+    _authorize_tool_call("create_triage_ticket", caller_role, internal_key, user_role=user_role)
+    return create_triage_ticket(reason=reason, triage_priority=triage_priority, patient_id=patient_id)
 
 
 if __name__ == "__main__":
