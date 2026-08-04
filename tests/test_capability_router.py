@@ -226,3 +226,90 @@ def test_conversational_route_reuses_prior_slots(monkeypatch) -> None:
     )
     assert second["selected_capability"] == "conversational_assistant"
     assert second.get("routed_capability") == "specialist_recommendation"
+
+
+def test_insurance_capability_denied_for_patient() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "insurance_validation",
+                "payload": {"patient_id": "PT-001"},
+            },
+            caller_role="patient",
+            session_token="role-test-patient",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
+
+
+def test_insurance_capability_denied_for_provider() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "insurance_validation",
+                "payload": {"patient_id": "PT-001"},
+            },
+            caller_role="provider",
+            session_token="role-test-provider",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
+
+
+def test_conversational_insurance_route_for_care_agent_passes_user_role(monkeypatch) -> None:
+    def _mock_infer_query(query, context=None):
+        return QueryInterpretation(
+            decision=CapabilityDecision(
+                capability="insurance_validation",
+                confidence=0.92,
+                reason="insurance question",
+            ),
+            slots={},
+            source="llm",
+        )
+
+    def _mock_http_invoke(capability, payload):
+        if capability == "insurance_validation":
+            assert payload.get("user_role") == "care_agent"
+            assert "PT-001" in str(payload.get("question", ""))
+            return {
+                "mode": "patient_insurance_profile",
+                "patient_id": "PT-001",
+                "insurance_plan": "Aetna",
+                "eligible": True,
+                "missing_information": [],
+                "decision_trace": {
+                    "capability": "insurance_validation",
+                    "caller_role": "insurance_validation",
+                    "mcp_enabled": True,
+                    "tools_invoked": ["patient_insurance_profile"],
+                    "human_review_required": False,
+                },
+            }
+        return {
+            "answer": "ok",
+            "follow_up_suggestions": [],
+            "llm_used": False,
+            "decision_trace": {
+                "capability": "conversational_assistant",
+                "caller_role": "conversational_assistant",
+                "mcp_enabled": False,
+                "tools_invoked": [],
+                "human_review_required": False,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.capability_entrypoint.infer_query", _mock_infer_query)
+    monkeypatch.setattr("app.agents.capability_entrypoint._invoke_agent_http", _mock_http_invoke)
+
+    result = route_capability(
+        {
+            "capability": "conversational_assistant",
+            "payload": {"question": "PT-001 is registered under which insurance plan?"},
+        },
+        caller_role="care_agent",
+        session_token="care-agent-insurance-route",
+    )
+    assert result.get("routed_capability") == "insurance_validation"

@@ -102,6 +102,12 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
         alternative_score += 1
     triage_score = sum(1 for keyword in TRIAGE_KEYWORDS if keyword in query_lower)
     insurance_score = sum(1 for keyword in INSURANCE_KEYWORDS if keyword in query_lower)
+    if "insurance" in query_lower and "plan" in query_lower:
+        insurance_score += 2
+    if "registered under" in query_lower and "insurance" in query_lower:
+        insurance_score += 2
+    if "pt-" in query_lower and "insurance" in query_lower:
+        insurance_score += 2
     discovery_score = sum(1 for keyword in DISCOVERY_KEYWORDS if keyword in query_lower)
 
     scored_capabilities = [
@@ -134,7 +140,7 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "- specialist_recommendation: when asking for provider/specialist recommendations driven by a diagnosis or condition\n"
         "- referral_triage: when explicitly asking to assess priority/urgency level of a referral\n"
         "- alternative_provider_suggestion: when asking for alternatives to a previously recommended provider\n"
-        "- insurance_validation: when asking if a provider is in-network\n"
+        "- insurance_validation: when asking insurance eligibility/coverage details for either a patient/member plan or provider in-network status\n"
         "- provider_discovery: when directly searching for providers by specialty or directory-like criteria\n"
         "\n"
         "KEY DISTINCTION:\n"

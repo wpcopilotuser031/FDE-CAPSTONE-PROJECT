@@ -116,10 +116,9 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         # EXCLUDED: "insurance_validation" - sensitive, patient can't check coverage directly
     },
     # Provider: Can refer to specialists but NOT get recommendations for themselves
-    # Can triage, discover providers, check insurance, and converse
+    # Can triage, discover providers, and converse
     "provider": {
         "referral_triage",
-        "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
         # EXCLUDED: "specialist_recommendation" - for patient self-help, not provider self-care
@@ -420,6 +419,9 @@ def _route_conversational_assistant(
                 candidate_card = _card_by_capability(decision.capability)
                 slots = {key: value for key, value in interpretation.slots.items() if value}
                 merged_slots = {**cached_slots, **slots}
+                merged_slots["question"] = question
+                if caller_role:
+                    merged_slots["user_role"] = caller_role
                 _save_session_slots(session_token, merged_slots)
 
                 if candidate_card:
@@ -493,6 +495,9 @@ def route_capability(
         raise ValueError(
             f"No agent card registered for capability '{capability}'. Provide params.capability or a routable query."
         )
+
+    if caller_role and "user_role" not in payload:
+        payload["user_role"] = caller_role
 
     result, transport = _invoke_agent(capability, payload)
 

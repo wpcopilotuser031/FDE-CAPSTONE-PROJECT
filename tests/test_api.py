@@ -312,6 +312,38 @@ def test_insurance_validation_patient_plan_lookup_by_patient_name(monkeypatch) -
     assert body["insurance_plan"] == "Aetna"
 
 
+def test_insurance_validation_extracts_patient_id_from_question(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def _mock_flow(**kwargs):
+        captured.update(kwargs)
+        return {
+            "mode": "patient_insurance_profile",
+            "patient_id": kwargs.get("patient_id"),
+            "insurance_plan": "Aetna",
+            "eligible": True,
+            "missing_information": [],
+            "decision_trace": {
+                "capability": "insurance_validation",
+                "caller_role": "insurance_validation",
+                "mcp_enabled": True,
+                "tools_invoked": ["patient_insurance_profile"],
+                "human_review_required": False,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.insurance_validation_agent.run_insurance_validation_flow", _mock_flow)
+
+    payload = {
+        "question": "PT-001 is registered under which insurance plan?",
+        "user_role": "care_agent",
+    }
+
+    response = agent_runtime_client.post("/api/v1/agents/insurance_validation/invoke", json=payload)
+    assert response.status_code == 200
+    assert captured.get("patient_id") == "PT-001"
+
+
 def test_jsonrpc_invalid_version_returns_error() -> None:
     payload = {
         "jsonrpc": "1.0",
