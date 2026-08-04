@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from typing import Any
 
@@ -213,3 +214,115 @@ def build_recommendation_rationale_llm_assisted(
     if not rationale:
         raise LLMGatewayError("LLM rationale payload is empty.")
     return rationale, "llm"
+
+
+# ---------------------------------------------------------------------------
+# Document Code Extraction
+# ---------------------------------------------------------------------------
+
+_ICD10_RE = re.compile(r"\b([A-TV-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?)\b")
+_CPT_RE = re.compile(r"\b((?:[0-9][0-9]{4})[A-Z]?)\b")
+
+_EXTRACT_SYSTEM_PROMPT = (
+    "You are a clinical coding specialist. "
+    "Analyze the provided referral document text and extract all medical codes. "
+    "Return ONLY a JSON object:\n"
+    '{"diagnosis_codes": [{"code": "ICD-10", "description": "..."}], '
+    '"procedure_codes": [{"code": "CPT", "description": "..."}], '
+    '"clinical_summary": "one sentence summary"}\n'
+    "Extract ICD-10 codes (letter + digits, e.g. I10, E11.9) and CPT codes (5-digit, e.g. 93000). "
+    "Return only valid JSON with no extra text."
+)
+
+
+def _load_code_lookup(filename: str) -> dict[str, str]:
+    try:
+        return load_json(DATA_DIR / filename)
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _enrich_codes(codes: list[dict[str, str]], lookup: dict[str, str]) -> list[dict[str, str]]:
+    enriched = []
+    for item in codes:
+        code = str(item.get("code", "")).upper().strip()
+        desc = lookup.get(code) or str(item.get("description", ""))
+        enriched.append({"code": code, "description": desc})
+    return enriched
+
+
+def _regex_codes(
+    text: str,
+    icd10: dict[str, str],
+    cpt: dict[str, str],
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    dx: list[dict[str, str]] = []
+    px: list[dict[str, str]] = []
+    seen_dx: set[str] = set()
+    seen_px: set[str] = set()
+    for m in _ICD10_RE.finditer(text):
+        code = m.group(1).upper()
+        if code not in seen_dx:
+            seen_dx.add(code)
+            dx.append({"code": code, "description": icd10.get(code, "Extracted from document")})
+    for m in _CPT_RE.finditer(text):
+        code = m.group(1)
+        if code not in seen_px:
+            seen_px.add(code)
+            px.append({"code": code, "description": cpt.get(code, "Extracted from document")})
+    return dx, px
+
+
+def extract_diagnosis_and_procedure_codes(
+    document_text: str,
+    document_id: str | None = None,
+) -> dict[str, Any]:
+    """
+    Extract ICD-10 diagnosis codes and CPT procedure codes from referral document text.
+    Uses LLM-assisted extraction with regex fallback.
+    """
+    icd10 = _load_code_lookup("icd10_codes.json")
+    cpt = _load_code_lookup("cpt_codes.json")
+
+    diagnosis_codes: list[dict[str, str]] = []
+    procedure_codes: list[dict[str, str]] = []
+    clinical_summary: str | None = None
+    extraction_method = "regex"
+
+    try:
+        user_prompt = (
+            f"Referral document:\n\n{document_text[:4000]}\n\n"
+            "Extract all ICD-10 diagnosis codes and CPT procedure codes."
+        )
+        result = call_llm_json(_EXTRACT_SYSTEM_PROMPT, user_prompt, max_tokens=600)
+        raw_dx = result.get("diagnosis_codes", [])
+        raw_px = result.get("procedure_codes", [])
+        clinical_summary = str(result.get("clinical_summary", "")).strip() or None
+        if isinstance(raw_dx, list) and isinstance(raw_px, list):
+            diagnosis_codes = _enrich_codes(raw_dx, icd10)
+            procedure_codes = _enrich_codes(raw_px, cpt)
+            extraction_method = "llm"
+    except Exception:  # noqa: BLE001
+        pass
+
+    if not diagnosis_codes and not procedure_codes:
+        diagnosis_codes, procedure_codes = _regex_codes(document_text, icd10, cpt)
+        extraction_method = "regex"
+
+    # Deduplicate
+    seen: set[str] = set()
+    unique_dx = [item for item in diagnosis_codes if not (item["code"] in seen or seen.add(item["code"]))]  # type: ignore[func-returns-value]
+    seen = set()
+    unique_px = [item for item in procedure_codes if not (item["code"] in seen or seen.add(item["code"]))]  # type: ignore[func-returns-value]
+
+    return {
+        "document_id": document_id,
+        "diagnosis_codes": unique_dx,
+        "procedure_codes": unique_px,
+        "clinical_summary": clinical_summary,
+        "total_diagnosis_codes": len(unique_dx),
+        "total_procedure_codes": len(unique_px),
+        "extraction_method": extraction_method,
+        "extracted_at": datetime.now(UTC).isoformat(),
+    }
+

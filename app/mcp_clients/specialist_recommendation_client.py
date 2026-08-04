@@ -114,3 +114,15 @@ class SpecialistRecommendationMCPClient:
         if isinstance(result, bool):
             return result
         raise MCPClientError("insurance_eligibility returned invalid payload.")
+
+    def extract_codes(self, document_text: str, document_id: str | None = None) -> dict:
+        result = self._call_tool(
+            "extract_codes",
+            {
+                "document_text": document_text,
+                "document_id": document_id,
+            },
+        )
+        if isinstance(result, dict):
+            return result
+        raise MCPClientError("extract_codes returned invalid payload.")

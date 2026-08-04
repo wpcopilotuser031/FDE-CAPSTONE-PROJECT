@@ -5,6 +5,7 @@ from pathlib import Path
 
 from app.mcp_server.tools import (
     check_provider_in_network,
+    extract_diagnosis_and_procedure_codes,
     map_diagnosis_to_specialties,
     retrieve_candidate_providers,
 )
@@ -38,10 +39,14 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "provider_candidates",
         "insurance_eligibility",
     },
+    "document_code_extraction": {
+        "extract_codes",
+    },
     "admin_console": {
         "diagnosis_to_specialty",
         "provider_candidates",
         "insurance_eligibility",
+        "extract_codes",
     },
     "conversational_assistant": set(),
 }
@@ -53,16 +58,19 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
         "diagnosis_to_specialty",
         "provider_candidates",
         # INTENTIONALLY EXCLUDED: "insurance_eligibility" - patients can't check coverage details
+        # INTENTIONALLY EXCLUDED: "extract_codes" - document processing is provider/care_agent only
     },
     "provider": {
         "diagnosis_to_specialty",
         "provider_candidates",
         "insurance_eligibility",
+        "extract_codes",
     },
     "care_agent": {
         "diagnosis_to_specialty",
         "provider_candidates",
         "insurance_eligibility",
+        "extract_codes",
     },
 }
 
@@ -180,6 +188,27 @@ def insurance_eligibility(
     """
     _authorize_tool_call("insurance_eligibility", caller_role, internal_key, user_role=user_role)
     return check_provider_in_network(provider_id, insurance_plan)
+
+
+@mcp.tool()
+def extract_codes(
+    document_text: str,
+    internal_key: str,
+    caller_role: str,
+    document_id: str | None = None,
+    user_role: str | None = None,
+) -> dict:
+    """Extract ICD-10 diagnosis codes and CPT procedure codes from referral document text.
+
+    Args:
+        document_text: Raw text content of the referral document to analyze
+        internal_key: Shared MCP authentication key
+        caller_role: The capability/service invoking this tool
+        document_id: Optional document identifier for audit trail
+        user_role: Optional end-user role for dual-layer RBAC (provider/care_agent)
+    """
+    _authorize_tool_call("extract_codes", caller_role, internal_key, user_role=user_role)
+    return extract_diagnosis_and_procedure_codes(document_text, document_id=document_id)
 
 
 if __name__ == "__main__":

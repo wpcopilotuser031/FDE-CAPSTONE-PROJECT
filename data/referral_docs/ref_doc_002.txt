@@ -1,0 +1,42 @@
+MRI SUMMARY REPORT
+==================
+Document ID: DOC-REF-002
+Date: 2026-07-20
+Ordering Provider: Dr. James Patel, MD (NPI: 9876543210)
+Facility: Austin Radiology Center
+Patient: Maria Gonzalez, DOB: 1975-11-08, MRN: PT-20187
+Modality: MRI Lumbar Spine
+
+CLINICAL INDICATION:
+Progressive low back pain radiating to the left lower extremity for 6 weeks, unresponsive to
+conservative management. Rule out disc herniation or spinal stenosis.
+
+DIAGNOSES (ICD-10):
+- Low back pain — M54.5
+- Radiculopathy, lumbar region — M54.4
+- Intervertebral disc degeneration, lumbar region — M51.16
+- Chronic pain syndrome — G89.29
+
+PROCEDURES PERFORMED:
+- MRI Lumbar Spine without contrast — CPT: 72148
+- Nerve conduction study, 7 muscles — CPT: 95911 (ordered for follow-up)
+- Office visit, established patient, high complexity — CPT: 99214
+
+FINDINGS:
+L4-L5: Moderate disc herniation with left-sided foraminal narrowing causing impingement on the
+L5 nerve root. Mild facet arthrosis bilaterally.
+L5-S1: Mild disc bulge with no significant neural impingement. Mild endplate changes consistent
+with early Modic type 1 changes.
+
+IMPRESSION:
+1. Left paracentral disc herniation at L4-L5 with foraminal narrowing and probable left L5
+   nerve root impingement — correlates with clinical radiculopathy.
+2. Mild degenerative disc disease at L5-S1.
+
+RECOMMENDATION:
+Refer to Orthopedic Spine Surgery or Pain Management for further evaluation. Consider
+epidural steroid injection prior to surgical consultation.
+
+Radiologist: Dr. Anita Sharma, MD
+Austin Radiology Center
+Date Signed: 2026-07-20

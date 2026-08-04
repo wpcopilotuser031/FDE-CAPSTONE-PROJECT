@@ -44,16 +44,92 @@
         <div class="chat-header-title">Care Coordination Assistant</div>
         <div class="chat-header-subtitle" id="roleBadge"></div>
       </div>
-      <button id="logoutBtn" class="action-button secondary">Log out</button>
+      <div class="header-actions">
+        <button id="docTabBtn" class="tab-btn" type="button">📄 Document Analyzer</button>
+        <button id="chatTabBtn" class="tab-btn active" type="button">💬 Chat</button>
+        <button id="logoutBtn" class="action-button secondary">Log out</button>
+      </div>
     </header>
 
-    <div id="chatMessages" class="chat-messages"></div>
-    <div class="chat-suggestions" id="chatSuggestions"></div>
+    <!-- ---- Chat tab ---- -->
+    <div id="chatTab">
+      <div id="chatMessages" class="chat-messages"></div>
+      <div class="chat-suggestions" id="chatSuggestions"></div>
 
-    <form id="chatForm" class="chat-input-row">
-      <textarea id="chatInput" rows="1" placeholder="Ask about referrals, specialists, insurance..." autocomplete="off"></textarea>
-      <button id="chatSendBtn" class="action-button primary chat-send-btn" type="submit">Send</button>
-    </form>
+      <form id="chatForm" class="chat-input-row">
+        <textarea id="chatInput" rows="1" placeholder="Ask about referrals, specialists, insurance..." autocomplete="off"></textarea>
+        <button id="chatSendBtn" class="action-button primary chat-send-btn" type="submit">Send</button>
+      </form>
+    </div>
+
+    <!-- ---- Document Analyzer tab ---- -->
+    <div id="docTab" class="hidden">
+      <div class="doc-panel">
+        <div class="doc-panel-header">
+          <h2 class="doc-panel-title">Document Code Extractor</h2>
+          <p class="doc-panel-subtitle">Upload a referral document or paste text to extract ICD-10 diagnosis codes and CPT procedure codes using AI.</p>
+        </div>
+
+        <div class="doc-input-section">
+          <!-- File upload zone -->
+          <div id="dropZone" class="drop-zone">
+            <div class="drop-zone-icon">📂</div>
+            <div class="drop-zone-label">Drop a <strong>.txt</strong> file here, or <label for="fileInput" class="drop-zone-browse">browse</label></div>
+            <input type="file" id="fileInput" accept=".txt,.text" class="hidden" />
+          </div>
+
+          <div class="doc-divider"><span>or</span></div>
+
+          <!-- Sample documents -->
+          <div class="sample-docs-row">
+            <span class="sample-docs-label">Try a sample:</span>
+            <div id="sampleDocBtns" class="sample-doc-btns"></div>
+          </div>
+
+          <!-- Text area -->
+          <textarea id="docTextInput" class="doc-textarea" rows="10"
+            placeholder="Paste referral document text here..."></textarea>
+
+          <div class="doc-actions-row">
+            <span id="docStatus" class="doc-status"></span>
+            <button id="extractBtn" class="action-button primary extract-btn" type="button">
+              🔍 Extract Codes
+            </button>
+          </div>
+        </div>
+
+        <!-- Results section -->
+        <div id="docResults" class="doc-results hidden">
+          <div id="docSummaryCard" class="doc-summary-card"></div>
+
+          <div class="code-tables-grid">
+            <div class="code-table-wrap">
+              <div class="code-table-title">🩺 ICD-10 Diagnosis Codes</div>
+              <table class="code-table">
+                <thead><tr><th>Code</th><th>Description</th></tr></thead>
+                <tbody id="diagnosisTableBody"></tbody>
+              </table>
+              <div id="noDxMsg" class="no-codes-msg hidden">No diagnosis codes found.</div>
+            </div>
+            <div class="code-table-wrap">
+              <div class="code-table-title">⚕️ CPT Procedure Codes</div>
+              <table class="code-table">
+                <thead><tr><th>Code</th><th>Description</th></tr></thead>
+                <tbody id="procedureTableBody"></tbody>
+              </table>
+              <div id="noPxMsg" class="no-codes-msg hidden">No procedure codes found.</div>
+            </div>
+          </div>
+
+          <div class="doc-inject-row">
+            <span class="doc-inject-label">Use extracted data in chat:</span>
+            <button id="injectToChatBtn" class="action-button secondary inject-btn" type="button">
+              💬 Ask about these codes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="toast" class="toast hidden"></div>

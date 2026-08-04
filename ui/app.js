@@ -353,11 +353,434 @@ function wireEvents() {
       sendChatMessage(chip.textContent);
     }
   });
+
+  // Tab switching
+  document.getElementById('chatTabBtn').addEventListener('click', () => switchTab('chat'));
+  document.getElementById('docTabBtn').addEventListener('click', () => switchTab('doc'));
+
+  // Document upload wiring
+  const fileInput = document.getElementById('fileInput');
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) loadFileIntoTextArea(file);
+  });
+
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) loadFileIntoTextArea(file);
+  });
+
+  document.getElementById('extractBtn').addEventListener('click', runExtraction);
+  document.getElementById('injectToChatBtn').addEventListener('click', injectCodesToChat);
+}
+
+// ===================== Tab management =====================
+
+function switchTab(tab) {
+  const chatTab = document.getElementById('chatTab');
+  const docTab = document.getElementById('docTab');
+  const chatBtn = document.getElementById('chatTabBtn');
+  const docBtn = document.getElementById('docTabBtn');
+
+  if (tab === 'chat') {
+    chatTab.classList.remove('hidden');
+    docTab.classList.add('hidden');
+    chatBtn.classList.add('active');
+    docBtn.classList.remove('active');
+  } else {
+    chatTab.classList.add('hidden');
+    docTab.classList.remove('hidden');
+    docBtn.classList.add('active');
+    chatBtn.classList.remove('active');
+    loadSampleDocs();
+  }
+}
+
+// ===================== Document Analyzer =====================
+
+let lastExtractionResult = null;
+
+function loadFileIntoTextArea(file) {
+  if (!file.name.match(/\.(txt|text)$/i)) {
+    renderToast('Only .txt files are supported.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('docTextInput').value = e.target.result;
+    document.getElementById('docStatus').textContent = `Loaded: ${file.name}`;
+    document.getElementById('docResults').classList.add('hidden');
+    lastExtractionResult = null;
+  };
+  reader.readAsText(file);
+}
+
+async function loadSampleDocs() {
+  const container = document.getElementById('sampleDocBtns');
+  if (container.dataset.loaded === 'true') return;
+
+  try {
+    const response = await fetch(`${DEFAULT_BACKEND_URL}/api/v1/documents/sample-docs`, {
+      headers: { 'X-Session-Token': state.token || '' },
+    });
+    if (!response.ok) {
+      // If unauthorized (patient role), hide the sample docs row gracefully
+      container.parentElement.style.display = 'none';
+      return;
+    }
+    const docs = await response.json();
+    container.innerHTML = docs.map((doc) =>
+      `<button type="button" class="sample-doc-btn" data-text="${escapeHtml(doc.text)}" data-id="${escapeHtml(doc.document_id)}">${escapeHtml(doc.document_id)}</button>`
+    ).join('');
+    container.dataset.loaded = 'true';
+
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.sample-doc-btn');
+      if (btn) {
+        document.getElementById('docTextInput').value = btn.dataset.text;
+        document.getElementById('docStatus').textContent = `Sample loaded: ${btn.dataset.id}`;
+        document.getElementById('docResults').classList.add('hidden');
+        lastExtractionResult = null;
+      }
+    });
+  } catch {
+    container.parentElement.style.display = 'none';
+  }
+}
+
+async function runExtraction() {
+  const text = document.getElementById('docTextInput').value.trim();
+  if (!text) {
+    renderToast('Please paste or upload a document first.');
+    return;
+  }
+
+  const btn = document.getElementById('extractBtn');
+  const status = document.getElementById('docStatus');
+  btn.disabled = true;
+  btn.textContent = 'Extracting...';
+  status.textContent = '';
+  document.getElementById('docResults').classList.add('hidden');
+
+  try {
+    const response = await fetch(`${DEFAULT_BACKEND_URL}/api/v1/documents/extract-codes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-Token': state.token || '',
+      },
+      body: JSON.stringify({ document_text: text }),
+    });
+
+    if (response.status === 403) {
+      renderToast('Document extraction is only available to providers and care agents.');
+      return;
+    }
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.detail || `HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    lastExtractionResult = result;
+    renderExtractionResults(result);
+  } catch (err) {
+    renderToast(`Extraction failed: ${err.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔍 Extract Codes';
+  }
+}
+
+function renderExtractionResults(result) {
+  const resultsEl = document.getElementById('docResults');
+  const summaryEl = document.getElementById('docSummaryCard');
+  const dxBody = document.getElementById('diagnosisTableBody');
+  const pxBody = document.getElementById('procedureTableBody');
+  const noDxMsg = document.getElementById('noDxMsg');
+  const noPxMsg = document.getElementById('noPxMsg');
+
+  // Summary card
+  const method = result.extraction_method || 'unknown';
+  const docId = result.document_id ? `Document ID: <strong>${escapeHtml(result.document_id)}</strong> &nbsp;|&nbsp; ` : '';
+  summaryEl.innerHTML = `
+    <div class="summary-meta">${docId}
+      <span class="method-badge method-${method.replace(/\+/g, '-')}">${escapeHtml(method)}</span>
+      &nbsp;|&nbsp; ${result.total_diagnosis_codes} diagnosis code(s) &nbsp;|&nbsp; ${result.total_procedure_codes} procedure code(s)
+    </div>
+    ${result.clinical_summary ? `<div class="summary-text">${escapeHtml(result.clinical_summary)}</div>` : ''}
+  `;
+
+  // Diagnosis table
+  if (result.diagnosis_codes && result.diagnosis_codes.length) {
+    dxBody.innerHTML = result.diagnosis_codes.map((item) =>
+      `<tr><td><code class="code-tag">${escapeHtml(item.code)}</code></td><td>${escapeHtml(item.description)}</td></tr>`
+    ).join('');
+    noDxMsg.classList.add('hidden');
+  } else {
+    dxBody.innerHTML = '';
+    noDxMsg.classList.remove('hidden');
+  }
+
+  // Procedure table
+  if (result.procedure_codes && result.procedure_codes.length) {
+    pxBody.innerHTML = result.procedure_codes.map((item) =>
+      `<tr><td><code class="code-tag">${escapeHtml(item.code)}</code></td><td>${escapeHtml(item.description)}</td></tr>`
+    ).join('');
+    noPxMsg.classList.add('hidden');
+  } else {
+    pxBody.innerHTML = '';
+    noPxMsg.classList.remove('hidden');
+  }
+
+  resultsEl.classList.remove('hidden');
+}
+
+function injectCodesToChat() {
+  if (!lastExtractionResult) return;
+
+  const dxCodes = (lastExtractionResult.diagnosis_codes || []).map((c) => c.code).join(', ');
+  const pxCodes = (lastExtractionResult.procedure_codes || []).map((c) => c.code).join(', ');
+  const summary = lastExtractionResult.clinical_summary || '';
+
+  let question = 'I extracted the following codes from a referral document. ';
+  if (dxCodes) question += `Diagnosis codes: ${dxCodes}. `;
+  if (pxCodes) question += `Procedure codes: ${pxCodes}. `;
+  if (summary) question += `Clinical context: ${summary}. `;
+  question += 'What specialist should I refer this patient to?';
+
+  switchTab('chat');
+  document.getElementById('chatInput').value = question;
+  document.getElementById('chatInput').focus();
 }
 
 function init() {
   wireEvents();
+  wireDocEvents();
   restoreSession();
+}
+
+// ===================== Document Analyzer =====================
+
+const docState = {
+  busy: false,
+  lastResult: null,
+};
+
+function switchTab(tab) {
+  const chatTab = document.getElementById('chatTab');
+  const docTab = document.getElementById('docTab');
+  const chatBtn = document.getElementById('chatTabBtn');
+  const docBtn = document.getElementById('docTabBtn');
+
+  if (tab === 'chat') {
+    chatTab.classList.remove('hidden');
+    docTab.classList.add('hidden');
+    chatBtn.classList.add('active');
+    docBtn.classList.remove('active');
+  } else {
+    chatTab.classList.add('hidden');
+    docTab.classList.remove('hidden');
+    docBtn.classList.add('active');
+    chatBtn.classList.remove('active');
+    loadSampleDocs();
+  }
+}
+
+async function loadSampleDocs() {
+  const container = document.getElementById('sampleDocBtns');
+  if (!container || container.childElementCount > 0) return;
+  if (!state.token) return;
+
+  try {
+    const res = await fetch(`${DEFAULT_BACKEND_URL}/api/v1/documents/sample-docs`, {
+      headers: { 'X-Session-Token': state.token },
+    });
+    if (!res.ok) return;
+    const docs = await res.json();
+    container.innerHTML = '';
+    docs.forEach((doc) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sample-doc-btn';
+      btn.textContent = doc.document_id || doc.filename;
+      btn.title = doc.title;
+      btn.addEventListener('click', () => {
+        document.getElementById('docTextInput').value = doc.text;
+        document.getElementById('docStatus').textContent = `Loaded: ${doc.title}`;
+      });
+      container.appendChild(btn);
+    });
+  } catch {
+    // Silently ignore - sample docs are optional
+  }
+}
+
+function renderExtractionResults(result) {
+  const resultsEl = document.getElementById('docResults');
+  const summaryEl = document.getElementById('docSummaryCard');
+  const dxBody = document.getElementById('diagnosisTableBody');
+  const pxBody = document.getElementById('procedureTableBody');
+  const noDxMsg = document.getElementById('noDxMsg');
+  const noPxMsg = document.getElementById('noPxMsg');
+
+  const method = result.extraction_method || 'unknown';
+  const methodClass = `method-${method.replace(/\+/g, '-').replace(/_/g, '-')}`;
+  const docId = result.document_id ? `<strong>${escapeHtml(result.document_id)}</strong> · ` : '';
+  const summary = result.clinical_summary
+    ? `<div class="summary-text">${escapeHtml(result.clinical_summary)}</div>`
+    : '';
+
+  summaryEl.innerHTML = `
+    <div class="summary-meta">
+      ${docId}
+      ${result.total_diagnosis_codes} diagnosis code(s) · ${result.total_procedure_codes} procedure code(s) ·
+      <span class="method-badge ${methodClass}">${escapeHtml(method)}</span>
+    </div>
+    ${summary}
+  `;
+
+  // Diagnosis codes table
+  if (result.diagnosis_codes && result.diagnosis_codes.length) {
+    dxBody.innerHTML = result.diagnosis_codes.map((item) => `
+      <tr>
+        <td><span class="code-tag">${escapeHtml(item.code)}</span></td>
+        <td>${escapeHtml(item.description)}</td>
+      </tr>
+    `).join('');
+    noDxMsg.classList.add('hidden');
+    dxBody.closest('table').classList.remove('hidden');
+  } else {
+    dxBody.innerHTML = '';
+    noDxMsg.classList.remove('hidden');
+  }
+
+  // Procedure codes table
+  if (result.procedure_codes && result.procedure_codes.length) {
+    pxBody.innerHTML = result.procedure_codes.map((item) => `
+      <tr>
+        <td><span class="code-tag">${escapeHtml(item.code)}</span></td>
+        <td>${escapeHtml(item.description)}</td>
+      </tr>
+    `).join('');
+    noPxMsg.classList.add('hidden');
+    pxBody.closest('table').classList.remove('hidden');
+  } else {
+    pxBody.innerHTML = '';
+    noPxMsg.classList.remove('hidden');
+  }
+
+  resultsEl.classList.remove('hidden');
+}
+
+async function extractCodes() {
+  if (docState.busy) return;
+  const text = document.getElementById('docTextInput').value.trim();
+  const statusEl = document.getElementById('docStatus');
+
+  if (!text) {
+    statusEl.textContent = 'Please paste or upload a document first.';
+    return;
+  }
+
+  if (!state.token) {
+    statusEl.textContent = 'Please sign in first.';
+    return;
+  }
+
+  docState.busy = true;
+  document.getElementById('extractBtn').disabled = true;
+  statusEl.textContent = 'Extracting codes...';
+  document.getElementById('docResults').classList.add('hidden');
+
+  try {
+    const res = await fetch(`${DEFAULT_BACKEND_URL}/api/v1/documents/extract-codes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-Token': state.token,
+      },
+      body: JSON.stringify({ document_text: text }),
+    });
+
+    if (res.status === 403) {
+      statusEl.textContent = 'Access denied. Document extraction is only available to providers and care agents.';
+      return;
+    }
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || `HTTP ${res.status}`);
+    }
+
+    const result = await res.json();
+    docState.lastResult = result;
+    statusEl.textContent = `Done — extracted ${result.total_diagnosis_codes} diagnosis and ${result.total_procedure_codes} procedure code(s).`;
+    renderExtractionResults(result);
+  } catch (err) {
+    statusEl.textContent = `Error: ${err.message}`;
+  } finally {
+    docState.busy = false;
+    document.getElementById('extractBtn').disabled = false;
+  }
+}
+
+function injectCodesToChat() {
+  if (!docState.lastResult) return;
+  const { diagnosis_codes, procedure_codes } = docState.lastResult;
+  const dxList = diagnosis_codes.map((c) => `${c.code} (${c.description})`).join(', ') || 'none';
+  const pxList = procedure_codes.map((c) => `${c.code} (${c.description})`).join(', ') || 'none';
+  const question = `I have a referral with these ICD-10 codes: ${dxList}. Procedures: ${pxList}. What specialist should I refer to?`;
+  switchTab('chat');
+  document.getElementById('chatInput').value = question;
+  document.getElementById('chatInput').focus();
+}
+
+function wireDocEvents() {
+  document.getElementById('docTabBtn').addEventListener('click', () => switchTab('doc'));
+  document.getElementById('chatTabBtn').addEventListener('click', () => switchTab('chat'));
+  document.getElementById('extractBtn').addEventListener('click', extractCodes);
+  document.getElementById('injectToChatBtn').addEventListener('click', injectCodesToChat);
+
+  // File input
+  const fileInput = document.getElementById('fileInput');
+  const dropZone = document.getElementById('dropZone');
+  const docTextInput = document.getElementById('docTextInput');
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      docTextInput.value = ev.target.result;
+      document.getElementById('docStatus').textContent = `Loaded: ${file.name}`;
+    };
+    reader.readAsText(file);
+  });
+
+  // Drag and drop
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      docTextInput.value = ev.target.result;
+      document.getElementById('docStatus').textContent = `Loaded: ${file.name}`;
+    };
+    reader.readAsText(file);
+  });
 }
 
 window.addEventListener('DOMContentLoaded', init);

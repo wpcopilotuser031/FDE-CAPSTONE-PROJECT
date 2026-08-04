@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from app.agents.use_case_agents import (
     alternative_provider_agent,
     conversational_assistant_agent,
+    document_extraction_agent,
     insurance_validation_agent,
     provider_discovery_agent,
     referral_triage_agent,
@@ -30,6 +31,7 @@ _AGENT_ENDPOINT_HANDLERS = {
     "insurance_validation": insurance_validation_agent,
     "alternative_provider_suggestion": alternative_provider_agent,
     "conversational_assistant": conversational_assistant_agent,
+    "document_code_extraction": document_extraction_agent,
 }
 
 

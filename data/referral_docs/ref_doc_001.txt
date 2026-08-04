@@ -1,0 +1,38 @@
+REFERRAL DOCUMENT
+=================
+Document ID: DOC-REF-001
+Date: 2026-07-15
+Referring Provider: Dr. Sarah Mitchell, MD (NPI: 1234567890)
+Patient: John Doe, DOB: 1968-04-22, MRN: PT-10042
+Referred To: Cardiology
+
+REASON FOR REFERRAL:
+Patient presents with progressively worsening chest discomfort and exertional dyspnea over the past
+3 months. Recent ECG showed premature atrial complexes. Patient has a known history of essential
+hypertension and type 2 diabetes mellitus. Requesting cardiology evaluation for possible coronary
+artery disease workup.
+
+DIAGNOSES:
+1. Essential hypertension — ICD-10: I10
+2. Type 2 diabetes mellitus without complications — ICD-10: E11.9
+3. Chest pain, unspecified — ICD-10: R07.9
+4. Hyperlipidemia, unspecified — ICD-10: E78.5
+5. Paroxysmal atrial fibrillation — ICD-10: I48.0
+
+PROCEDURES PERFORMED / REQUESTED:
+1. Routine 12-lead ECG — CPT: 93000
+2. Comprehensive metabolic panel — CPT: 80053
+3. Hemoglobin A1C — CPT: 83036
+4. Echocardiography, transthoracic — CPT: 93306 (requested)
+
+CLINICAL NOTES:
+BP 148/92 mmHg at last visit. HbA1c 7.4%. LDL cholesterol 142 mg/dL. Patient reports occasional
+palpitations lasting 20–30 seconds. No prior cardiac history. Family history: father had MI at 58.
+Current medications: Metformin 1000mg BID, Lisinopril 10mg QD, Atorvastatin 40mg QD.
+
+Please evaluate and manage accordingly.
+
+Dr. Sarah Mitchell, MD
+Primary Care Provider
+Austin Family Medicine
+Phone: (512) 555-0199

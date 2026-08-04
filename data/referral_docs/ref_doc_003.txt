@@ -1,0 +1,42 @@
+SPECIALIST REFERRAL NOTE
+========================
+Document ID: DOC-REF-003
+Date: 2026-07-28
+Referring Provider: Dr. Nadia Chen, MD (NPI: 1122334455)
+Patient: Robert Kim, DOB: 1952-03-14, MRN: PT-30091
+Referred To: Orthopedics — Total Knee Arthroplasty Evaluation
+
+REASON FOR REFERRAL:
+Patient is a 74-year-old male with end-stage bilateral knee osteoarthritis, primarily affecting
+the right knee, with severe functional limitation. Conservative management including physical
+therapy and corticosteroid injections has been exhausted over 18 months. Requesting orthopedic
+surgical consultation for total knee arthroplasty.
+
+ACTIVE DIAGNOSES:
+1. Primary osteoarthritis, right knee — ICD-10: M17.11
+2. Primary osteoarthritis, left knee — ICD-10: M17.12
+3. Chronic pain syndrome — ICD-10: G89.29
+4. Essential hypertension — ICD-10: I10
+5. Heart failure, unspecified — ICD-10: I50.9
+6. Anemia, unspecified — ICD-10: D64.9
+
+PROCEDURES PERFORMED:
+1. Office visit, established patient, moderate complexity — CPT: 99213
+2. X-ray knee, 4 views (bilateral) — CPT: 73565
+3. Corticosteroid injection, knee joint — CPT: 20610
+4. Physical therapy evaluation — CPT: 97001 (completed, 12 sessions)
+5. Total knee arthroplasty (planned) — CPT: 27447
+
+CLINICAL SUMMARY:
+Patient has KL Grade IV changes bilaterally on plain films (bone-on-bone right knee, Grade III
+left knee). BMI 29.4. Pain score 8/10 with ambulation. Pre-operative labs ordered including
+CBC (CPT: 85025), BMP (CPT: 80053), and coagulation panel. Cardiology clearance obtained
+(Dr. Harrison, 2026-07-15). Patient counseled on risks, benefits, and alternatives.
+
+INSURANCE:
+Plan: Medicare Advantage — BlueCross PPO
+Pre-authorization required. Authorization number: AUTH-2026-KIM-0991
+
+Referring Provider: Dr. Nadia Chen, MD
+Austin Geriatric & Internal Medicine
+Phone: (512) 555-0312

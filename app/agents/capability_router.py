@@ -68,6 +68,18 @@ DISCOVERY_KEYWORDS = {
     "directory",
 }
 
+DOCUMENT_EXTRACTION_KEYWORDS = {
+    "extract",
+    "icd",
+    "cpt",
+    "diagnosis code",
+    "procedure code",
+    "document",
+    "referral note",
+    "clinical code",
+    "medical code",
+}
+
 
 def _extract_field(pattern: str, query: str) -> str | None:
     match = re.search(pattern, query, flags=re.IGNORECASE)
@@ -103,6 +115,7 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
     triage_score = sum(1 for keyword in TRIAGE_KEYWORDS if keyword in query_lower)
     insurance_score = sum(1 for keyword in INSURANCE_KEYWORDS if keyword in query_lower)
     discovery_score = sum(1 for keyword in DISCOVERY_KEYWORDS if keyword in query_lower)
+    extraction_score = sum(1 for keyword in DOCUMENT_EXTRACTION_KEYWORDS if keyword in query_lower)
 
     scored_capabilities = [
         ("alternative_provider_suggestion", alternative_score),
@@ -110,6 +123,7 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
         ("referral_triage", triage_score),
         ("insurance_validation", insurance_score),
         ("provider_discovery", discovery_score),
+        ("document_code_extraction", extraction_score),
     ]
     capability, score = max(scored_capabilities, key=lambda item: item[1])
 

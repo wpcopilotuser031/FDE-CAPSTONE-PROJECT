@@ -4,6 +4,7 @@ from typing import Any
 
 from app.agents.alternative_provider_agent import alternative_provider_agent
 from app.agents.conversational_assistant_agent import conversational_assistant_agent
+from app.agents.document_extraction_agent import document_extraction_agent
 from app.agents.insurance_validation_agent import insurance_validation_agent
 from app.agents.provider_discovery_agent import provider_discovery_agent
 from app.agents.referral_triage_agent import referral_triage_agent
@@ -17,6 +18,7 @@ from app.mcp_server.tools import (
 __all__ = [
     "alternative_provider_agent",
     "conversational_assistant_agent",
+    "document_extraction_agent",
     "insurance_validation_agent",
     "provider_discovery_agent",
     "referral_triage_agent",

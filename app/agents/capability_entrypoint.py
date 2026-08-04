@@ -10,6 +10,7 @@ from urllib import error, request as urlrequest
 from app.agents.alternative_provider_agent import build_agent_card as build_alternative_provider_card
 from app.agents.capability_router import infer_capability_from_query, infer_query
 from app.agents.conversational_assistant_agent import build_agent_card as build_conversational_assistant_card
+from app.agents.document_extraction_agent import build_agent_card as build_document_extraction_card
 from app.agents.insurance_validation_agent import build_agent_card as build_insurance_validation_card
 from app.agents.provider_discovery_agent import build_agent_card as build_provider_discovery_card
 from app.agents.referral_triage_agent import build_agent_card as build_referral_triage_card
@@ -35,6 +36,7 @@ def _build_agent_cards() -> list[AgentCard]:
         build_insurance_validation_card,
         build_alternative_provider_card,
         build_conversational_assistant_card,
+        build_document_extraction_card,
     ]
     return [
         AgentCard(
@@ -58,6 +60,7 @@ _ACTIONABLE_CAPABILITIES = {
     "insurance_validation",
     "provider_discovery",
     "alternative_provider_suggestion",
+    "document_code_extraction",
 }
 
 _ROUTING_CONFIDENCE_THRESHOLD = 0.6
@@ -113,6 +116,7 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         "provider_discovery",
         "conversational_assistant",
         # EXCLUDED: "insurance_validation" - sensitive, patient can't check coverage directly
+        # EXCLUDED: "document_code_extraction" - document processing is for providers/care agents
     },
     # Provider: Can refer to specialists but NOT get recommendations for themselves
     # Can triage, discover providers, check insurance, and converse
@@ -121,6 +125,7 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
+        "document_code_extraction",
         # EXCLUDED: "specialist_recommendation" - for patient self-help, not provider self-care
         # EXCLUDED: "alternative_provider_suggestion" - same reason
     },
@@ -132,6 +137,7 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
+        "document_code_extraction",
     },
 }
 

@@ -2,12 +2,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app.agents.capability_entrypoint import handle_jsonrpc_request
+from app.agents.document_extraction_agent import document_extraction_agent
 from app.agents.llm_gateway import LLMGatewayError
 from app.auth import authenticate, end_session, get_session
 from app.mcp_clients.specialist_recommendation_client import MCPClientError
@@ -15,6 +16,7 @@ from app.agents.specialist_recommendation_graph import run_specialist_recommenda
 from app.config import DATA_DIR
 from app.data_loader import load_json
 from app.rag.provider_index import ProviderIndex
+from app.schemas.document_extraction import DocumentExtractionRequest, DocumentExtractionResponse
 from app.schemas.jsonrpc import JsonRpcRequest
 from app.schemas.specialist_recommendation import RecommendationRequest, RecommendationResponse
 
@@ -190,3 +192,71 @@ def capability_router(
         caller_role=session.role,
         session_token=x_session_token,
     )
+
+
+@app.post("/api/v1/documents/extract-codes", response_model=DocumentExtractionResponse)
+def extract_document_codes(
+    request: DocumentExtractionRequest,
+    x_session_token: str | None = Header(default=None, alias="X-Session-Token"),
+) -> DocumentExtractionResponse:
+    """
+    Extract ICD-10 diagnosis codes and CPT procedure codes from uploaded referral document text.
+
+    Accessible to: provider, care_agent roles.
+    """
+    session = get_session(x_session_token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired session. Please log in again.")
+
+    if session.role not in {"provider", "care_agent"}:
+        raise HTTPException(
+            status_code=403,
+            detail="Document code extraction is only available to providers and care agents.",
+        )
+
+    if not request.document_text.strip():
+        raise HTTPException(status_code=422, detail="document_text must not be empty.")
+
+    result = document_extraction_agent({
+        "document_text": request.document_text,
+        "document_id": request.document_id,
+    })
+
+    return DocumentExtractionResponse(**result)
+
+
+@app.get("/api/v1/documents/sample-docs")
+def list_sample_documents(
+    x_session_token: str | None = Header(default=None, alias="X-Session-Token"),
+) -> list[dict]:
+    """Return the list of available sample referral documents with their text content."""
+    session = get_session(x_session_token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired session. Please log in again.")
+
+    docs_dir = DATA_DIR / "referral_docs"
+    if not docs_dir.exists():
+        return []
+
+    samples = []
+    for doc_path in sorted(docs_dir.glob("*.txt")):
+        try:
+            content = doc_path.read_text(encoding="utf-8")
+            # Extract first non-empty line as title
+            lines = [ln.strip() for ln in content.splitlines() if ln.strip()]
+            # Find Document ID
+            doc_id = next(
+                (ln.split(":", 1)[1].strip() for ln in lines if ln.startswith("Document ID:")),
+                doc_path.stem,
+            )
+            title_line = next((ln for ln in lines if not ln.startswith("=")), doc_path.stem)
+            samples.append({
+                "filename": doc_path.name,
+                "document_id": doc_id,
+                "title": title_line,
+                "text": content,
+            })
+        except Exception:  # noqa: BLE001
+            continue
+
+    return samples
