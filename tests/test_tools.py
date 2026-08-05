@@ -115,7 +115,22 @@ def test_infer_specialties_llm_required(monkeypatch) -> None:
     monkeypatch.setattr("app.mcp_server.tools.call_llm_json", _raise_llm_error)
 
     try:
-        infer_specialties_llm_assisted("migraine")
+        # Use a diagnosis not in the hardcoded mapping to force LLM inference
+        infer_specialties_llm_assisted("unknown rare syndrome xyz")
         assert False, "Expected LLMGatewayError"
     except LLMGatewayError:
         assert True
+
+
+def test_infer_specialties_uses_hardcoded_mapping_for_chest_pain() -> None:
+    """Verify that chest pain uses hardcoded mapping (Cardiology only, not Pulmonology)."""
+    specialties, source = infer_specialties_llm_assisted("chest pain")
+    assert specialties == ["Cardiology"]
+    assert source == "hardcoded"
+
+
+def test_infer_specialties_uses_hardcoded_mapping_for_shortness_of_breath() -> None:
+    """Verify that shortness of breath uses hardcoded mapping (Pulmonology and Cardiology)."""
+    specialties, source = infer_specialties_llm_assisted("shortness of breath")
+    assert set(specialties) == {"Cardiology", "Pulmonology"}
+    assert source == "hardcoded"

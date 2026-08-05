@@ -43,15 +43,24 @@ def infer_specialties_llm_assisted(diagnosis: str) -> tuple[list[str], str]:
     mapping = load_json(DATA_DIR / "diagnosis_specialties.json")
     allowed_specialties = sorted({specialty for values in mapping.values() for specialty in values})
 
+    # First check if diagnosis matches a known hardcoded mapping
+    diagnosis_lower = diagnosis.strip().lower()
+    hardcoded_specialties = mapping.get(diagnosis_lower, [])
+    if hardcoded_specialties:
+        return hardcoded_specialties, "hardcoded"
+
+    # Fall back to LLM inference with stricter instructions for primary specialty
     system_prompt = (
         "You are a clinical triage assistant. "
-        "Return strict JSON with key specialties as an array of strings. "
+        "Return strict JSON with key specialties as an array of strings, ordered by relevance (most appropriate first). "
+        "Return ONLY the PRIMARY specialty unless multiple are equally appropriate. "
         "Only choose from this allowed set: "
         + ", ".join(allowed_specialties)
         + "."
     )
     user_prompt = (
-        "Infer specialty options for this diagnosis text. "
+        "Infer the PRIMARY specialty for this diagnosis. "
+        "Return only the most clinically appropriate specialty unless equally compelling alternatives exist. "
         f"Diagnosis: {diagnosis}"
     )
 
