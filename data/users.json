@@ -12,8 +12,8 @@
       "username": "provider1",
       "password": "Provider@123",
       "role": "provider",
-      "display_name": "Dr. Soumyajit",
-      "scope": "P1001"
+      "display_name": "Dr. John Doe",
+      "scope": "PR-1001"
     },
     {
       "username": "careagent1",
