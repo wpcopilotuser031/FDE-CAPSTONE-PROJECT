@@ -1,95 +1,225 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT_DIR"
+MODE="${1:-local}"
 
-SUDO="sudo"
-COMPOSE_CMD=""
-if ! $SUDO command -v docker-compose >/dev/null 2>&1; then
-  echo "docker-compose not found. Trying docker compose plugin..."
-  if ! $SUDO docker compose version >/dev/null 2>&1; then
-    echo "docker-compose or 'docker compose' is required to run multiple services."
-    exit 1
-  else
-    COMPOSE_CMD="$SUDO docker compose"
-  fi
-else
-  COMPOSE_CMD="$SUDO docker-compose"
-fi
-
-SERVICE_CONTAINERS=(referral-backend referral-agent-runtime referral-mcp-gateway referral-ui)
-PUSH_IMAGES="${PUSH_IMAGES:-true}"
-DOCKER_LOGIN="${DOCKER_LOGIN:-true}"
 DOCKERHUB_USER="${DOCKERHUB_USER:-aviroopbasu1995}"
 DOCKERHUB_REPO="${DOCKERHUB_REPO:-fde-capstone}"
 DOCKERHUB_TOKEN="${DOCKERHUB_TOKEN:-}"
-IMAGES=(
-  "$DOCKERHUB_USER/$DOCKERHUB_REPO:backend"
-  "$DOCKERHUB_USER/$DOCKERHUB_REPO:agent-runtime"
-  "$DOCKERHUB_USER/$DOCKERHUB_REPO:mcp-gateway"
-  "$DOCKERHUB_USER/$DOCKERHUB_REPO:ui"
-)
+PUSH_IMAGES="${PUSH_IMAGES:-true}"
+DOCKER_LOGIN="${DOCKER_LOGIN:-true}"
 
-echo "Cleaning up old containers and ports before starting services..."
-for container in "${SERVICE_CONTAINERS[@]}"; do
-  if $SUDO docker ps -a --format '{{.Names}}' | grep -x "$container" >/dev/null 2>&1; then
-    echo "Removing existing container $container"
-    $SUDO docker rm -f "$container" >/dev/null 2>&1 || true
+NETWORK_NAME="${NETWORK_NAME:-referral-net}"
+
+BACKEND_CONTAINER="${BACKEND_CONTAINER:-referral-backend}"
+AGENT_CONTAINER="${AGENT_CONTAINER:-referral-agent-runtime}"
+MCP_CONTAINER="${MCP_CONTAINER:-referral-mcp-gateway}"
+UI_CONTAINER="${UI_CONTAINER:-referral-ui}"
+
+BACKEND_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:backend"
+AGENT_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:agent-runtime"
+MCP_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:mcp-gateway"
+UI_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:ui"
+LAUNCHER_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:launcher"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  scripts/docker_build_and_run.sh [local|launch|stop]
+
+Modes:
+  local   Build and run compose stack, then push backend/agent-runtime/mcp-gateway/ui and launcher image.
+  launch  Pull images from Docker Hub, kill existing containers if any, and start all services.
+  stop    Stop and remove launched containers and network.
+EOF
+}
+
+bool_true() {
+  case "${1:-}" in
+    true|TRUE|1|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+ensure_docker() {
+  if ! command -v docker >/dev/null 2>&1; then
+    echo "docker is required but not found in PATH."
+    exit 1
   fi
- done
+}
 
-# If ports required by services are occupied, try to stop occupying processes first
-PORTS=(8090 8091 8092 8093)
-for port in "${PORTS[@]}"; do
-  pids=$($SUDO lsof -t -iTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)
-  if [[ -n "$pids" ]]; then
-    echo "Port $port is currently in use by pids: $pids — attempting graceful stop..."
-    $SUDO kill $pids 2>/dev/null || true
-    sleep 1
-    remaining=$($SUDO lsof -t -iTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)
-    if [[ -n "$remaining" ]]; then
-      echo "Port $port still in use by pids: $remaining — force killing..."
-      $SUDO kill -9 $remaining 2>/dev/null || true
-      sleep 0.5
+docker_compose_cmd() {
+  if docker compose version >/dev/null 2>&1; then
+    echo "docker compose"
+  elif docker-compose --version >/dev/null 2>&1; then
+    echo "docker-compose"
+  elif sudo docker compose version >/dev/null 2>&1; then
+    echo "sudo docker compose"
+  elif sudo docker-compose --version >/dev/null 2>&1; then
+    echo "sudo docker-compose"
+  else
+    echo ""
+  fi
+}
+
+docker_login_if_needed() {
+  if ! bool_true "$DOCKER_LOGIN"; then
+    return
+  fi
+
+  if [[ -z "$DOCKERHUB_TOKEN" ]]; then
+    read -rsp "Enter Docker Hub personal access token for $DOCKERHUB_USER: " DOCKERHUB_TOKEN
+    echo
+  fi
+
+  if [[ -n "$DOCKERHUB_TOKEN" ]]; then
+    echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
+  else
+    echo "No token provided. Skipping docker login."
+  fi
+}
+
+local_build_run_push() {
+  ensure_docker
+
+  ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+  cd "$ROOT_DIR"
+
+  local compose_cmd
+  compose_cmd="$(docker_compose_cmd)"
+  if [[ -z "$compose_cmd" ]]; then
+    echo "docker-compose or docker compose is required."
+    exit 1
+  fi
+
+  echo "Cleaning previous stack..."
+  eval "$compose_cmd down --remove-orphans" || true
+
+  echo "Building and starting compose stack..."
+  eval "$compose_cmd up --build -d"
+
+  if bool_true "$PUSH_IMAGES"; then
+    docker_login_if_needed
+
+    echo "Pushing service images..."
+    docker push "$BACKEND_IMAGE"
+    docker push "$AGENT_IMAGE"
+    docker push "$MCP_IMAGE"
+    docker push "$UI_IMAGE"
+
+    echo "Building and pushing launcher image..."
+    docker build -f docker/launcher.Dockerfile -t "$LAUNCHER_IMAGE" .
+    docker push "$LAUNCHER_IMAGE"
+  fi
+
+  echo "Done."
+  echo "UI:      http://127.0.0.1:8093"
+  echo "Backend: http://127.0.0.1:8090"
+  echo "Agent:   http://127.0.0.1:8091"
+  echo "MCP:     http://127.0.0.1:8092"
+  echo "Launcher: $LAUNCHER_IMAGE"
+}
+
+stop_launched_stack() {
+  ensure_docker
+  docker rm -f "$BACKEND_CONTAINER" "$AGENT_CONTAINER" "$MCP_CONTAINER" "$UI_CONTAINER" >/dev/null 2>&1 || true
+  docker network rm "$NETWORK_NAME" >/dev/null 2>&1 || true
+  echo "Stopped containers and removed network (if present)."
+}
+
+launch_from_hub() {
+  ensure_docker
+
+  if ! docker info >/dev/null 2>&1; then
+    echo "Docker daemon is not reachable."
+    exit 1
+  fi
+
+  stop_launched_stack
+
+  if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+    docker network create "$NETWORK_NAME" >/dev/null
+  fi
+
+  echo "Pulling images from Docker Hub..."
+  docker pull "$BACKEND_IMAGE"
+  docker pull "$AGENT_IMAGE"
+  docker pull "$MCP_IMAGE"
+  docker pull "$UI_IMAGE"
+
+  # Forward core runtime env vars from current environment to child containers.
+  ENV_ARGS=()
+  for key in \
+    LLM_MODEL \
+    LLM_API_KEY \
+    LLM_BASE_URL \
+    ANTHROPIC_MODEL \
+    ANTHROPIC_API_KEY \
+    ANTHROPIC_BASE_URL \
+    MCP_INTERNAL_KEY \
+    USE_MCP_TOOLS \
+    AGENT_CALL_TRANSPORT \
+    MCP_TRANSPORT; do
+    if [[ -n "${!key:-}" ]]; then
+      ENV_ARGS+=("-e" "$key=${!key}")
     fi
-    echo "Cleared port $port"
-  fi
- done
-
-# Try a compose down to remove previous stack state and orphans.
-$COMPOSE_CMD down --remove-orphans || true
-
-echo "Building and starting services with $COMPOSE_CMD ..."
-$COMPOSE_CMD up --build -d &
-COMPOSE_PID=$!
-
-# Wait for compose to finish starting
-wait $COMPOSE_PID || true
-
-if [[ "$PUSH_IMAGES" == "true" ]]; then
-  if [[ "$DOCKER_LOGIN" == "true" ]]; then
-    if [[ -n "$DOCKERHUB_TOKEN" ]]; then
-      echo "Logging into Docker Hub as '$DOCKERHUB_USER' using DOCKERHUB_TOKEN..."
-      echo "$DOCKERHUB_TOKEN" | $SUDO docker login -u "$DOCKERHUB_USER" --password-stdin
-    else
-      echo "Docker Hub token not found in environment."
-      read -rsp "Enter Docker Hub personal access token for $DOCKERHUB_USER: " DOCKERHUB_TOKEN
-      echo
-      if [[ -z "$DOCKERHUB_TOKEN" ]]; then
-        echo "No token entered. Skipping Docker login; push may fail if not already authenticated."
-      else
-        echo "Logging into Docker Hub as '$DOCKERHUB_USER'..."
-        echo "$DOCKERHUB_TOKEN" | $SUDO docker login -u "$DOCKERHUB_USER" --password-stdin
-      fi
-    fi
-  fi
-
-  echo "Pushing built images to Docker Hub repository '$DOCKERHUB_USER/$DOCKERHUB_REPO' ..."
-  for image in "${IMAGES[@]}"; do
-    echo "Pushing $image"
-    $SUDO docker push "$image"
   done
-fi
 
-echo "Services started. Backend: http://127.0.0.1:8090 | Agent runtime: http://127.0.0.1:8091 | MCP gateway: http://127.0.0.1:8092 | UI: http://127.0.0.1:8093"
+  echo "Starting MCP gateway..."
+  docker run -d \
+    --name "$MCP_CONTAINER" \
+    --network "$NETWORK_NAME" \
+    "${ENV_ARGS[@]}" \
+    -p 8092:8092 \
+    "$MCP_IMAGE" \
+    sh -c "python scripts/build_rag_index.py && uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092"
+
+  echo "Starting agent runtime..."
+  docker run -d \
+    --name "$AGENT_CONTAINER" \
+    --network "$NETWORK_NAME" \
+    "${ENV_ARGS[@]}" \
+    -p 8091:8091 \
+    "$AGENT_IMAGE" \
+    sh -c "python scripts/build_rag_index.py && uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091"
+
+  echo "Starting backend..."
+  docker run -d \
+    --name "$BACKEND_CONTAINER" \
+    --network "$NETWORK_NAME" \
+    "${ENV_ARGS[@]}" \
+    -e "AGENT_RUNTIME_BASE_URL=http://$AGENT_CONTAINER:8091" \
+    -e "MCP_HTTP_BASE_URL=http://$MCP_CONTAINER:8092" \
+    -p 8090:8090 \
+    "$BACKEND_IMAGE" \
+    uvicorn app.main:app --host 0.0.0.0 --port 8090
+
+  echo "Starting UI..."
+  docker run -d \
+    --name "$UI_CONTAINER" \
+    --network "$NETWORK_NAME" \
+    -p 8093:80 \
+    "$UI_IMAGE"
+
+  echo "All services started from Docker Hub images."
+  echo "UI:      http://127.0.0.1:8093"
+  echo "Backend: http://127.0.0.1:8090"
+  echo "Agent:   http://127.0.0.1:8091"
+  echo "MCP:     http://127.0.0.1:8092"
+}
+
+case "$MODE" in
+  local)
+    local_build_run_push
+    ;;
+  launch)
+    launch_from_hub
+    ;;
+  stop)
+    stop_launched_stack
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
