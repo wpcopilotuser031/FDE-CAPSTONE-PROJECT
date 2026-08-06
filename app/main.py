@@ -17,6 +17,7 @@ from app.agents.specialist_recommendation_graph import run_specialist_recommenda
 from app.config import DATA_DIR
 from app.data_loader import load_json
 from app.rag.provider_index import ProviderIndex
+from app.rag.referral_history_index import ReferralHistoryIndex
 from app.schemas.document_extraction import DocumentExtractionRequest, DocumentExtractionResponse
 from app.schemas.jsonrpc import JsonRpcRequest
 from app.schemas.specialist_recommendation import RecommendationRequest, RecommendationResponse
@@ -26,8 +27,9 @@ UI_PATH = Path(__file__).resolve().parent.parent / "ui"
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    # Build local Chroma index from static provider data.
+    # Build local Chroma indexes from static provider and referral history data.
     ProviderIndex().rebuild()
+    ReferralHistoryIndex().rebuild()
     yield
 
 

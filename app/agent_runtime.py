@@ -8,6 +8,7 @@ from app.agents.use_case_agents import (
     document_extraction_agent,
     insurance_validation_agent,
     provider_discovery_agent,
+    referral_history_agent,
     referral_triage_agent,
     specialist_recommendation_agent,
 )
@@ -27,6 +28,7 @@ def health() -> dict[str, str]:
 _AGENT_ENDPOINT_HANDLERS = {
     "specialist_recommendation": specialist_recommendation_agent,
     "referral_triage": referral_triage_agent,
+    "referral_history": referral_history_agent,
     "provider_discovery": provider_discovery_agent,
     "insurance_validation": insurance_validation_agent,
     "alternative_provider_suggestion": alternative_provider_agent,

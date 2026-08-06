@@ -80,6 +80,15 @@ DOCUMENT_EXTRACTION_KEYWORDS = {
     "medical code",
 }
 
+REFERRAL_HISTORY_KEYWORDS = {
+    "referral history",
+    "prior referrals",
+    "past referrals",
+    "referral summary",
+    "previous referral",
+    "referral record",
+}
+
 
 def _extract_field(pattern: str, query: str) -> str | None:
     match = re.search(pattern, query, flags=re.IGNORECASE)
@@ -93,6 +102,8 @@ def heuristic_slot_extraction(query: str) -> dict[str, str | None]:
         "diagnosis": _extract_field(r"diagnosis\s*[:=-]\s*([^,;]+)", query),
         "location": _extract_field(r"location\s*[:=-]\s*([^,;]+)", query),
         "insurance_plan": _extract_field(r"insurance\s*[:=-]\s*([^,;]+)", query),
+        "referral_id": _extract_field(r"\b(REF-\d+)\b", query),
+        "patient_id": _extract_field(r"\b(PT-\d+)\b", query),
         "excluded_provider_id": _extract_field(
             r"(?:excluding|except|exclude)\s+(?:provider\s+)?([A-Za-z0-9\-_]+)",
             query,
@@ -149,6 +160,11 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
     if symptom_intent:
         discovery_score = max(0, discovery_score - 1)
     extraction_score = sum(1 for keyword in DOCUMENT_EXTRACTION_KEYWORDS if keyword in query_lower)
+    history_score = sum(1 for keyword in REFERRAL_HISTORY_KEYWORDS if keyword in query_lower)
+    if re.search(r"\b(pt-\d+|ref-\d+)\b", query_lower):
+        history_score += 1
+    if "referral" in query_lower and "history" in query_lower:
+        history_score = max(history_score, 2)
 
     scored_capabilities = [
         ("alternative_provider_suggestion", alternative_score),
@@ -157,6 +173,7 @@ def infer_capability_from_query(query: str) -> CapabilityDecision:
         ("insurance_validation", insurance_score),
         ("provider_discovery", discovery_score),
         ("document_code_extraction", extraction_score),
+        ("referral_history", history_score),
     ]
     capability, score = max(scored_capabilities, key=lambda item: item[1])
 
@@ -195,6 +212,7 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         capability_block = (
             "- specialist_recommendation: recommendations for specialists\n"
             "- referral_triage: assess referral urgency/priority\n"
+            "- referral_history: summarize referral history and past referral context\n"
             "- alternative_provider_suggestion: alternatives to prior provider\n"
             "- insurance_validation: insurance eligibility/plan checks\n"
             "- provider_discovery: provider directory search"
@@ -218,7 +236,7 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "If a previous recommendation result is in context and user asks for alternatives to a provider name, "
         "resolve excluded_provider_id from that context when possible.\n"
         "Return only strict JSON with keys: capability, confidence, reason, diagnosis, location, insurance_plan, "
-        "excluded_provider_id, preferred_window_days, urgency. "
+        "patient_id, referral_id, excluded_provider_id, preferred_window_days, urgency. "
         "If a field is missing, return null. Confidence must be between 0 and 1."
     )
 
@@ -254,6 +272,7 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "insurance_validation",
         "provider_discovery",
         "alternative_provider_suggestion",
+        "referral_history",
         "unknown",
     }:
         capability = "unknown"
@@ -262,6 +281,8 @@ def infer_query_with_llm(query: str, context: dict[str, Any] | None = None) -> Q
         "diagnosis": response_json.get("diagnosis"),
         "location": response_json.get("location"),
         "insurance_plan": response_json.get("insurance_plan"),
+        "patient_id": response_json.get("patient_id"),
+        "referral_id": response_json.get("referral_id"),
         "excluded_provider_id": response_json.get("excluded_provider_id"),
         "preferred_window_days": response_json.get("preferred_window_days"),
         "urgency": response_json.get("urgency"),

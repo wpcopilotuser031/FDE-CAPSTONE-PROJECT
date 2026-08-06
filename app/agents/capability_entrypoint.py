@@ -13,6 +13,7 @@ from app.agents.conversational_assistant_agent import build_agent_card as build_
 from app.agents.document_extraction_agent import build_agent_card as build_document_extraction_card
 from app.agents.insurance_validation_agent import build_agent_card as build_insurance_validation_card
 from app.agents.provider_discovery_agent import build_agent_card as build_provider_discovery_card
+from app.agents.referral_history_agent import build_agent_card as build_referral_history_card
 from app.agents.referral_triage_agent import build_agent_card as build_referral_triage_card
 from app.agents.specialist_recommendation_agent import build_agent_card as build_specialist_card
 
@@ -32,6 +33,7 @@ def _build_agent_cards() -> list[AgentCard]:
     card_builders = [
         build_specialist_card,
         build_referral_triage_card,
+        build_referral_history_card,
         build_provider_discovery_card,
         build_insurance_validation_card,
         build_alternative_provider_card,
@@ -57,6 +59,7 @@ _AGENT_CARDS: list[AgentCard] = _build_agent_cards()
 _ACTIONABLE_CAPABILITIES = {
     "specialist_recommendation",
     "referral_triage",
+    "referral_history",
     "insurance_validation",
     "provider_discovery",
     "alternative_provider_suggestion",
@@ -119,9 +122,10 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         # EXCLUDED: "document_code_extraction" - document processing is for providers/care agents
     },
     # Provider: Can refer to specialists but NOT get recommendations for themselves
-    # Can triage, discover providers, and converse
+    # Can triage, discover providers, review referral history, and converse
     "provider": {
         "provider_discovery",
+        "referral_history",
         "conversational_assistant",
         "document_code_extraction",
         # EXCLUDED: "specialist_recommendation" - for patient self-help, not provider self-care
@@ -132,6 +136,7 @@ ROLE_CAPABILITY_MAP: dict[str, set[str]] = {
         "specialist_recommendation",
         "alternative_provider_suggestion",
         "referral_triage",
+        "referral_history",
         "insurance_validation",
         "provider_discovery",
         "conversational_assistant",
