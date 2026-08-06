@@ -34,17 +34,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Validate docker-compose
-if ! $SUDO command -v docker-compose >/dev/null 2>&1; then
-  echo "docker-compose not found. Trying docker compose plugin..."
-  if ! $SUDO docker compose version >/dev/null 2>&1; then
-    echo "docker-compose or 'docker compose' is required to run multiple services."
-    exit 1
-  else
-    COMPOSE_CMD="$SUDO docker compose"
-  fi
-else
+# Validate docker-compose - try both docker-compose and docker compose
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD="docker compose"
+elif docker-compose --version >/dev/null 2>&1; then
+  COMPOSE_CMD="docker-compose"
+elif $SUDO docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD="$SUDO docker compose"
+elif $SUDO docker-compose --version >/dev/null 2>&1; then
   COMPOSE_CMD="$SUDO docker-compose"
+else
+  echo "❌ docker-compose or 'docker compose' is required to run multiple services."
+  exit 1
 fi
 
 # Auto-detect Docker Hub username from docker config if registry not provided
