@@ -8,6 +8,7 @@ DOCKERHUB_REPO="${DOCKERHUB_REPO:-fde-capstone}"
 DOCKERHUB_TOKEN="${DOCKERHUB_TOKEN:-}"
 PUSH_IMAGES="${PUSH_IMAGES:-true}"
 DOCKER_LOGIN="${DOCKER_LOGIN:-true}"
+DOCKER_BIN=("docker")
 
 NETWORK_NAME="${NETWORK_NAME:-referral-net}"
 
@@ -42,21 +43,34 @@ bool_true() {
   esac
 }
 
+init_docker_bin() {
+  if docker info >/dev/null 2>&1; then
+    DOCKER_BIN=("docker")
+    return
+  fi
+
+  if command -v sudo >/dev/null 2>&1 && sudo docker info >/dev/null 2>&1; then
+    DOCKER_BIN=("sudo" "docker")
+    return
+  fi
+
+  DOCKER_BIN=("docker")
+}
+
 ensure_docker() {
   if ! command -v docker >/dev/null 2>&1; then
     echo "docker is required but not found in PATH."
     exit 1
   fi
+  init_docker_bin
 }
 
 docker_compose_cmd() {
-  if docker compose version >/dev/null 2>&1; then
-    echo "docker compose"
-  elif docker-compose --version >/dev/null 2>&1; then
+  if "${DOCKER_BIN[@]}" compose version >/dev/null 2>&1; then
+    echo "DOCKER_COMPOSE_PLUGIN"
+  elif command -v docker-compose >/dev/null 2>&1; then
     echo "docker-compose"
-  elif sudo docker compose version >/dev/null 2>&1; then
-    echo "sudo docker compose"
-  elif sudo docker-compose --version >/dev/null 2>&1; then
+  elif command -v sudo >/dev/null 2>&1 && sudo docker-compose --version >/dev/null 2>&1; then
     echo "sudo docker-compose"
   else
     echo ""
@@ -74,7 +88,7 @@ docker_login_if_needed() {
   fi
 
   if [[ -n "$DOCKERHUB_TOKEN" ]]; then
-    echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
+    echo "$DOCKERHUB_TOKEN" | "${DOCKER_BIN[@]}" login -u "$DOCKERHUB_USER" --password-stdin
   else
     echo "No token provided. Skipping docker login."
   fi
@@ -94,23 +108,31 @@ local_build_run_push() {
   fi
 
   echo "Cleaning previous stack..."
-  eval "$compose_cmd down --remove-orphans" || true
+  if [[ "$compose_cmd" == "DOCKER_COMPOSE_PLUGIN" ]]; then
+    "${DOCKER_BIN[@]}" compose down --remove-orphans || true
+  else
+    eval "$compose_cmd down --remove-orphans" || true
+  fi
 
   echo "Building and starting compose stack..."
-  eval "$compose_cmd up --build -d"
+  if [[ "$compose_cmd" == "DOCKER_COMPOSE_PLUGIN" ]]; then
+    "${DOCKER_BIN[@]}" compose up --build -d
+  else
+    eval "$compose_cmd up --build -d"
+  fi
 
   if bool_true "$PUSH_IMAGES"; then
     docker_login_if_needed
 
     echo "Pushing service images..."
-    docker push "$BACKEND_IMAGE"
-    docker push "$AGENT_IMAGE"
-    docker push "$MCP_IMAGE"
-    docker push "$UI_IMAGE"
+    "${DOCKER_BIN[@]}" push "$BACKEND_IMAGE"
+    "${DOCKER_BIN[@]}" push "$AGENT_IMAGE"
+    "${DOCKER_BIN[@]}" push "$MCP_IMAGE"
+    "${DOCKER_BIN[@]}" push "$UI_IMAGE"
 
     echo "Building and pushing launcher image..."
-    docker build -f docker/launcher.Dockerfile -t "$LAUNCHER_IMAGE" .
-    docker push "$LAUNCHER_IMAGE"
+    "${DOCKER_BIN[@]}" build -f docker/launcher.Dockerfile -t "$LAUNCHER_IMAGE" .
+    "${DOCKER_BIN[@]}" push "$LAUNCHER_IMAGE"
   fi
 
   echo "Done."
@@ -123,30 +145,30 @@ local_build_run_push() {
 
 stop_launched_stack() {
   ensure_docker
-  docker rm -f "$BACKEND_CONTAINER" "$AGENT_CONTAINER" "$MCP_CONTAINER" "$UI_CONTAINER" >/dev/null 2>&1 || true
-  docker network rm "$NETWORK_NAME" >/dev/null 2>&1 || true
+  "${DOCKER_BIN[@]}" rm -f "$BACKEND_CONTAINER" "$AGENT_CONTAINER" "$MCP_CONTAINER" "$UI_CONTAINER" >/dev/null 2>&1 || true
+  "${DOCKER_BIN[@]}" network rm "$NETWORK_NAME" >/dev/null 2>&1 || true
   echo "Stopped containers and removed network (if present)."
 }
 
 launch_from_hub() {
   ensure_docker
 
-  if ! docker info >/dev/null 2>&1; then
+  if ! "${DOCKER_BIN[@]}" info >/dev/null 2>&1; then
     echo "Docker daemon is not reachable."
     exit 1
   fi
 
   stop_launched_stack
 
-  if ! docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
-    docker network create "$NETWORK_NAME" >/dev/null
+  if ! "${DOCKER_BIN[@]}" network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+    "${DOCKER_BIN[@]}" network create "$NETWORK_NAME" >/dev/null
   fi
 
   echo "Pulling images from Docker Hub..."
-  docker pull "$BACKEND_IMAGE"
-  docker pull "$AGENT_IMAGE"
-  docker pull "$MCP_IMAGE"
-  docker pull "$UI_IMAGE"
+  "${DOCKER_BIN[@]}" pull "$BACKEND_IMAGE"
+  "${DOCKER_BIN[@]}" pull "$AGENT_IMAGE"
+  "${DOCKER_BIN[@]}" pull "$MCP_IMAGE"
+  "${DOCKER_BIN[@]}" pull "$UI_IMAGE"
 
   # Forward core runtime env vars from current environment to child containers.
   ENV_ARGS=()
@@ -167,7 +189,7 @@ launch_from_hub() {
   done
 
   echo "Starting MCP gateway..."
-  docker run -d \
+  "${DOCKER_BIN[@]}" run -d \
     --name "$MCP_CONTAINER" \
     --network "$NETWORK_NAME" \
     "${ENV_ARGS[@]}" \
@@ -176,7 +198,7 @@ launch_from_hub() {
     sh -c "python scripts/build_rag_index.py && uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092"
 
   echo "Starting agent runtime..."
-  docker run -d \
+  "${DOCKER_BIN[@]}" run -d \
     --name "$AGENT_CONTAINER" \
     --network "$NETWORK_NAME" \
     "${ENV_ARGS[@]}" \
@@ -185,7 +207,7 @@ launch_from_hub() {
     sh -c "python scripts/build_rag_index.py && uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091"
 
   echo "Starting backend..."
-  docker run -d \
+  "${DOCKER_BIN[@]}" run -d \
     --name "$BACKEND_CONTAINER" \
     --network "$NETWORK_NAME" \
     "${ENV_ARGS[@]}" \
@@ -196,7 +218,7 @@ launch_from_hub() {
     uvicorn app.main:app --host 0.0.0.0 --port 8090
 
   echo "Starting UI..."
-  docker run -d \
+  "${DOCKER_BIN[@]}" run -d \
     --name "$UI_CONTAINER" \
     --network "$NETWORK_NAME" \
     -p 8093:80 \
