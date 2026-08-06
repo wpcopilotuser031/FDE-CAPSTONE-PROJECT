@@ -150,6 +150,25 @@ stop_launched_stack() {
   echo "Stopped containers and removed network (if present)."
 }
 
+wait_for_mcp_health() {
+  local max_attempts=30
+  local attempt=1
+
+  echo "Waiting for MCP health endpoint..."
+  while (( attempt <= max_attempts )); do
+    if "${DOCKER_BIN[@]}" exec "$MCP_CONTAINER" python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8092/health', timeout=2).read()" >/dev/null 2>&1; then
+      echo "MCP is healthy."
+      return 0
+    fi
+    sleep 1
+    attempt=$((attempt + 1))
+  done
+
+  echo "MCP health check timed out."
+  "${DOCKER_BIN[@]}" logs "$MCP_CONTAINER" || true
+  exit 1
+}
+
 launch_from_hub() {
   ensure_docker
 
@@ -182,7 +201,8 @@ launch_from_hub() {
     MCP_INTERNAL_KEY \
     USE_MCP_TOOLS \
     AGENT_CALL_TRANSPORT \
-    MCP_TRANSPORT; do
+    MCP_TRANSPORT \
+    BACKEND_BASE_URL; do
     if [[ -n "${!key:-}" ]]; then
       ENV_ARGS+=("-e" "$key=${!key}")
     fi
@@ -197,11 +217,14 @@ launch_from_hub() {
     "$MCP_IMAGE" \
     sh -c "python scripts/build_rag_index.py && uvicorn app.mcp_gateway:app --host 0.0.0.0 --port 8092"
 
+  wait_for_mcp_health
+
   echo "Starting agent runtime..."
   "${DOCKER_BIN[@]}" run -d \
     --name "$AGENT_CONTAINER" \
     --network "$NETWORK_NAME" \
     "${ENV_ARGS[@]}" \
+    -e "MCP_HTTP_BASE_URL=http://$MCP_CONTAINER:8092" \
     -p 8091:8091 \
     "$AGENT_IMAGE" \
     sh -c "python scripts/build_rag_index.py && uvicorn app.agent_runtime:app --host 0.0.0.0 --port 8091"
