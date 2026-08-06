@@ -42,10 +42,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8080", "http://localhost:8080", "http://127.0.0.1:8093", "http://localhost:8093"],
+    allow_origins=["http://127.0.0.1:8080", "http://localhost:8080", "http://127.0.0.1:8090", "http://localhost:8090", "http://127.0.0.1:8093", "http://localhost:8093"],
     # Also allow the UI when it's reached via a VM/host IP or DNS name rather than
-    # localhost (e.g. the dockerized nginx UI on port 8093 or a local UI on port 8080).
-    allow_origin_regex=r"https?://(?:localhost|127\.0\.0\.1|[0-9]+(?:\.[0-9]+){3}):(8080|8093)$",
+    # localhost (e.g. the dockerized nginx UI on port 8093 or a local UI on port 8080/8090).
+    allow_origin_regex=r"https?://(?:localhost|127\.0\.0\.1|[0-9]+(?:\.[0-9]+){3}):(8080|8090|8093)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
