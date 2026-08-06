@@ -20,12 +20,15 @@ fi
 
 SERVICE_CONTAINERS=(referral-backend referral-agent-runtime referral-mcp-gateway referral-ui)
 PUSH_IMAGES="${PUSH_IMAGES:-true}"
+DOCKER_LOGIN="${DOCKER_LOGIN:-true}"
 DOCKERHUB_USER="${DOCKERHUB_USER:-aviroopbasu1995}"
 DOCKERHUB_REPO="${DOCKERHUB_REPO:-fde-capstone}"
+DOCKERHUB_TOKEN="${DOCKERHUB_TOKEN:-}"
 IMAGES=(
   "$DOCKERHUB_USER/$DOCKERHUB_REPO:backend"
   "$DOCKERHUB_USER/$DOCKERHUB_REPO:agent-runtime"
   "$DOCKERHUB_USER/$DOCKERHUB_REPO:mcp-gateway"
+  "$DOCKERHUB_USER/$DOCKERHUB_REPO:ui"
 )
 
 echo "Cleaning up old containers and ports before starting services..."
@@ -65,6 +68,23 @@ COMPOSE_PID=$!
 wait $COMPOSE_PID || true
 
 if [[ "$PUSH_IMAGES" == "true" ]]; then
+  if [[ "$DOCKER_LOGIN" == "true" ]]; then
+    if [[ -n "$DOCKERHUB_TOKEN" ]]; then
+      echo "Logging into Docker Hub as '$DOCKERHUB_USER' using DOCKERHUB_TOKEN..."
+      echo "$DOCKERHUB_TOKEN" | $SUDO docker login -u "$DOCKERHUB_USER" --password-stdin
+    else
+      echo "Docker Hub token not found in environment."
+      read -rsp "Enter Docker Hub personal access token for $DOCKERHUB_USER: " DOCKERHUB_TOKEN
+      echo
+      if [[ -z "$DOCKERHUB_TOKEN" ]]; then
+        echo "No token entered. Skipping Docker login; push may fail if not already authenticated."
+      else
+        echo "Logging into Docker Hub as '$DOCKERHUB_USER'..."
+        echo "$DOCKERHUB_TOKEN" | $SUDO docker login -u "$DOCKERHUB_USER" --password-stdin
+      fi
+    fi
+  fi
+
   echo "Pushing built images to Docker Hub repository '$DOCKERHUB_USER/$DOCKERHUB_REPO' ..."
   for image in "${IMAGES[@]}"; do
     echo "Pushing $image"
