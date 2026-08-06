@@ -62,6 +62,20 @@ if [[ -z "$DOCKER_REGISTRY" ]]; then
   fi
 fi
 
+# Auto-detect Docker Hub username from docker config if registry not provided
+if [[ -z "$DOCKER_REGISTRY" ]]; then
+  if [[ -f ~/.docker/config.json ]]; then
+    DOCKER_REGISTRY=$(grep -o '"Username":"[^"]*"' ~/.docker/config.json | head -1 | cut -d'"' -f4)
+  fi
+
+  if [[ -z "$DOCKER_REGISTRY" ]]; then
+    echo "❌ Error: Docker Hub username not found"
+    echo "Please provide registry with: --registry <username>"
+    echo "Or log in to Docker Hub first: docker login"
+    exit 1
+  fi
+fi
+
 SERVICE_CONTAINERS=(referral-backend referral-agent-runtime referral-mcp-gateway referral-ui)
 
 echo "Cleaning up old containers and ports before starting services..."
