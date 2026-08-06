@@ -14,7 +14,8 @@ AI-powered referral management platform with multi-agent workflows, MCP-enabled 
 | 4 | Provider Discovery | `provider_discovery_agent` | `provider_candidates` |
 | 5 | Alternative Provider Suggestion | `alternative_provider_agent` | `diagnosis_to_specialty`, `provider_candidates`, `insurance_eligibility` |
 | 6 | Conversational Assistant | `conversational_assistant_agent` | _(context-grounded LLM, no tools)_ |
-| 7 | **Document Code Extraction** _(new)_ | `document_extraction_agent` | `extract_codes` |
+| 7 | Referral History Review | `referral_history_agent` | `retrieve_referral_history` |
+| 8 | **Document Code Extraction** _(new)_ | `document_extraction_agent` | `extract_codes` |
 
 ---
 
@@ -123,12 +124,12 @@ uvicorn app.agent_runtime:app --reload --host 0.0.0.0 --port 8091
 uvicorn app.mcp_gateway:app --reload --host 0.0.0.0 --port 8092
 ```
 
-**Terminal 4 — UI static server (port 8080)**
+**Terminal 4 — UI static server (port 8093)**
 ```bash
 ./scripts/run_ui.sh
 ```
 
-Then open: **http://127.0.0.1:8080**
+Then open: **http://127.0.0.1:8093**
 
 ---
 
@@ -249,7 +250,7 @@ pytest tests/test_capability_router.py -v     # intent routing tests
 ### Prerequisites
 - All three services running (ports 8090, 8091, 8092).
 - `.env` configured with valid `LLM_MODEL`, `LLM_API_KEY`, `LLM_BASE_URL`, and `MCP_INTERNAL_KEY`.
-- UI open at **http://127.0.0.1:8080** (or port 8093 in Docker).
+- UI open at **http://127.0.0.1:8093** when running `./scripts/run_ui.sh`, or **http://127.0.0.1:8080** if served separately.
 
 ---
 
