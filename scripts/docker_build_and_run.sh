@@ -46,6 +46,7 @@ elif $SUDO docker-compose --version >/dev/null 2>&1; then
 else
   echo "❌ docker-compose or 'docker compose' is required to run multiple services."
   exit 1
+<<<<<<< HEAD
 fi
 
 # Auto-detect Docker Hub username from docker config if registry not provided
@@ -60,6 +61,8 @@ if [[ -z "$DOCKER_REGISTRY" ]]; then
     echo "Or log in to Docker Hub first: docker login"
     exit 1
   fi
+=======
+>>>>>>> fb62957 (fix: Improve docker-compose detection without sudo prefix issues)
 fi
 
 # Auto-detect Docker Hub username from docker config if registry not provided
