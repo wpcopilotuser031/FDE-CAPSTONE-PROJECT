@@ -25,12 +25,13 @@ LAUNCHER_IMAGE="${DOCKERHUB_USER}/${DOCKERHUB_REPO}:launcher"
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/docker_build_and_run.sh [local|launch|stop]
+  scripts/docker_build_and_run.sh [local|launch|stop|publish-launcher]
 
 Modes:
   local   Build and run compose stack, then push backend/agent-runtime/mcp-gateway/ui and launcher image.
   launch  Pull images from Docker Hub, kill existing containers if any, and start all services.
   stop    Stop and remove launched containers and network.
+  publish-launcher  Build and push only the launcher image.
 EOF
 }
 
@@ -208,6 +209,23 @@ launch_from_hub() {
   echo "MCP:     http://127.0.0.1:8092"
 }
 
+publish_launcher_only() {
+  ensure_docker
+
+  ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+  cd "$ROOT_DIR"
+
+  docker_login_if_needed
+
+  echo "Building launcher image..."
+  docker build -f docker/launcher.Dockerfile -t "$LAUNCHER_IMAGE" .
+
+  echo "Pushing launcher image..."
+  docker push "$LAUNCHER_IMAGE"
+
+  echo "Launcher published: $LAUNCHER_IMAGE"
+}
+
 case "$MODE" in
   local)
     local_build_run_push
@@ -217,6 +235,9 @@ case "$MODE" in
     ;;
   stop)
     stop_launched_stack
+    ;;
+  publish-launcher)
+    publish_launcher_only
     ;;
   *)
     usage
