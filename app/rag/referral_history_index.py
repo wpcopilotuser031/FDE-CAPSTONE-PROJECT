@@ -59,8 +59,8 @@ class ReferralHistoryIndex:
                     "status": status,
                     "priority": priority,
                     "submitted_at": submitted_at,
-                    "target_wait_days": referral.get("target_wait_days"),
-                    "documents_missing": missing_docs,
+                    "target_wait_days": str(referral.get("target_wait_days", "")),
+                    "documents_missing": missing_text,
                     "source_summary": summary_text,
                 }
             )
