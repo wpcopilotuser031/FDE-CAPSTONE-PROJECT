@@ -1,6 +1,7 @@
 services:
   backend:
     build: .
+    image: aviroopbasu1995/fde-capstone:backend
     container_name: referral-backend
     command: uvicorn app.main:app --host 0.0.0.0 --port 8090
     ports:
@@ -13,6 +14,7 @@ services:
 
   agent_runtime:
     build: .
+    image: aviroopbasu1995/fde-capstone:agent-runtime
     container_name: referral-agent-runtime
     command: >-
       sh -c "python scripts/build_rag_index.py &&
@@ -25,6 +27,7 @@ services:
 
   mcp_gateway:
     build: .
+    image: aviroopbasu1995/fde-capstone:mcp-gateway
     container_name: referral-mcp-gateway
     command: >-
       sh -c "python scripts/build_rag_index.py &&

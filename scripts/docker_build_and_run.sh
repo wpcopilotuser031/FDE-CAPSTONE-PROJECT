@@ -80,6 +80,14 @@ if [[ -z "$DOCKER_REGISTRY" ]]; then
 fi
 
 SERVICE_CONTAINERS=(referral-backend referral-agent-runtime referral-mcp-gateway referral-ui)
+PUSH_IMAGES="${PUSH_IMAGES:-true}"
+DOCKERHUB_USER="${DOCKERHUB_USER:-aviroopbasu1995}"
+DOCKERHUB_REPO="${DOCKERHUB_REPO:-fde-capstone}"
+IMAGES=(
+  "$DOCKERHUB_USER/$DOCKERHUB_REPO:backend"
+  "$DOCKERHUB_USER/$DOCKERHUB_REPO:agent-runtime"
+  "$DOCKERHUB_USER/$DOCKERHUB_REPO:mcp-gateway"
+)
 
 echo "Cleaning up old containers and ports before starting services..."
 for container in "${SERVICE_CONTAINERS[@]}"; do
@@ -117,6 +125,7 @@ COMPOSE_PID=$!
 # Wait for compose to finish starting
 wait $COMPOSE_PID || true
 
+<<<<<<< HEAD
 echo ""
 echo "════════════════════════════════════════════════════════════════"
 echo "✓ Services Started Successfully!"
@@ -199,3 +208,14 @@ else
   echo "⏭️  Skipped Docker Hub push (--no-push flag used)"
   echo "════════════════════════════════════════════════════════════════"
 fi
+=======
+if [[ "$PUSH_IMAGES" == "true" ]]; then
+  echo "Pushing built images to Docker Hub repository '$DOCKERHUB_USER/$DOCKERHUB_REPO' ..."
+  for image in "${IMAGES[@]}"; do
+    echo "Pushing $image"
+    $SUDO docker push "$image"
+  done
+fi
+
+echo "Services started. Backend: http://127.0.0.1:8090 | Agent runtime: http://127.0.0.1:8091 | MCP gateway: http://127.0.0.1:8092 | UI: http://127.0.0.1:8093"
+>>>>>>> c77223950aa5b95b9eb4211e8a8d5990e356e0d7
