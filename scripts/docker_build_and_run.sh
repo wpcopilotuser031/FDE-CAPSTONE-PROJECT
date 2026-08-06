@@ -4,20 +4,15 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
-# Configuration
+# Configuration - ALWAYS PUSH is now the default behavior
 SUDO="sudo"
 COMPOSE_CMD=""
-DOCKER_PUSH=${DOCKER_PUSH:-false}
 DOCKER_REGISTRY=${DOCKER_REGISTRY:-}
 IMAGE_TAG=${IMAGE_TAG:-latest}
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --push)
-      DOCKER_PUSH=true
-      shift
-      ;;
     --registry)
       DOCKER_REGISTRY="$2"
       shift 2
@@ -26,9 +21,14 @@ while [[ $# -gt 0 ]]; do
       IMAGE_TAG="$2"
       shift 2
       ;;
+    --no-push)
+      # Optional flag to skip push if user doesn't want it
+      NO_PUSH=true
+      shift
+      ;;
     *)
       echo "Unknown option: $1"
-      echo "Usage: $0 [--push] [--registry <username>] [--tag <tag>]"
+      echo "Usage: $0 [--registry <username>] [--tag <tag>] [--no-push]"
       exit 1
       ;;
   esac
@@ -45,6 +45,20 @@ if ! $SUDO command -v docker-compose >/dev/null 2>&1; then
   fi
 else
   COMPOSE_CMD="$SUDO docker-compose"
+fi
+
+# Auto-detect Docker Hub username from docker config if registry not provided
+if [[ -z "$DOCKER_REGISTRY" ]]; then
+  if [[ -f ~/.docker/config.json ]]; then
+    DOCKER_REGISTRY=$(grep -o '"Username":"[^"]*"' ~/.docker/config.json | head -1 | cut -d'"' -f4)
+  fi
+
+  if [[ -z "$DOCKER_REGISTRY" ]]; then
+    echo "❌ Error: Docker Hub username not found"
+    echo "Please provide registry with: --registry <username>"
+    echo "Or log in to Docker Hub first: docker login"
+    exit 1
+  fi
 fi
 
 SERVICE_CONTAINERS=(referral-backend referral-agent-runtime referral-mcp-gateway referral-ui)
@@ -96,20 +110,10 @@ echo "UI:            http://127.0.0.1:8093"
 echo "════════════════════════════════════════════════════════════════"
 echo ""
 
-# Docker Hub Push (optional)
-if [[ "$DOCKER_PUSH" == "true" ]]; then
-  if [[ -z "$DOCKER_REGISTRY" ]]; then
-    echo "❌ Error: --registry <username> is required for Docker Hub push"
-    exit 1
-  fi
-
-  echo "📦 Pushing images to Docker Hub registry: $DOCKER_REGISTRY"
+# Docker Hub Push - ALWAYS HAPPENS (unless --no-push is specified)
+if [[ "${NO_PUSH:-false}" != "true" ]]; then
+  echo "📦 Pushing images to Docker Hub: $DOCKER_REGISTRY"
   echo "════════════════════════════════════════════════════════════════"
-
-  # Get the local image IDs
-  BACKEND_IMAGE=$($SUDO docker images fde-capstone-project-backend --format "{{.ID}}" | head -1)
-  AGENT_IMAGE=$($SUDO docker images fde-capstone-project-agent_runtime --format "{{.ID}}" | head -1)
-  MCP_IMAGE=$($SUDO docker images fde-capstone-project-mcp_gateway --format "{{.ID}}" | head -1)
 
   # Define remote image names
   BACKEND_REMOTE="${DOCKER_REGISTRY}/referral-platform-backend:${IMAGE_TAG}"
@@ -117,53 +121,63 @@ if [[ "$DOCKER_PUSH" == "true" ]]; then
   MCP_REMOTE="${DOCKER_REGISTRY}/referral-platform-mcp-gateway:${IMAGE_TAG}"
 
   # Tag images
-  echo "Tagging images for push..."
-  $SUDO docker tag fde-capstone-project-backend "$BACKEND_REMOTE" || true
-  $SUDO docker tag fde-capstone-project-agent_runtime "$AGENT_REMOTE" || true
-  $SUDO docker tag fde-capstone-project-mcp_gateway "$MCP_REMOTE" || true
+  echo "Tagging images..."
+  $SUDO docker tag fde-capstone-project-backend "$BACKEND_REMOTE" 2>/dev/null || true
+  $SUDO docker tag fde-capstone-project-agent_runtime "$AGENT_REMOTE" 2>/dev/null || true
+  $SUDO docker tag fde-capstone-project-mcp_gateway "$MCP_REMOTE" 2>/dev/null || true
 
-  # Push images
-  echo "Pushing Backend image: $BACKEND_REMOTE"
-  $SUDO docker push "$BACKEND_REMOTE" 2>&1 | tail -5
-  echo "✓ Backend pushed"
-
+  # Push images with error handling
   echo ""
-  echo "Pushing Agent Runtime image: $AGENT_REMOTE"
-  $SUDO docker push "$AGENT_REMOTE" 2>&1 | tail -5
-  echo "✓ Agent Runtime pushed"
-
+  echo "Pushing images to Docker Hub..."
   echo ""
-  echo "Pushing MCP Gateway image: $MCP_REMOTE"
-  $SUDO docker push "$MCP_REMOTE" 2>&1 | tail -5
-  echo "✓ MCP Gateway pushed"
+
+  push_image() {
+    local local_image=$1
+    local remote_image=$2
+    local service_name=$3
+
+    if $SUDO docker push "$remote_image" 2>/dev/null; then
+      echo "✓ $service_name pushed successfully"
+    else
+      echo "⚠ Failed to push $service_name"
+      echo "  Make sure you're logged in: docker login -u $DOCKER_REGISTRY"
+      return 1
+    fi
+  }
+
+  push_image "fde-capstone-project-backend" "$BACKEND_REMOTE" "Backend"
+  push_image "fde-capstone-project-agent_runtime" "$AGENT_REMOTE" "Agent Runtime"
+  push_image "fde-capstone-project-mcp_gateway" "$MCP_REMOTE" "MCP Gateway"
 
   echo ""
   echo "════════════════════════════════════════════════════════════════"
-  echo "✓ Images pushed to Docker Hub!"
+  echo "✓ All images pushed to Docker Hub!"
   echo "════════════════════════════════════════════════════════════════"
   echo ""
-  echo "📥 Download and run images:"
+  echo "🌐 Public Registry URLs - Share these to download:"
   echo ""
-  echo "1️⃣  Backend:"
-  echo "    docker pull $BACKEND_REMOTE"
-  echo "    docker run -p 8090:8090 --env-file .env $BACKEND_REMOTE"
+  echo "📥 BACKEND IMAGE:"
+  echo "   🔗 https://hub.docker.com/r/$DOCKER_REGISTRY/referral-platform-backend"
+  echo "   📦 docker pull $BACKEND_REMOTE"
   echo ""
-  echo "2️⃣  Agent Runtime:"
-  echo "    docker pull $AGENT_REMOTE"
-  echo "    docker run -p 8091:8091 --env-file .env $AGENT_REMOTE"
+  echo "📥 AGENT RUNTIME IMAGE:"
+  echo "   🔗 https://hub.docker.com/r/$DOCKER_REGISTRY/referral-platform-agent-runtime"
+  echo "   📦 docker pull $AGENT_REMOTE"
   echo ""
-  echo "3️⃣  MCP Gateway:"
-  echo "    docker pull $MCP_REMOTE"
-  echo "    docker run -p 8092:8092 --env-file .env $MCP_REMOTE"
+  echo "📥 MCP GATEWAY IMAGE:"
+  echo "   🔗 https://hub.docker.com/r/$DOCKER_REGISTRY/referral-platform-mcp-gateway"
+  echo "   📦 docker pull $MCP_REMOTE"
   echo ""
-  echo "Or use docker-compose with remote images:"
-  echo "    services:"
-  echo "      backend:"
-  echo "        image: $BACKEND_REMOTE"
-  echo "      agent_runtime:"
-  echo "        image: $AGENT_REMOTE"
-  echo "      mcp_gateway:"
-  echo "        image: $MCP_REMOTE"
+  echo "════════════════════════════════════════════════════════════════"
   echo ""
+  echo "🚀 Run containers locally:"
+  echo ""
+  echo "   docker run -p 8090:8090 --env-file .env $BACKEND_REMOTE"
+  echo "   docker run -p 8091:8091 --env-file .env $AGENT_REMOTE"
+  echo "   docker run -p 8092:8092 --env-file .env $MCP_REMOTE"
+  echo ""
+  echo "════════════════════════════════════════════════════════════════"
+else
+  echo "⏭️  Skipped Docker Hub push (--no-push flag used)"
   echo "════════════════════════════════════════════════════════════════"
 fi
