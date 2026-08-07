@@ -76,6 +76,7 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
         "provider_candidates",
         "insurance_eligibility",
         "extract_codes",
+        "retrieve_referral_history",
     },
     "care_agent": {
         "diagnosis_to_specialty",

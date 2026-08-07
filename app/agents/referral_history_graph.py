@@ -4,10 +4,7 @@ from datetime import UTC, datetime
 from typing import Any, Callable, TypedDict
 from uuid import uuid4
 
-from langgraph.graph import END, StateGraph
-
 from app.mcp_clients.referral_history_client import ReferralHistoryMCPClient
-
 
 REFERRAL_HISTORY_ROLE = "referral_history"
 
@@ -81,18 +78,6 @@ def summarize_history(state: ReferralHistoryState) -> ReferralHistoryState:
     return state
 
 
-def build_referral_history_graph():
-    graph_builder = StateGraph(ReferralHistoryState)
-    graph_builder.add_node("fetch_referral_history", fetch_referral_history)
-    graph_builder.add_node("summarize_history", summarize_history)
-
-    graph_builder.set_entry_point("fetch_referral_history")
-    graph_builder.add_edge("fetch_referral_history", "summarize_history")
-    graph_builder.add_edge("summarize_history", END)
-
-    return graph_builder.compile()
-
-
 def run_referral_history_flow(
     *,
     referral_id: str = "",
@@ -101,10 +86,8 @@ def run_referral_history_flow(
     user_role: str | None = None,
     progress_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
-    graph = build_referral_history_graph()
-
     with ReferralHistoryMCPClient(caller_role=REFERRAL_HISTORY_ROLE, user_role=user_role) as mcp_client:
-        initial_state: ReferralHistoryState = {
+        state: ReferralHistoryState = {
             "referral_id": referral_id,
             "patient_id": patient_id,
             "query": query,
@@ -116,19 +99,21 @@ def run_referral_history_flow(
             "mcp_client": mcp_client,
             "progress_callback": progress_callback,
         }
-        final_state = graph.invoke(initial_state)
+
+        state = fetch_referral_history(state)
+        state = summarize_history(state)
 
     return {
         "request_id": str(uuid4()),
         "generated_at": datetime.now(UTC).isoformat(),
-        "history_items": final_state["history_items"],
-        "summary": final_state["summary"],
-        "missing_information": final_state["missing_information"],
+        "history_items": state["history_items"],
+        "summary": state["summary"],
+        "missing_information": state["missing_information"],
         "decision_trace": {
             "capability": "referral_history",
             "caller_role": REFERRAL_HISTORY_ROLE,
-            "mcp_enabled": final_state["mcp_enabled"],
-            "tools_invoked": final_state["tools_invoked"],
+            "mcp_enabled": state["mcp_enabled"],
+            "tools_invoked": state["tools_invoked"],
             "human_review_required": False,
         },
     }
