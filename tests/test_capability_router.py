@@ -392,3 +392,90 @@ def test_conversational_provider_cannot_bypass_rbac_on_misroute(monkeypatch) -> 
 
     assert result["agent_transport"] == "none"
     assert "not authorized" in result["agent_result"]["answer"].lower()
+
+
+def test_infer_referral_history_capability() -> None:
+    decision = infer_capability_from_query("Show referral history for PT-001 and prior referrals")
+    assert decision.capability == "referral_history"
+    assert decision.confidence >= 0.5
+
+
+def test_provider_can_use_referral_history_capability(monkeypatch) -> None:
+    def _mock_invoke_agent(capability, payload):
+        assert capability == "referral_history"
+        assert payload["patient_id"] == "PT-001"
+        return {
+            "history_summary": "Referral history for PT-001.",
+            "decision_trace": {
+                "capability": "referral_history",
+                "caller_role": "referral_history",
+                "mcp_enabled": True,
+                "tools_invoked": ["retrieve_referral_history"],
+                "human_review_required": False,
+            },
+        }
+
+    monkeypatch.setattr("app.agents.capability_entrypoint._invoke_agent_http", _mock_invoke_agent)
+
+    result = route_capability(
+        {
+            "capability": "referral_history",
+            "payload": {"patient_id": "PT-001"},
+        },
+        caller_role="provider",
+        session_token="role-test-provider-referral-history",
+    )
+
+    assert result["selected_capability"] == "referral_history"
+    assert result["selected_agent_card"]["rbac_role"] == "referral_history"
+    assert result["agent_result"]["history_summary"] == "Referral history for PT-001."
+
+
+def test_patient_cannot_use_referral_history_capability() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "referral_history",
+                "payload": {"patient_id": "PT-001"},
+            },
+            caller_role="patient",
+            session_token="role-test-patient-referral-history",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)
+
+
+def test_infer_referral_history_capability() -> None:
+    decision = infer_capability_from_query(
+        "Show me referral history for patient PT-001"
+    )
+    assert decision.capability == "referral_history"
+
+
+def test_provider_can_use_referral_history() -> None:
+    result = route_capability(
+        {
+            "capability": "referral_history",
+            "payload": {"patient_id": "PT-001"},
+        },
+        caller_role="provider",
+        session_token="role-test-provider-referral-history",
+    )
+    assert result["selected_capability"] == "referral_history"
+    assert result["selected_agent_card"]["rbac_role"] == "referral_history"
+
+
+def test_patient_cannot_use_referral_history() -> None:
+    try:
+        route_capability(
+            {
+                "capability": "referral_history",
+                "payload": {"patient_id": "PT-001"},
+            },
+            caller_role="patient",
+            session_token="role-test-patient-referral-history",
+        )
+        assert False, "Expected PermissionError"
+    except PermissionError as exc:
+        assert "not permitted" in str(exc)

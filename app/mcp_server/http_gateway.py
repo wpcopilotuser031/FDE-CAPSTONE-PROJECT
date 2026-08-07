@@ -66,4 +66,19 @@ def call_tool_http(tool_name: str, arguments: dict[str, Any]) -> Any:
         patient_id = str(arguments.get("patient_id", "")).strip()
         return create_triage_ticket(reason=reason, triage_priority=triage_priority, patient_id=patient_id)
 
+    if tool_name == "retrieve_referral_history":
+        query = str(arguments.get("query", "")).strip()
+        patient_id = str(arguments.get("patient_id", "")).strip()
+        referral_id = str(arguments.get("referral_id", "")).strip()
+        max_results = int(arguments.get("max_results", 5))
+        from app.rag.referral_history_index import ReferralHistoryIndex
+
+        index = ReferralHistoryIndex()
+        if referral_id:
+            referral = index.get_referral(referral_id)
+            return [referral] if referral else []
+        if patient_id:
+            return index.get_referrals_for_patient(patient_id, max_results=max_results)
+        return index.query(query, top_k=max_results)
+
     raise ValueError(f"Unsupported MCP tool '{tool_name}'.")

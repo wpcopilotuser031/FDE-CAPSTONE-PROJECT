@@ -32,6 +32,9 @@ USE_CASE_TOOL_MAP: dict[str, set[str]] = {
         "triage_assess",
         "create_triage_ticket",
     },
+    "referral_history": {
+        "retrieve_referral_history",
+    },
     "insurance_validation": {
         "insurance_eligibility",
         "patient_insurance_profile",
@@ -73,6 +76,7 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
         "provider_candidates",
         "insurance_eligibility",
         "extract_codes",
+        "retrieve_referral_history",
     },
     "care_agent": {
         "diagnosis_to_specialty",
@@ -83,6 +87,7 @@ USER_ROLE_TOOL_MAP: dict[str, set[str]] = {
         "extract_codes",
         "patient_insurance_profile",
         "provider_insurance_plans",
+        "retrieve_referral_history",
     },
 }
 
